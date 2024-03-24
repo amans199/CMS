@@ -1,0 +1,1 @@
+C:\study-projects\2024\cairouniversity\CMSReact\cmsreact.client\obj\Debug\cmsreact.client.esproj.CoreCompileInputs.cache
