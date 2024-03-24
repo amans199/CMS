@@ -1,19 +1,5 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState } from "react";
+import axios from "utils/Axios"; // Adjust the path if needed
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -22,7 +8,7 @@ import { Link } from "react-router-dom";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 
-// Soft UI Dashboard React components
+//   React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import SoftInput from "components/SoftInput";
@@ -38,11 +24,27 @@ import curved6 from "assets/images/curved-images/curved14.jpg";
 
 function SignUp() {
   const [agreement, setAgreement] = useState(true);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSetAgreement = () => setAgreement(!agreement);
 
-  const handleSignUp = () => {
-    //
+  const handleSignUp = async () => {
+    try {
+      const response = await axios.post("/api/auth/register", {
+        username,
+        email,
+        password,
+      });
+      console.log("🚀 ~ handleSignUp ~ response :", response);
+
+      // Redirect to login page after successful registration
+      history.push("/authentication/sign-in");
+    } catch (error) {
+      // Handle error
+      console.error("Registration failed:", error);
+    }
   };
 
   return (
@@ -64,13 +66,27 @@ function SignUp() {
         <SoftBox pt={2} pb={3} px={3}>
           <SoftBox component="form" role="form">
             <SoftBox mb={2}>
-              <SoftInput placeholder="Name" />
+              <SoftInput
+                placeholder="Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
             </SoftBox>
             <SoftBox mb={2}>
-              <SoftInput type="email" placeholder="Email" />
+              <SoftInput
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </SoftBox>
             <SoftBox mb={2}>
-              <SoftInput type="password" placeholder="Password" />
+              <SoftInput
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
             </SoftBox>
             <SoftBox display="flex" alignItems="center">
               <Checkbox checked={agreement} onChange={handleSetAgreement} />

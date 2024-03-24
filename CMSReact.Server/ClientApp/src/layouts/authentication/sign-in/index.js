@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 // @mui material components
 import Switch from "@mui/material/Switch";
 
-// Soft UI Dashboard React components
+//   React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
 import SoftInput from "components/SoftInput";
