@@ -91,7 +91,7 @@ function AppHeader(props) {
               </ul>
             </nav>
 
-            <a href="#" className="btn">
+            <a href="#cta" className="btn">
               Book appointment
             </a>
             <a href="/authentication/sign-in" className="btn">

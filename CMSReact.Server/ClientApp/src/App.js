@@ -32,6 +32,7 @@ import { useSoftUIController, setMiniSidenav, setOpenConfigurator } from "contex
 
 // Images
 import brand from "assets/images/logo-ct.png";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 // pages
 import Home from "./HomePage/HomePage";
