@@ -7,6 +7,8 @@ import Profile from "layouts/profile";
 import Appointments from "layouts/appointments";
 import Invoices from "layouts/invoices";
 import Users from "layouts/users";
+import SignIn from "layouts/authentication/sign-in";
+import SignUp from "layouts/authentication/sign-up";
 
 //   React icons
 import Shop from "examples/Icons/Shop";
@@ -15,6 +17,8 @@ import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
 import Document from "examples/Icons/Document";
+import Settings from "examples/Icons/Settings";
+import SpaceShip from "examples/Icons/SpaceShip";
 
 const routes = [
   {
@@ -77,6 +81,24 @@ const routes = [
     route: "/profile",
     icon: <CustomerSupport size="12px" />,
     component: <Profile />,
+    noCollapse: true,
+  },
+  {
+    type: "hide",
+    name: "Sign In",
+    key: "sign-in",
+    route: "/sign-in",
+    icon: <Document size="12px" />,
+    component: <SignIn />,
+    noCollapse: true,
+  },
+  {
+    type: "hide",
+    name: "Sign Up",
+    key: "sign-up",
+    route: "/sign-up",
+    icon: <SpaceShip size="12px" />,
+    component: <SignUp />,
     noCollapse: true,
   },
 ];

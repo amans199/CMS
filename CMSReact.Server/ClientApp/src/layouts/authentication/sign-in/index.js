@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "utils/Axios"; // Adjust the path if needed
+import { saveUser, getUserData } from "utils";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -21,19 +24,39 @@ import curved9 from "assets/images/curved-images/curved-6.jpg";
 
 function SignIn() {
   const [rememberMe, setRememberMe] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = getUserData();
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
-  const handleSignIn = () => {
-    // Now you can use axios for making HTTP requests
-    axios
-      .get("/WeatherForecast")
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  const handleSignIn = async () => {
+    if (!email || !password) return;
+
+    const user = {
+      email,
+      password,
+    };
+
+    try {
+      const response = await axios.post("/api/auth/login", user);
+
+      if (response?.data?.id) {
+        const user = response?.data;
+        saveUser(user);
+        toast(`Hi ${user.username}, You have logged in successfully`);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Registration failed:", error);
+    }
   };
 
   return (
@@ -49,7 +72,12 @@ function SignIn() {
               Email
             </SoftTypography>
           </SoftBox>
-          <SoftInput type="email" placeholder="Email" />
+          <SoftInput
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </SoftBox>
         <SoftBox mb={2}>
           <SoftBox mb={1} ml={0.5}>
@@ -57,7 +85,12 @@ function SignIn() {
               Password
             </SoftTypography>
           </SoftBox>
-          <SoftInput type="password" placeholder="Password" />
+          <SoftInput
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </SoftBox>
         <SoftBox display="flex" alignItems="center">
           <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -80,7 +113,7 @@ function SignIn() {
             Don&apos;t have an account?{" "}
             <SoftTypography
               component={Link}
-              to="/authentication/sign-up"
+              to="/sign-up"
               variant="button"
               color="info"
               fontWeight="medium"

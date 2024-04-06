@@ -21,21 +21,40 @@ namespace CMSReact.Server.Controllers;
         public async Task<IActionResult> Register(RegisterDto model)
         {
             var user = new User { Username = model.Username, Email = model.Email, PasswordHash = model.Password };
-            var success = await _authService.RegisterUserAsync(user);
-            if (!success)
-                return BadRequest("Username or email already exists.");
+        
+        var registrationResult = await _authService.RegisterUserAsync(user);
 
-            return Ok("User registered successfully.");
+        if (registrationResult is BadRequestObjectResult)
+        {
+            return registrationResult; // Return BadRequestObjectResult with error message
         }
+        else if (registrationResult is OkObjectResult)
+        {
+            return registrationResult; // Return OkObjectResult with user object
+        }
+        else
+        {
+            return StatusCode(500, "Internal Server Error"); // Handle unexpected result
+        }
+    }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto model)
         {
-            var user = await _authService.LoginAsync(model.Email, model.Password);
-            if (user == null)
-                return Unauthorized("Invalid username or password.");
+            var loginResult = await _authService.LoginAsync(model.Email, model.Password);
 
-            // Implement JWT token generation and return token to client
-            return Ok("Login successful.");
+
+        if (loginResult is BadRequestObjectResult)
+        {
+            return loginResult; // Return BadRequestObjectResult with error message
         }
+        else if (loginResult is OkObjectResult)
+        {
+            return loginResult; // Return OkObjectResult with user object
+        }
+        else
+        {
+            return StatusCode(500, "Internal Server Error"); // Handle unexpected result
+        }
+    }
     }

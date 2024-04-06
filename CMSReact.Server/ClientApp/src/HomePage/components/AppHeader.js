@@ -94,7 +94,7 @@ function AppHeader(props) {
             <a href="#cta" className="btn">
               Book appointment
             </a>
-            <a href="/authentication/sign-in" className="btn">
+            <a href="/sign-in" className="btn">
               Sign in
             </a>
 

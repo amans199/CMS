@@ -14,4 +14,6 @@ public class User
 
     [Required]
     public string PasswordHash { get; set; }
+
+    public DateTime CreatedAt { get; set; }
 }

@@ -1,5 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "utils/Axios"; // Adjust the path if needed
+import { saveUser, getUserData } from "utils";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // react-router-dom components
 import { Link } from "react-router-dom";
@@ -27,22 +30,36 @@ function SignUp() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = getUserData();
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, []);
 
   const handleSetAgreement = () => setAgreement(!agreement);
 
   const handleSignUp = async () => {
-    try {
-      const response = await axios.post("/api/auth/register", {
-        username,
-        email,
-        password,
-      });
-      console.log("🚀 ~ handleSignUp ~ response :", response);
+    if (!username || !email || !password) return;
 
-      // Redirect to login page after successful registration
-      history.push("/authentication/sign-in");
+    const user = {
+      username,
+      email,
+      password,
+    };
+
+    try {
+      const response = await axios.post("/api/auth/register", user);
+
+      if (response?.data?.id) {
+        const user = response?.data;
+        saveUser(user);
+        toast(`Hi ${user.username}, You have signed up successfully`);
+        navigate("/dashboard");
+      }
     } catch (error) {
-      // Handle error
       console.error("Registration failed:", error);
     }
   };
@@ -118,7 +135,7 @@ function SignUp() {
                 Already have an account?&nbsp;
                 <SoftTypography
                   component={Link}
-                  to="/authentication/sign-in"
+                  to="/sign-in"
                   variant="button"
                   color="dark"
                   fontWeight="bold"
