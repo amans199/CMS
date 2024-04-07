@@ -8,7 +8,7 @@ function AppFooter(props) {
           <div className="container">
             <div className="footer-brand">
               <a href="#" className="logo">
-                Dentelo.
+                CMS.
               </a>
 
               <p className="footer-text">

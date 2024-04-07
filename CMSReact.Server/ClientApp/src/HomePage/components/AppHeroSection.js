@@ -1,9 +1,20 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 
 import heroBanner from "assets/images/hero-banner.png";
 import HeroBG from "assets/images/hero-bg.png";
+import { getUserData } from "utils";
 
 function AppHeroSection(props) {
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    const user = getUserData();
+
+    if (user) {
+      setUserData(user);
+    }
+  }, []);
+
   return (
     <section
       className="section hero"
@@ -13,7 +24,14 @@ function AppHeroSection(props) {
     >
       <div className="container">
         <div className="hero-content">
-          <p className="section-subtitle">Welcome To Dentelo</p>
+          <p className="section-subtitle">
+            {userData?.username && (
+              <p className="d-flex gap-2">
+                <span>Hi</span> <span className="text-dark">{`${userData.username},`}</span>
+              </p>
+            )}
+            Welcome To CMS
+          </p>
 
           <h1 className="h1 hero-title">We Are Best Dental Service</h1>
 

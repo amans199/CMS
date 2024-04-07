@@ -209,7 +209,9 @@ html {
   }
 
   .btn {
-    background-image: linear-gradient(var(--deg, 90deg), var(--carolina-blue) 0%, var(--royal-blue-light) 100%);
+    &:not(.btn-danger) {
+      background-image: linear-gradient(var(--deg, 90deg), var(--carolina-blue) 0%, var(--royal-blue-light) 100%);
+    }
     color: var(--white);
     font-size: var(--fs-7);
     text-transform: uppercase;

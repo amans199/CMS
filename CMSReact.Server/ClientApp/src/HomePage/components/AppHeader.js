@@ -1,6 +1,24 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
+import { getUserData, removeCurrentUser } from "utils";
+import { useNavigate } from "react-router-dom";
 
 function AppHeader(props) {
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    const user = getUserData();
+
+    if (user) {
+      setUserData(user);
+    }
+  }, []);
+
+  const handleLogOut = () => {
+    removeCurrentUser();
+    navigate("/sign-in");
+  };
+
   return (
     <>
       <header className="header">
@@ -54,7 +72,7 @@ function AppHeader(props) {
         <div className="header-bottom" data-header>
           <div className="container">
             <a href="#" className="logo">
-              Dentelo.
+              CMS
             </a>
 
             <nav className="navbar container" data-navbar>
@@ -92,11 +110,22 @@ function AppHeader(props) {
             </nav>
 
             <a href="#cta" className="btn">
-              Book appointment
+              Book
             </a>
-            <a href="/sign-in" className="btn">
-              Sign in
-            </a>
+            {userData?.username ? (
+              <>
+                <a href="/dashboard" className="btn">
+                  Dashboard
+                </a>
+                <a href="#" className="btn btn-danger bg-danger" onClick={handleLogOut}>
+                  Logout
+                </a>
+              </>
+            ) : (
+              <a href="/sign-in" className="btn">
+                Sign in
+              </a>
+            )}
 
             <button className="nav-toggle-btn" aria-label="Toggle menu" data-nav-toggler>
               <ion-icon name="menu-sharp" aria-hidden="true" className="menu-icon"></ion-icon>
