@@ -5,7 +5,7 @@ export const saveUser = (userData) => {
 };
 
 // BELOW will be temporary to not waste time on creating the AUTH module in the backend
-export const removeUser = () => {
+export const removeCurrentUser = () => {
   localStorage.removeItem("user");
 };
 
@@ -19,4 +19,12 @@ export const getUserData = () => {
 export const isLoggedIn = () => {
   const user = localStorage.getItem("user");
   return !!user;
+};
+
+export const getColorOfUser = (type) => {
+  return {
+    Doctor: "primary",
+    Patient: "blue",
+    Admin: "dark",
+  }[type];
 };

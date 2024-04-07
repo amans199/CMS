@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { getUserData } from "utils";
 // react-router components
-import { useLocation, Link } from "react-router-dom";
-
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { removeCurrentUser } from "utils/index";
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
 
@@ -50,6 +50,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const user = getUserData();
@@ -128,6 +129,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
     </Menu>
   );
 
+  const handleLogOut = () => {
+    removeCurrentUser();
+    navigate("/sign-in");
+  };
+
   return (
     <AppBar
       position={absolute ? "absolute" : navbarType}
@@ -140,12 +146,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </SoftBox>
         {isMini ? null : (
           <SoftBox sx={(theme) => navbarRow(theme, { isMini })}>
-            {/* <SoftBox pr={1}>
-              <SoftInput
-                placeholder="Type here..."
-                icon={{ component: "search", direction: "left" }}
-              />
-            </SoftBox> */}
             <SoftBox color={light ? "white" : "inherit"}>
               <Link to="/profile">
                 <IconButton sx={navbarIconButton} size="small">
@@ -165,6 +165,22 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   </SoftTypography>
                 </IconButton>
               </Link>
+              <IconButton sx={navbarIconButton} size="small" onClick={handleLogOut}>
+                <Icon
+                  sx={({ palette: { dark, white } }) => ({
+                    color: light ? white.main : dark.main,
+                  })}
+                >
+                  logout
+                </Icon>
+                <SoftTypography
+                  variant="button"
+                  fontWeight="medium"
+                  color={light ? "white" : "dark"}
+                >
+                  Logout
+                </SoftTypography>
+              </IconButton>
               <IconButton
                 size="small"
                 color="inherit"
@@ -175,25 +191,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                   {miniSidenav ? "menu_open" : "menu"}
                 </Icon>
               </IconButton>
-              {/* <IconButton
-                size="small"
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
-              >
-                <Icon>settings</Icon>
-              </IconButton> */}
-              {/* <IconButton
-                size="small"
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-              >
-                <Icon className={light ? "text-white" : "text-dark"}>notifications</Icon>
-              </IconButton> */}
+
               {renderMenu()}
             </SoftBox>
           </SoftBox>

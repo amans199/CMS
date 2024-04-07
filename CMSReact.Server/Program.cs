@@ -23,6 +23,7 @@ namespace CMSReact.Server
             builder.Services.AddSwaggerGen();
 
             builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<UsersService>();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 

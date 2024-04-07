@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -35,7 +20,7 @@ import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 import PlaceholderCard from "examples/Cards/PlaceholderCard";
 
 // Overview page components
-import Header from "layouts/profile/components/Header";
+import Header from "./components/Header";
 import PlatformSettings from "layouts/profile/components/PlatformSettings";
 
 // Data
@@ -49,11 +34,22 @@ import team1 from "assets/images/team-1.jpg";
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
+import { useEffect, useState } from "react";
+import { getUserData } from "utils";
 
 function Overview() {
+  const [userData, setUserData] = useState();
+
+  useEffect(() => {
+    const user = getUserData();
+    setUserData(user);
+  }, []);
+
+  if (!userData) return;
+
   return (
     <DashboardLayout>
-      <Header />
+      <Header user={userData} />
       <SoftBox mt={5} mb={3}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} xl={4}>

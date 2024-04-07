@@ -29,6 +29,9 @@ public class AuthService
         // Hash the password
         user.PasswordHash = HashPassword(user.PasswordHash);
 
+        // Set CreatedAt to current date and time
+        user.CreatedAt = DateTime.UtcNow;
+
         _dbContext.Users.Add(user);
         await _dbContext.SaveChangesAsync();
 
