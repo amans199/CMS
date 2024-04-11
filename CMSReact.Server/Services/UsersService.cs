@@ -1,5 +1,6 @@
 ﻿using CMSReact.Server.Context;
 using CMSReact.Server.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,70 @@ namespace CMSReact.Server.Services
             return user;
         }
 
+        public async Task<User> ApproveUserByIdAsync(int id)
+        {
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with ID {id} not found");
+            }
+
+            user.Status = "Approved";
+
+            _dbContext.Entry(user).State= EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
+
+            return user;
+        }
+
+
+        public async Task<User> RejectUserByIdAsync(int id)
+        {
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with ID {id} not found");
+            }
+
+            user.Status = "Rejected";
+
+            _dbContext.Entry(user).State = EntityState.Modified;
+
+            await _dbContext.SaveChangesAsync();
+
+            return user;
+        }
+
+
+        public async Task<IActionResult> UpdateUserAsync(User user)
+        {
+            var userExists = await _dbContext.Users.FindAsync(user.Id);
+            if (userExists == null)
+            {
+                throw new KeyNotFoundException($"User with ID {user.Id} not found");
+            }
+
+            _dbContext.Users.Update(user); // Update method might be preferred here
+
+            //_dbContext.Entry(user).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            return new OkObjectResult(user);
+        }
+
+        public async Task DeleteUserAsync(int id)
+        {
+            var user = await _dbContext.Users.FindAsync(id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"User with ID {id} not found");
+            }
+
+            _dbContext.Users.Remove(user);
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<User> GetUserByUsernameAsync(string username)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
@@ -56,8 +121,8 @@ namespace CMSReact.Server.Services
                 throw new InvalidOperationException("Username or email already exists");
             }
 
-            // Hash the password (implement your password hashing logic here)
             newUser.PasswordHash = HashPassword(newUser.PasswordHash);
+            newUser.CreatedAt = DateTime.UtcNow;
 
             _dbContext.Users.Add(newUser);
             await _dbContext.SaveChangesAsync();

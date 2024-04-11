@@ -31,6 +31,67 @@ namespace CMSReact.Server.Controllers
             }
         }
 
+        [HttpPost("approve/{id}")]
+        public async Task<IActionResult> ApproveUserById(int id)
+        {
+            var user = await _usersService.ApproveUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return new OkObjectResult(user);
+        }
+
+        [HttpPost("reject/{id}")]
+        public async Task<IActionResult> RejectUserById(int id)
+        {
+            var user = await _usersService.RejectUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return new OkObjectResult(user);
+        }
+
+        [HttpPost("delete/{id}")]
+        public async Task<ActionResult> DeleteUserById(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            await _usersService.DeleteUserAsync(id);
+            return Ok("User Deleted Successfully");
+        }
+
+
+        [HttpPost("add")]
+        public async Task<IActionResult> CreateUser(User user)
+        {
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var response = await _usersService.CreateUserAsync(user);
+
+            return new OkObjectResult("User Created Successfully");
+        }
+
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateUserById(User user)
+        {
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var response = await _usersService.UpdateUserAsync(user);
+
+            return response;
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUserById(int id)
         {

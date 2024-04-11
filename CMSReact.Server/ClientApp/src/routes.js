@@ -73,7 +73,7 @@ const routes = [
     component: <Invoices />,
     noCollapse: true,
   },
-  { type: "title", title: "Account Pages", key: "account-pages" },
+  { type: "title", title: "Settings", key: "settings-pages" },
   {
     type: "hide",
     name: "Profile",

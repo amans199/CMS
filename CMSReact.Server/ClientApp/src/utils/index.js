@@ -33,6 +33,12 @@ export const getColorOfStatus = (status) => {
   return {
     Approved: "success",
     Pending: "warning",
-    Rejected: "danger",
+    Rejected: "error",
   }[status];
+};
+
+export const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = date.toLocaleDateString();
+  return formattedDate;
 };

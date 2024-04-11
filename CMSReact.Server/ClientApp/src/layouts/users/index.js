@@ -15,14 +15,30 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
+import Checkbox from "@mui/material/Checkbox";
+import Switch from "@mui/material/Switch";
+
+//   React components
+import SoftInput from "components/SoftInput";
+import SoftButton from "components/SoftButton";
 
 // Images
 import team2 from "assets/images/team-2.jpg";
 import { getColorOfUser } from "utils";
 import { getColorOfStatus } from "utils";
-import SoftButton from "components/SoftButton";
+import { toast } from "react-toastify";
+import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { formatDate } from "utils";
+
 function Users() {
   const [users, setUsers] = useState([]);
+  const [isAddingDialogOpen, setIsAddingDialogOpen] = useState();
+
+  const [isDoctor, setIsDoctor] = useState(true);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
   const columns = [
@@ -46,13 +62,75 @@ function Users() {
       const response = await axios.get("/api/users");
       setUsers(response?.data || []);
     } catch (error) {
-      console.error("Registration failed:", error);
+      console.error("Fetching Users failed:", error);
     }
   };
 
   const getUserType = (isDoctor) => (isDoctor ? `Doctor` : "Patient");
 
   const openProfile = (userId) => navigate(`/user/${userId}`);
+
+  const handleApproving = async (userId) => {
+    try {
+      const response = await axios.post(`/api/users/approve/${userId}`);
+      console.log("🚀 ~ handleApproving ~ response:", response);
+      toast.success(`User (${response?.data?.username}) approved successfully`);
+    } catch (error) {
+      console.error("approval failed:", error);
+    } finally {
+      fetchAllUsers();
+    }
+  };
+
+  const handleRejecting = async (userId) => {
+    try {
+      const response = await axios.post(`/api/users/reject/${userId}`);
+      toast.success(`User (${response?.data?.username}) rejected successfully`);
+    } catch (error) {
+      console.error("Rejection failed:", error);
+    } finally {
+      fetchAllUsers();
+    }
+  };
+
+  const handleDeleting = async (username, userId) => {
+    try {
+      const response = await axios.post(`/api/users/delete/${userId}`);
+      toast.success(`User (${username}) deleted successfully`);
+    } catch (error) {
+      console.error("Deletion failed:", error);
+    } finally {
+      fetchAllUsers();
+    }
+  };
+
+  const handleAdding = async () => {
+    if (!username || !password || !email) return;
+    const user = {
+      username,
+      passwordHash: password,
+      email,
+      isDoctor,
+    };
+    try {
+      const response = await axios.post(`/api/users/add`, user);
+      toast.success(`User (${username}) added successfully`);
+    } catch (error) {
+      console.error("Adding failed:", error);
+    } finally {
+      fetchAllUsers();
+
+      resetNewUser();
+      setIsAddingDialogOpen(false);
+    }
+  };
+
+  const resetNewUser = () => {
+    setEmail();
+    setUsername();
+    setIsDoctor(false);
+    setPassword();
+  };
 
   const rows = users.map((user) => ({
     id: <>{user.id}</>,
@@ -70,7 +148,7 @@ function Users() {
     ),
     "created at": (
       <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-        {user.createdAt}
+        {formatDate(user.createdAt)}
       </SoftTypography>
     ),
     history: <History />,
@@ -88,33 +166,18 @@ function Users() {
         <SoftButton variant="primary" onClick={() => openProfile(user.id)}>
           Open
         </SoftButton>
-        {/* <SoftTypography
-          component="a"
-          href="#"
-          variant="caption"
-          color="secondary"
-          fontWeight="medium"
-        >
-          Approve
-        </SoftTypography>
-        <SoftTypography
-          component="a"
-          href="#"
-          variant="caption"
-          color="secondary"
-          fontWeight="medium"
-        >
-          Reject
-        </SoftTypography>
-        <SoftTypography
-          component="a"
-          href="#"
-          variant="caption"
-          color="secondary"
-          fontWeight="medium"
-        >
+        {user.status !== "Approved" ? (
+          <SoftButton variant="primary" onClick={() => handleApproving(user.id)}>
+            Approve
+          </SoftButton>
+        ) : (
+          <SoftButton variant="primary" onClick={() => handleRejecting(user.id)}>
+            Reject
+          </SoftButton>
+        )}
+        <SoftButton variant="primary" onClick={() => handleDeleting(username, user.id)}>
           Delete
-        </SoftTypography> */}
+        </SoftButton>
       </>
     ),
   }));
@@ -127,6 +190,7 @@ function Users() {
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
               <SoftTypography variant="h6">Users table</SoftTypography>
+              <SoftButton onClick={() => setIsAddingDialogOpen(true)}>Add new user</SoftButton>
             </SoftBox>
             <SoftBox
               sx={{
@@ -143,6 +207,66 @@ function Users() {
           </Card>
         </SoftBox>
       </SoftBox>
+
+      <Dialog open={isAddingDialogOpen}>
+        <DialogContent style={{ width: "400px" }}>
+          <div className="d-flex flex-row align-items-center justify-content-between pb-3 border-bottom">
+            <SoftTypography>Add new user</SoftTypography>
+            <SoftButton onClick={() => setIsAddingDialogOpen(false)}> Close</SoftButton>
+          </div>
+          <SoftBox pt={2} pb={3} px={3}>
+            <SoftBox component="form" role="form" justifyContent="center" alignItems="center">
+              <SoftBox mb={2}>
+                <div className="d-flex flex-row gap-2 align-items-center justify-content-center">
+                  <SoftTypography>Patient</SoftTypography>
+                  <Switch
+                    value={isDoctor}
+                    onChange={(e) => {
+                      setIsDoctor(e.target.checked);
+                    }}
+                  />
+                  <SoftTypography>Doctor</SoftTypography>
+                </div>
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftInput
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftInput
+                  type="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftInput
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </SoftBox>
+
+              <div className="d-flex flex-row align-items-center justify-content-between pb-3 border-bottom">
+                <SoftButton onClick={() => setIsAddingDialogOpen(false)}>Cancel</SoftButton>
+
+                <SoftButton
+                  onClick={handleAdding}
+                  disabled={!username || !password || !email}
+                  color="primary"
+                >
+                  Add
+                </SoftButton>
+              </div>
+            </SoftBox>
+          </SoftBox>
+        </DialogContent>
+      </Dialog>
       <Footer />
     </DashboardLayout>
   );
