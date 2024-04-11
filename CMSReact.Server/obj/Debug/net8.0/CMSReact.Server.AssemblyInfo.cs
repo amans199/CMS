@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CMSReact.Server")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c2dc922457394365959841a737f00e588244db0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+72ac4225368f754d63b40783526dfefdcd70b79d")]
 [assembly: System.Reflection.AssemblyProductAttribute("CMSReact.Server")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CMSReact.Server")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

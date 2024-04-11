@@ -28,3 +28,11 @@ export const getColorOfUser = (type) => {
     Admin: "dark",
   }[type];
 };
+
+export const getColorOfStatus = (status) => {
+  return {
+    Approved: "success",
+    Pending: "warning",
+    Rejected: "danger",
+  }[status];
+};

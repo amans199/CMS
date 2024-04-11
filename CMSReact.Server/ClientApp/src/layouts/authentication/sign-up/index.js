@@ -32,12 +32,12 @@ function SignUp() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [gender, setGender] = useState("");
-  const [type, setType] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [phone, setPhone] = useState("");
-  const [address, setAddress] = useState("");
-  const [fullName, setFullName] = useState("");
+  // const [gender, setGender] = useState("");
+  // const [type, setType] = useState("");
+  // const [dateOfBirth, setDateOfBirth] = useState("");
+  // const [phone, setPhone] = useState("");
+  // const [address, setAddress] = useState("");
+  // const [fullName, setFullName] = useState("");
 
   const navigate = useNavigate();
 
@@ -58,12 +58,6 @@ function SignUp() {
       email,
       password,
       isDoctor,
-      // gender,
-      // type,
-      // dateOfBirth,
-      // phone,
-      // address,
-      // fullName,
     };
 
     try {
@@ -133,7 +127,7 @@ function SignUp() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </SoftBox>
-            <SoftBox mb={2}>
+            {/* <SoftBox mb={2}>
               <select label="Gender" value={gender} onChange={(e) => setGender(e.target.value)}>
                 <option>male</option>
                 <option>female</option>
@@ -145,9 +139,9 @@ function SignUp() {
                 <option>Patient</option>
                 <option>Doctor</option>
               </select>
-            </SoftBox>
+            </SoftBox> */}
 
-            <SoftBox mb={2}>
+            {/* <SoftBox mb={2}>
               <SoftInput
                 type="text"
                 placeholder="Phone"
@@ -180,7 +174,7 @@ function SignUp() {
                 value={dateOfBirth}
                 onChange={(e) => setDateOfBirth(e.target.value)}
               />
-            </SoftBox>
+            </SoftBox> */}
 
             {/* <SoftBox display="flex" alignItems="center">
               <Checkbox checked={agreement} onChange={handleSetAgreement} />

@@ -27,6 +27,7 @@ public class User
 
     public bool IsAdmin { get; set; } = false;  // Default user is not admin
     public bool IsDoctor { get; set; } = false;  // Default user is not doctor
+    public string Status { get; set; } = "Pending";   // Pending - Rejected - Approved
 
     public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 

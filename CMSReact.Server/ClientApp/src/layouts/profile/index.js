@@ -1,3 +1,8 @@
+import { useEffect, useState } from "react";
+import { getUserData } from "utils";
+import axios from "utils/Axios";
+import { useLocation, Link, useNavigate, useParams } from "react-router-dom";
+
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -15,7 +20,6 @@ import SoftTypography from "components/SoftTypography";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import Footer from "examples/Footer";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
-import ProfilesList from "examples/Lists/ProfilesList";
 import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 import PlaceholderCard from "examples/Cards/PlaceholderCard";
 
@@ -30,21 +34,29 @@ import team1 from "assets/images/team-1.jpg";
 import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
-import { useEffect, useState } from "react";
-import { getUserData } from "utils";
-import axios from "utils/Axios";
 function Overview() {
   const [userAppointments, setUserAppointments] = useState([]);
   const [userData, setUserData] = useState();
+  let { userId } = useParams();
 
   useEffect(() => {
     const user = getUserData();
-    setUserData(user);
+    // setUserData(user);
+    fetchUserData(userId ? userId : user.id);
   }, []);
+
+  const fetchUserData = async (userId) => {
+    try {
+      const response = await axios.get(`/api/users/${userId}`);
+      setUserData(response.data);
+    } catch (error) {
+      console.error("Failed to fetch user appointments:", error);
+    }
+  };
 
   const fetchUserAppointments = async () => {
     try {
-      const response = await axios.get(`/api/appointments/user/${userData.username}`);
+      const response = await axios.get(`/api/appointments/user/${userId ? userId : userData.id}`);
       setUserAppointments(response.data);
     } catch (error) {
       console.error("Failed to fetch user appointments:", error);
@@ -68,6 +80,8 @@ function Overview() {
           </Grid> */}
 
           <Grid item xs={12} md={6} xl={4}>
+            {/* /** address appointments createdAt dateOfBirth email fullName gender id isAdmin */}
+            {/* isApproved isDoctor passwordHash phone specialityId username */}
             <ProfileInfoCard
               title="profile information"
               description="Hi"
@@ -117,7 +131,7 @@ function Overview() {
           </SoftBox>
           <SoftBox p={2}>
             <Grid container spacing={3}>
-              {userAppointments.map((appointment) => (
+              {/* {userAppointments.map((appointment) => (
                 <Grid key={appointment.id} item xs={12} md={6} xl={3}>
                   <DefaultProjectCard
                     // image={team3}
@@ -137,7 +151,7 @@ function Overview() {
                     // ]}
                   />
                 </Grid>
-              ))}
+              ))} */}
 
               <Grid item xs={12} md={6} xl={3}>
                 <PlaceholderCard title={{ variant: "h5", text: "Add Appointment" }} outlined />
