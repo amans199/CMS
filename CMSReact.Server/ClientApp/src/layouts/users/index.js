@@ -190,7 +190,9 @@ function Users() {
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
               <SoftTypography variant="h6">Users table</SoftTypography>
-              <SoftButton onClick={() => setIsAddingDialogOpen(true)}>Add new user</SoftButton>
+              <SoftButton onClick={() => setIsAddingDialogOpen(true)} color="primary">
+                Add new user
+              </SoftButton>
             </SoftBox>
             <SoftBox
               sx={{
@@ -215,7 +217,7 @@ function Users() {
             <SoftButton onClick={() => setIsAddingDialogOpen(false)}> Close</SoftButton>
           </div>
           <SoftBox pt={2} pb={3} px={3}>
-            <SoftBox component="form" role="form" justifyContent="center" alignItems="center">
+            <SoftBox component="div" justifyContent="center" alignItems="center">
               <SoftBox mb={2}>
                 <div className="d-flex flex-row gap-2 align-items-center justify-content-center">
                   <SoftTypography>Patient</SoftTypography>
@@ -252,7 +254,7 @@ function Users() {
                 />
               </SoftBox>
 
-              <div className="d-flex flex-row align-items-center justify-content-between pb-3 border-bottom">
+              <div className="d-flex flex-row align-items-center justify-content-between pt-3 border-top">
                 <SoftButton onClick={() => setIsAddingDialogOpen(false)}>Cancel</SoftButton>
 
                 <SoftButton

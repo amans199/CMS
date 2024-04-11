@@ -7,6 +7,7 @@ import Profile from "layouts/profile";
 import Appointments from "layouts/appointments";
 import Invoices from "layouts/invoices";
 import Users from "layouts/users";
+import Specialties from "layouts/specialties";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
@@ -74,6 +75,15 @@ const routes = [
     noCollapse: true,
   },
   { type: "title", title: "Settings", key: "settings-pages" },
+  {
+    type: "collapse",
+    name: "Specialties",
+    key: "specialties",
+    route: "/specialties",
+    icon: <Document size="12px" />,
+    component: <Specialties />,
+    noCollapse: true,
+  },
   {
     type: "hide",
     name: "Profile",

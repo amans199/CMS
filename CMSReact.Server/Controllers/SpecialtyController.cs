@@ -1,5 +1,4 @@
-﻿// SpecialtyController.cs
-using CMSReact.Server.Models;
+﻿using CMSReact.Server.Models;
 using CMSReact.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
