@@ -20,8 +20,8 @@ function AppCtaSection(props) {
   // const [phone, setPhone] = useState("");
   // const [email, setEmail] = useState("");
   // const [address, setAddress] = useState("");
-  const [appointmentDay, setAppointmentDay] = useState("");
-  const [appointmentTime, setAppointmentTime] = useState("");
+  const [appointmentDay, setAppointmentDay] = useState("2024-04-18");
+  const [appointmentTime, setAppointmentTime] = useState("17:44");
   const [comment, setComment] = useState("");
 
   const [isBooked, setIsBooked] = useState(false);
@@ -41,6 +41,15 @@ function AppCtaSection(props) {
 
     try {
       const appointmentData = {
+        UserId: userData.id,
+        user: {
+          ...userData,
+          Type: "Patient",
+          Gender: "male",
+          Address: "lorem",
+          FullName: "whatever",
+          PasswordHash: "-",
+        },
         userName: userData.username,
         time: appointmentTime,
         date: appointmentDay,

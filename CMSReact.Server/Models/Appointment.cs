@@ -7,9 +7,6 @@ namespace CMSReact.Server.Models
         public int Id { get; set; }
 
         [Required]
-        public string userName { get; set; }
-
-        [Required]
         public string Date { get; set; }
 
         [Required]
@@ -18,7 +15,16 @@ namespace CMSReact.Server.Models
         [Required]
         public DateTime CreatedAt { get; set; }
 
+        [Required]
+        public string Reason { get; set; } = string.Empty;
+
         public string Comment { get; set; } = string.Empty;
 
+        [Required]
+        public int DoctorId {  get; set; }
+
+
+        public int UserId { get; set; }
+        //public User User { get; set; }
     }
 }

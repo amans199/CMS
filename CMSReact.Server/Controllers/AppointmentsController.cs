@@ -1,6 +1,8 @@
-﻿using CMSReact.Server.Models;
+﻿using CMSReact.Server.Context;
+using CMSReact.Server.Models;
 using CMSReact.Server.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -66,5 +68,30 @@ namespace CMSReact.Server.Controllers
             await _appointmentService.DeleteAppointmentAsync(id);
             return NoContent();
         }
+
+        [HttpGet("user/{username}")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByUsername(string username)
+        {
+            var appointments = await _appointmentService.GetAppointmentsByUsernameAsync(username);
+            return Ok(appointments);
+        }
+
+        // Consider adding endpoint to retrieve appointments for a specific doctor (if applicable)
+        //[HttpGet("doctor/{doctorId}")]
+        //public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByDoctorId(int doctorId)
+        //{
+        //var appointments = await _dbContext.Appointments  // Assuming direct access to DbContext in controller (not recommended)
+        //    .Include(a => a.Patient)  // Eager loading of Patient navigation property
+        //    .Include(a => a.Doctor)  // Eager loading of Doctor navigation property
+        //    .Where(a => a.DoctorId == doctorId)
+        //    .ToListAsync();
+
+        //if (!appointments.Any())
+        //{
+        //    return NotFound("No appointments found for this doctor.");
+        //}
+
+        //return Ok(appointments);
+        //}
     }
 }

@@ -13,24 +13,22 @@ public class User
     [EmailAddress]
     public string Email { get; set; }
 
-    [Required]
     public string PasswordHash { get; set; }
 
-    [Required]
-    public string Type { get; set; }
+    public string FullName { get; set; } = string.Empty;
 
-    [Required]
-    public string FullName { get; set; }
+    public string Gender { get; set; } = string.Empty;
 
-    [Required]
-    public string Gender { get; set; }
-
-    [Required]
     public string Phone{ get; set; } = string.Empty;
 
-    [Required]
-    public string Address { get; set; }
+    public string Address { get; set; } = string.Empty;
 
-    [Required]
-    public DateOnly DateOfBirth { get; set; }
+    public string DateOfBirth { get; set; } = string.Empty;
+
+    public bool IsAdmin { get; set; } = false;  // Default user is not admin
+    public bool IsDoctor { get; set; } = false;  // Default user is not doctor
+
+    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+    public int SpecialityId { get; set; }
 }

@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 // @mui material components
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
+import Switch from "@mui/material/Switch";
 
 //   React components
 import SoftBox from "components/SoftBox";
@@ -24,12 +25,20 @@ import Separator from "layouts/authentication/components/Separator";
 
 // Images
 import curved6 from "assets/images/curved-images/curved14.jpg";
+import DatePicker from "react-flatpickr";
 
 function SignUp() {
-  const [agreement, setAgreement] = useState(true);
+  const [isDoctor, setIsDoctor] = useState(true);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("");
+  const [type, setType] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [fullName, setFullName] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,6 +57,13 @@ function SignUp() {
       username,
       email,
       password,
+      isDoctor,
+      // gender,
+      // type,
+      // dateOfBirth,
+      // phone,
+      // address,
+      // fullName,
     };
 
     try {
@@ -83,6 +99,18 @@ function SignUp() {
         <SoftBox pt={2} pb={3} px={3}>
           <SoftBox component="form" role="form">
             <SoftBox mb={2}>
+              <div className="d-flex flex-row gap-2 align-items-center justify-content-center">
+                <SoftTypography>Patient</SoftTypography>
+                <Switch
+                  value={isDoctor}
+                  onChange={(e) => {
+                    setIsDoctor(e.target.checked);
+                  }}
+                />
+                <SoftTypography>Doctor</SoftTypography>
+              </div>
+            </SoftBox>
+            <SoftBox mb={2}>
               <SoftInput
                 placeholder="Username"
                 value={username}
@@ -105,7 +133,56 @@ function SignUp() {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </SoftBox>
-            <SoftBox display="flex" alignItems="center">
+            <SoftBox mb={2}>
+              <select label="Gender" value={gender} onChange={(e) => setGender(e.target.value)}>
+                <option>male</option>
+                <option>female</option>
+              </select>
+            </SoftBox>
+            <SoftBox mb={2}>
+              <select label="Type" value={type} onChange={(e) => setType(e.target.value)}>
+                <option>Admin</option>
+                <option>Patient</option>
+                <option>Doctor</option>
+              </select>
+            </SoftBox>
+
+            <SoftBox mb={2}>
+              <SoftInput
+                type="text"
+                placeholder="Phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </SoftBox>
+
+            <SoftBox mb={2}>
+              <SoftInput
+                type="text"
+                placeholder="FullName"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </SoftBox>
+
+            <SoftBox mb={2}>
+              <SoftInput
+                type="text"
+                placeholder="Address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              />
+            </SoftBox>
+            <SoftBox mb={2}>
+              <input
+                type="date"
+                placeholder="DateOfBirth"
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+              />
+            </SoftBox>
+
+            {/* <SoftBox display="flex" alignItems="center">
               <Checkbox checked={agreement} onChange={handleSetAgreement} />
               <SoftTypography
                 variant="button"
@@ -124,7 +201,7 @@ function SignUp() {
               >
                 Terms and Conditions
               </SoftTypography>
-            </SoftBox>
+            </SoftBox> */}
             <SoftBox mt={4} mb={1}>
               <SoftButton variant="gradient" color="dark" fullWidth onClick={handleSignUp}>
                 sign up

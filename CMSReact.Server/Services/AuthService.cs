@@ -1,87 +1,76 @@
 ﻿using CMSReact.Server.Context;
+using CMSReact.Server.DTOs;
+//using CMSReact.Server.Migrations;
 using CMSReact.Server.Models;
+using Microsoft.AspNetCore.Identity; // Assuming Identity for user management
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
-namespace CMSReact.Server.Services;
-public class AuthService
+namespace CMSReact.Server.Services
 {
-    private readonly AppDbContext _dbContext;
-
-    public AuthService(AppDbContext dbContext)
+    public class AuthService
     {
-        _dbContext = dbContext;
-    }
+        //private readonly UserManager<User> _userManager;
+        private readonly AppDbContext _dbContext;
 
-    public async Task<IActionResult> RegisterUserAsync(User user)
-    {
-        // Check if username or email already exists
-        bool userExists = await _dbContext.Users.AnyAsync(u => u.Username == user.Username || u.Email == user.Email);
-        if (userExists)
+        public AuthService( AppDbContext dbContext)
         {
-            // User with the same username or email already exists
-            return new BadRequestObjectResult("Username or email already exists.");
+            //_userManager = userManager;
+            _dbContext = dbContext;
         }
 
-
-        // Hash the password
-        user.PasswordHash = HashPassword(user.PasswordHash);
-
-        // Set CreatedAt to current date and time
-        user.CreatedAt = DateTime.UtcNow;
-
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync();
-
-        // Remove password hash before returning the user
-        var sanitizedUser = SanitizeUser(user);
-
-        return new OkObjectResult(sanitizedUser);
-    }
-
-    public async Task<IActionResult> LoginAsync(string email, string password)
-    {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
-
-        if (user == null)
-            return new BadRequestObjectResult("User not found.");
-
-        if (!VerifyPassword(password, user.PasswordHash))
+        public async Task<IActionResult> RegisterUserAsync(RegisterDto userDto)
         {
-            return new BadRequestObjectResult("Incorrect Email or Password");
+
+            var doesUserExists = await _dbContext.Users.FirstOrDefaultAsync(u => (u.Email == userDto.Email || u.Username == userDto.Username));
+
+            if (doesUserExists != null)
+            {
+                return new BadRequestObjectResult("User already exists.");
+            }
+
+            var user = new User
+            {
+                Username = userDto.Username,
+                Email = userDto.Email,
+                PasswordHash = userDto.Password,
+                IsDoctor = userDto.IsDoctor
+            };
+
+            
+
+            //var result = await _userManager.CreateAsync(user, userDto.Password);
+            //if (!result.Succeeded)
+            //{
+            //    return new BadRequestObjectResult(result.Errors); 
+            //}
+
+            _dbContext.Users.Add(user);
+            
+            await _dbContext.SaveChangesAsync();
+
+            return new OkObjectResult(user); 
         }
 
-        // Remove password hash before returning the user
-        var sanitizedUser = SanitizeUser(user);
-
-        return new OkObjectResult(sanitizedUser);
-    }
-
-    private User SanitizeUser(User user)
-    {
-        // Clone the user object and remove the password hash
-        return new User
+        public async Task<IActionResult> LoginAsync(string email, string password)
         {
-            Id = user.Id,
-            Username = user.Username,
-            Email = user.Email,
-            CreatedAt= user.CreatedAt,
-        };
-    }
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-    private string HashPassword(string password)
-    {
-        // Implement password hashing logic (e.g., using BCrypt, Argon2, etc.)
-        // Example: return BCrypt.HashPassword(password);
-        return password; // Placeholder for simplicity
-    }
+            if (user == null)
+            {
+                return new BadRequestObjectResult("User not found.");
+            }
 
-    private bool VerifyPassword(string password, string hashedPassword)
-    {
-        // Implement password verification logic
-        // Example: return BCrypt.Verify(password, hashedPassword);
-        return password == hashedPassword; // Placeholder for simplicity
+            //var passwordValid = await _userManager.CheckPasswordAsync(user, password);
+
+            //if (!passwordValid)
+            //{
+            //    return new BadRequestObjectResult("Incorrect Email or Password");
+            //}
+
+            return new OkObjectResult(user); 
+        }
     }
 }

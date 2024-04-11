@@ -1,6 +1,7 @@
 ﻿using CMSReact.Server.Context;
-using CMSReact.Server.Migrations;
 using CMSReact.Server.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,15 +26,42 @@ namespace CMSReact.Server.Services
 
         public async Task<Appointment> GetAppointmentByIdAsync(int id)
         {
-            return await _dbContext.Appointments.FindAsync(id);
+            return await _dbContext.Appointments.FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public async Task<int> CreateAppointmentAsync(Appointment appointment)
+        public async Task<IActionResult> CreateAppointmentAsync(Appointment appointment)
         {
-            appointment.CreatedAt = DateTime.UtcNow;
-            _dbContext.Appointments.Add(appointment);
-            await _dbContext.SaveChangesAsync();
-            return appointment.Id;
+            try
+            {
+                var doctor = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == appointment.DoctorId);
+                var patient = await _dbContext.Users.FirstOrDefaultAsync(d => d.Id == appointment.UserId);
+
+                if (patient == null)
+                {
+                    throw new KeyNotFoundException($"User with ID '{appointment.UserId}' not found.");
+                }
+
+                if (doctor == null)
+                {
+                    throw new KeyNotFoundException($"Doctor with ID '{appointment.DoctorId}' not found.");
+                }
+
+                appointment.UserId = patient.Id;
+                appointment.DoctorId = doctor.Id;
+
+                _dbContext.Appointments.Add(appointment);
+                await _dbContext.SaveChangesAsync();
+
+                return new OkObjectResult(appointment);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                throw new Exception($"Failed to create appointment: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to create appointment.", ex);
+            }
         }
 
         public async Task UpdateAppointmentAsync(Appointment appointment)
@@ -50,6 +78,24 @@ namespace CMSReact.Server.Services
                 _dbContext.Appointments.Remove(appointment);
                 await _dbContext.SaveChangesAsync();
             }
+        }
+
+        public async Task<IActionResult> GetAppointmentsByUsernameAsync(string username)
+        {
+            var patient = await _dbContext.Users.FirstOrDefaultAsync(p => p.Username == username);
+
+            if (patient == null)
+            {
+                return new BadRequestObjectResult("Patient with username not found");
+            }
+
+            var appointments = await _dbContext.Users
+                .Where(p => p.Username == username)
+                .Include(p => p.Appointments)
+                .SelectMany(p => p.Appointments)
+                .ToListAsync();
+
+            return new OkObjectResult(appointments);
         }
     }
 }

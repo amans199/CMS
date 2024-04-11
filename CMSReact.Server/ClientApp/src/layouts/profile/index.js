@@ -21,10 +21,6 @@ import PlaceholderCard from "examples/Cards/PlaceholderCard";
 
 // Overview page components
 import Header from "./components/Header";
-import PlatformSettings from "layouts/profile/components/PlatformSettings";
-
-// Data
-import profilesListData from "layouts/profile/data/profilesListData";
 
 // Images
 import homeDecor1 from "assets/images/home-decor-1.jpg";
@@ -36,14 +32,29 @@ import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 import { useEffect, useState } from "react";
 import { getUserData } from "utils";
-
+import axios from "utils/Axios";
 function Overview() {
+  const [userAppointments, setUserAppointments] = useState([]);
   const [userData, setUserData] = useState();
 
   useEffect(() => {
     const user = getUserData();
     setUserData(user);
   }, []);
+
+  const fetchUserAppointments = async () => {
+    try {
+      const response = await axios.get(`/api/appointments/user/${userData.username}`);
+      setUserAppointments(response.data);
+    } catch (error) {
+      console.error("Failed to fetch user appointments:", error);
+    }
+  };
+  useEffect(() => {
+    if (userData) {
+      fetchUserAppointments();
+    }
+  }, [userData]);
 
   if (!userData) return;
 
@@ -52,32 +63,37 @@ function Overview() {
       <Header user={userData} />
       <SoftBox mt={5} mb={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} xl={4}>
+          {/* <Grid item xs={12} md={6} xl={4}>
             <PlatformSettings />
-          </Grid>
+          </Grid> */}
+
           <Grid item xs={12} md={6} xl={4}>
             <ProfileInfoCard
               title="profile information"
-              description="Hi, I’m Alec Thompson, Decisions: If you can’t decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality)."
+              description="Hi"
               info={{
-                fullName: "Alec M. Thompson",
-                mobile: "(44) 123 1234 123",
-                email: "alecthompson@mail.com",
-                location: "USA",
+                username: userData.username,
+                fullName: userData.fullName,
+                gender: userData.gender,
+                phone: userData.phone,
+                email: userData.email,
+                address: userData.address,
+                type: userData.type,
+                createdAt: userData.createdAt,
               }}
               social={[
                 {
-                  link: "https://www.facebook.com/CreativeTim/",
+                  link: "https://www.facebook.com/",
                   icon: <FacebookIcon />,
                   color: "facebook",
                 },
                 {
-                  link: "https://twitter.com/creativetim",
+                  link: "https://twitter.com/",
                   icon: <TwitterIcon />,
                   color: "twitter",
                 },
                 {
-                  link: "https://www.instagram.com/creativetimofficial/",
+                  link: "https://www.instagram.com/",
                   icon: <InstagramIcon />,
                   color: "instagram",
                 },
@@ -85,9 +101,9 @@ function Overview() {
               action={{ route: "", tooltip: "Edit Profile" }}
             />
           </Grid>
-          <Grid item xs={12} xl={4}>
+          {/* <Grid item xs={12} xl={4}>
             <ProfilesList title="conversations" profiles={profilesListData} />
-          </Grid>
+          </Grid> */}
         </Grid>
       </SoftBox>
       <SoftBox mb={3}>
@@ -95,79 +111,36 @@ function Overview() {
           <SoftBox pt={2} px={2}>
             <SoftBox mb={0.5}>
               <SoftTypography variant="h6" fontWeight="medium">
-                Projects
-              </SoftTypography>
-            </SoftBox>
-            <SoftBox mb={1}>
-              <SoftTypography variant="button" fontWeight="regular" color="text">
-                Architects design houses
+                Appointments
               </SoftTypography>
             </SoftBox>
           </SoftBox>
           <SoftBox p={2}>
             <Grid container spacing={3}>
+              {userAppointments.map((appointment) => (
+                <Grid key={appointment.id} item xs={12} md={6} xl={3}>
+                  <DefaultProjectCard
+                    // image={team3}
+                    label={`Appointment #${appointment.id}`}
+                    title={`${appointment.date} - ${appointment.time}`}
+                    // description={`${appointment.date} - ${appointment.time}`}
+                    description={appointment.comment || "-"}
+                    // action={{
+                    //   type: "internal",
+                    //   route: `/appointment/${appointment.id}`, // Link to appointment details page
+                    //   color: "info",
+                    //   label: "View Appointment",
+                    // }}
+                    // authors={[
+                    //   { image: appointment.authorImage, name: appointment.authorName },
+                    //   // Include additional authors as needed
+                    // ]}
+                  />
+                </Grid>
+              ))}
+
               <Grid item xs={12} md={6} xl={3}>
-                <DefaultProjectCard
-                  image={homeDecor1}
-                  label="project #2"
-                  title="modern"
-                  description="As Uber works through a huge amount of internal management turmoil."
-                  action={{
-                    type: "internal",
-                    route: "/pages/profile/profile-overview",
-                    color: "info",
-                    label: "view project",
-                  }}
-                  authors={[
-                    { image: team1, name: "Elena Morison" },
-                    { image: team2, name: "Ryan Milly" },
-                    { image: team3, name: "Nick Daniel" },
-                    { image: team4, name: "Peterson" },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} xl={3}>
-                <DefaultProjectCard
-                  image={homeDecor2}
-                  label="project #1"
-                  title="scandinavian"
-                  description="Music is something that every person has his or her own specific opinion about."
-                  action={{
-                    type: "internal",
-                    route: "/pages/profile/profile-overview",
-                    color: "info",
-                    label: "view project",
-                  }}
-                  authors={[
-                    { image: team3, name: "Nick Daniel" },
-                    { image: team4, name: "Peterson" },
-                    { image: team1, name: "Elena Morison" },
-                    { image: team2, name: "Ryan Milly" },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} xl={3}>
-                <DefaultProjectCard
-                  image={homeDecor3}
-                  label="project #3"
-                  title="minimalist"
-                  description="Different people have different taste, and various types of music."
-                  action={{
-                    type: "internal",
-                    route: "/pages/profile/profile-overview",
-                    color: "info",
-                    label: "view project",
-                  }}
-                  authors={[
-                    { image: team4, name: "Peterson" },
-                    { image: team3, name: "Nick Daniel" },
-                    { image: team2, name: "Ryan Milly" },
-                    { image: team1, name: "Elena Morison" },
-                  ]}
-                />
-              </Grid>
-              <Grid item xs={12} md={6} xl={3}>
-                <PlaceholderCard title={{ variant: "h5", text: "New project" }} outlined />
+                <PlaceholderCard title={{ variant: "h5", text: "Add Appointment" }} outlined />
               </Grid>
             </Grid>
           </SoftBox>

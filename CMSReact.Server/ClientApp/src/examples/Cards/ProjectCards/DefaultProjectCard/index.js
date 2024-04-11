@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // react-router-dom components
 import { Link } from "react-router-dom";
 
@@ -86,60 +71,70 @@ function DefaultProjectCard({ image, label, title, description, action, authors 
             {label}
           </SoftTypography>
         </SoftBox>
-        <SoftBox mb={1}>
-          {action.type === "internal" ? (
-            <SoftTypography
-              component={Link}
-              to={action.route}
-              variant="h5"
-              textTransform="capitalize"
-            >
-              {title}
-            </SoftTypography>
-          ) : (
-            <SoftTypography
-              component="a"
-              href={action.route}
-              target="_blank"
-              rel="noreferrer"
-              variant="h5"
-              textTransform="capitalize"
-            >
-              {title}
-            </SoftTypography>
-          )}
-        </SoftBox>
+        {action ? (
+          <>
+            <SoftBox mb={1}>
+              {action.type === "internal" ? (
+                <SoftTypography
+                  component={Link}
+                  to={action.route}
+                  variant="h5"
+                  textTransform="capitalize"
+                >
+                  {title}
+                </SoftTypography>
+              ) : (
+                <SoftTypography
+                  component="a"
+                  href={action.route}
+                  target="_blank"
+                  rel="noreferrer"
+                  variant="h5"
+                  textTransform="capitalize"
+                >
+                  {title}
+                </SoftTypography>
+              )}
+            </SoftBox>
+          </>
+        ) : (
+          <></>
+        )}
         <SoftBox mb={3} lineHeight={0}>
           <SoftTypography variant="button" fontWeight="regular" color="text">
             {description}
           </SoftTypography>
         </SoftBox>
-        <SoftBox display="flex" justifyContent="space-between" alignItems="center">
-          {action.type === "internal" ? (
-            <SoftButton
-              component={Link}
-              to={action.route}
-              variant="outlined"
-              size="small"
-              color={action.color}
-            >
-              {action.label}
-            </SoftButton>
-          ) : (
-            <SoftButton
-              component="a"
-              href={action.route}
-              target="_blank"
-              rel="noreferrer"
-              variant="outlined"
-              size="small"
-              color={action.color}
-            >
-              {action.label}
-            </SoftButton>
-          )}
-          <SoftBox display="flex">{renderAuthors}</SoftBox>
-        </SoftBox>
+        {action ? (
+          <SoftBox display="flex" justifyContent="space-between" alignItems="center">
+            {action.type === "internal" ? (
+              <SoftButton
+                component={Link}
+                to={action.route}
+                variant="outlined"
+                size="small"
+                color={action.color}
+              >
+                {action.label}
+              </SoftButton>
+            ) : (
+              <SoftButton
+                component="a"
+                href={action.route}
+                target="_blank"
+                rel="noreferrer"
+                variant="outlined"
+                size="small"
+                color={action.color}
+              >
+                {action.label}
+              </SoftButton>
+            )}
+            <SoftBox display="flex">{renderAuthors}</SoftBox>
+          </SoftBox>
+        ) : (
+          <></>
+        )}
       </SoftBox>
     </Card>
   );

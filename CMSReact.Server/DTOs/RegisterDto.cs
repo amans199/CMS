@@ -1,18 +1,17 @@
-﻿// RegisterDto.cs
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace CMSReact.Server.DTOs;
-    public class RegisterDto
-    {
-        [Required]
-        public string Username { get; set; }
+public class RegisterDto
+{
+    [Required]
+    public string Username { get; set; }
 
-        [Required]
-        [EmailAddress]
-        public string Email { get; set; }
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
 
-        [Required]
-        [MinLength(6)]
-        public string Password { get; set; }
-    }
+    [Required]
+    [MinLength(6)]
+    public string Password { get; set; }
 
+    public bool IsDoctor { get; set; } = false;
+}
