@@ -27,17 +27,19 @@ import team2 from "assets/images/team-2.jpg";
 import { getColorOfUser } from "utils";
 import { getColorOfStatus } from "utils";
 import { toast } from "react-toastify";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, Select } from "@mui/material";
 import { formatDate } from "utils";
 
 function Users() {
   const [users, setUsers] = useState([]);
   const [isAddingDialogOpen, setIsAddingDialogOpen] = useState();
 
-  const [isDoctor, setIsDoctor] = useState(true);
+  const [isDoctor, setIsDoctor] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [specialty, setSpecialty] = useState("");
+  const [AllSpecialties, setAllSpecialties] = useState([]);
 
   const navigate = useNavigate();
 
@@ -55,12 +57,22 @@ function Users() {
 
   useEffect(() => {
     fetchAllUsers();
+    fetchAllSpecialties();
   }, []);
 
   const fetchAllUsers = async () => {
     try {
       const response = await axios.get("/api/users");
       setUsers(response?.data || []);
+    } catch (error) {
+      console.error("Fetching Users failed:", error);
+    }
+  };
+
+  const fetchAllSpecialties = async () => {
+    try {
+      const response = await axios.get("/api/specialties");
+      setAllSpecialties(response?.data || []);
     } catch (error) {
       console.error("Fetching Users failed:", error);
     }
@@ -73,7 +85,6 @@ function Users() {
   const handleApproving = async (userId) => {
     try {
       const response = await axios.post(`/api/users/approve/${userId}`);
-      console.log("🚀 ~ handleApproving ~ response:", response);
       toast.success(`User (${response?.data?.username}) approved successfully`);
     } catch (error) {
       console.error("approval failed:", error);
@@ -111,6 +122,7 @@ function Users() {
       passwordHash: password,
       email,
       isDoctor,
+      ...(isDoctor ? { SpecialityId: specialty } : {}),
     };
     try {
       const response = await axios.post(`/api/users/add`, user);
@@ -125,11 +137,16 @@ function Users() {
     }
   };
 
+  const getSpecialtyName = (id) => {
+    return AllSpecialties.find((s) => s.id === id)?.name;
+  };
+
   const resetNewUser = () => {
     setEmail();
     setUsername();
     setIsDoctor(false);
     setPassword();
+    setSpecialty();
   };
 
   const rows = users.map((user) => ({
@@ -139,7 +156,7 @@ function Users() {
       <SoftBadge
         variant="gradient"
         badgeContent={`${getUserType(user.isDoctor)}${
-          user.isDoctor ? `(${user.specialityId})` : ""
+          user.isDoctor ? `(${getSpecialtyName(user.specialityId)})` : ""
         }`}
         color={getColorOfUser(getUserType(user.isDoctor))}
         size="xs"
@@ -175,7 +192,7 @@ function Users() {
             Reject
           </SoftButton>
         )}
-        <SoftButton variant="primary" onClick={() => handleDeleting(username, user.id)}>
+        <SoftButton variant="primary" onClick={() => handleDeleting(user.username, user.id)}>
           Delete
         </SoftButton>
       </>
@@ -230,6 +247,27 @@ function Users() {
                   <SoftTypography>Doctor</SoftTypography>
                 </div>
               </SoftBox>
+              {isDoctor ? (
+                <SoftBox mb={2}>
+                  <select
+                    className="form-select"
+                    onChange={(e) => {
+                      setSpecialty(e.target.value);
+                    }}
+                  >
+                    <option selected>Select Specialty</option>
+                    {AllSpecialties.map((s) => {
+                      return (
+                        <option key={s.id} value={s.id} selected={specialty == s}>
+                          {s.name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                </SoftBox>
+              ) : (
+                <></>
+              )}
               <SoftBox mb={2}>
                 <SoftInput
                   placeholder="Username"

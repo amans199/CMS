@@ -44,6 +44,11 @@ namespace CMSReact.Server.Services
                 throw new KeyNotFoundException($"User with ID {id} not found");
             }
 
+            if (user.IsAdmin)
+            {
+                throw new BadHttpRequestException($"Not allowed to approve this user");
+            }
+
             user.Status = "Approved";
 
             _dbContext.Entry(user).State= EntityState.Modified;
@@ -61,6 +66,12 @@ namespace CMSReact.Server.Services
             {
                 throw new KeyNotFoundException($"User with ID {id} not found");
             }
+
+            if (user.IsAdmin)
+            {
+                throw new BadHttpRequestException($"Not allowed to reject this user");
+            }
+
 
             user.Status = "Rejected";
 
@@ -96,6 +107,11 @@ namespace CMSReact.Server.Services
                 throw new KeyNotFoundException($"User with ID {id} not found");
             }
 
+            if (user.IsAdmin)
+            {
+                throw new BadHttpRequestException($"Not allowed to delete this user");
+            }
+
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
         }
@@ -119,6 +135,11 @@ namespace CMSReact.Server.Services
             if (userExists)
             {
                 throw new InvalidOperationException("Username or email already exists");
+            }
+
+            if (newUser.IsAdmin)
+            {
+                throw new BadHttpRequestException($"Not allowed to create this kind of user");
             }
 
             newUser.PasswordHash = HashPassword(newUser.PasswordHash);

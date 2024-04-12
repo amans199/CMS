@@ -14,4 +14,6 @@ public class RegisterDto
     public string Password { get; set; }
 
     public bool IsDoctor { get; set; } = false;
+
+    public int? SpecialityId { get; set; }
 }
