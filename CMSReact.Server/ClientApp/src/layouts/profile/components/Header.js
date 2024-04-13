@@ -41,6 +41,8 @@ import breakpoints from "assets/theme/base/breakpoints";
 // Images
 import burceMars from "assets/images/bruce-mars.jpg";
 import curved0 from "assets/images/curved-images/curved0.jpg";
+import SoftBadge from "components/SoftBadge";
+import { getColorOfStatus } from "utils";
 
 function Header({ user }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
@@ -113,10 +115,17 @@ function Header({ user }) {
           <Grid item>
             <SoftBox height="100%" mt={0.5} lineHeight={1}>
               <SoftTypography variant="h5" fontWeight="medium">
-                {user.username}
+                {user.username}{" "}
+                <SoftBadge
+                  variant="gradient"
+                  badgeContent={user.status}
+                  color={getColorOfStatus(user.status)}
+                  size="xs"
+                  container
+                />
               </SoftTypography>
               <SoftTypography variant="button" color="text" fontWeight="medium">
-                {user.type}
+                {user.isDoctor ? "Doctor" : "Patient"}
               </SoftTypography>
             </SoftBox>
           </Grid>

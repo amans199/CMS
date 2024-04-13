@@ -20,6 +20,14 @@ import Cube from "examples/Icons/Cube";
 import Document from "examples/Icons/Document";
 import Settings from "examples/Icons/Settings";
 import SpaceShip from "examples/Icons/SpaceShip";
+import { getUserData } from "utils";
+
+// allowedRoles:
+// ["all"] : All Roles
+// [] : None
+// ["Patient"] : Patient
+// ["Doctor"] : Doctor
+// Admin is allowed in all
 
 const routes = [
   {
@@ -28,6 +36,7 @@ const routes = [
     key: "home",
     route: "/",
     component: <Home />,
+    allowedRoles: ["all"],
   },
   {
     type: "collapse",
@@ -37,6 +46,7 @@ const routes = [
     icon: <Shop size="12px" />,
     component: <Dashboard />,
     noCollapse: true,
+    allowedRoles: ["user"],
   },
   {
     type: "collapse",
@@ -46,6 +56,7 @@ const routes = [
     icon: <Office size="12px" />,
     component: <Appointments />,
     noCollapse: true,
+    allowedRoles: ["approved_user"],
   },
   {
     type: "collapse",
@@ -55,6 +66,7 @@ const routes = [
     icon: <Cube size="12px" />,
     component: <Users />,
     noCollapse: true,
+    allowedRoles: [],
   },
   {
     type: "collapse",
@@ -64,6 +76,7 @@ const routes = [
     icon: <CreditCard size="12px" />,
     component: <Billing />,
     noCollapse: true,
+    allowedRoles: ["approved_user"],
   },
   {
     type: "collapse",
@@ -73,6 +86,7 @@ const routes = [
     icon: <Document size="12px" />,
     component: <Invoices />,
     noCollapse: true,
+    allowedRoles: ["approved_user"],
   },
   { type: "title", title: "Settings", key: "settings-pages" },
   {
@@ -83,6 +97,7 @@ const routes = [
     icon: <Document size="12px" />,
     component: <Specialties />,
     noCollapse: true,
+    allowedRoles: [],
   },
   {
     type: "hide",
@@ -92,15 +107,17 @@ const routes = [
     icon: <CustomerSupport size="12px" />,
     component: <Profile />,
     noCollapse: true,
+    allowedRoles: ["user"],
   },
   {
     type: "hide",
-    name: "Profile",
-    key: "profile",
+    name: "user",
+    key: "user",
     route: "/user/:userId",
     icon: <CustomerSupport size="12px" />,
     component: <Profile />,
     noCollapse: true,
+    allowedRoles: [],
   },
   {
     type: "hide",
@@ -110,6 +127,7 @@ const routes = [
     icon: <Document size="12px" />,
     component: <SignIn />,
     noCollapse: true,
+    allowedRoles: ["all"],
   },
   {
     type: "hide",
@@ -119,7 +137,53 @@ const routes = [
     icon: <SpaceShip size="12px" />,
     component: <SignUp />,
     noCollapse: true,
+    allowedRoles: ["all"],
   },
 ];
 
-export default routes;
+const checkIsAuthorized = (route) => {
+  if (route?.allowedRoles?.includes("all")) return true;
+
+  const userData = getUserData();
+  const isSignedIn = userData?.id;
+  // if (!userData) {
+  //   if (
+  //     window.location.pathname !== "/sign-up" ||
+  //     window.location.pathname !== "/sign-in" ||
+  //     window.location.pathname !== "/"
+  //   )
+  //     window.location.replace("/sign-in");
+
+  //   return false;
+  // }
+
+  if (!isSignedIn) return false;
+
+  if (route?.allowedRoles?.includes("user")) return true;
+
+  const isDoctor = userData.isDoctor;
+  const isAdmin = userData.isAdmin;
+  const isApproved = userData.status === "Approved";
+
+  if (isAdmin) return true;
+
+  console.log("🚀 ~ checkIsAuthorized ~ isApproved:", isApproved);
+  if (!isApproved) {
+    // if (window.location.pathname !== "/profile") window.location.replace("/profile");
+    return route.key === "profile";
+  }
+
+  if (route?.allowedRoles?.includes("approved_user")) return true;
+
+  // if()
+  // if (userData.status === 'pending') return 'pending'; // Pending user can only see profile
+  // return userData.isDoctor ? 'doctor' : 'patient'; // Approved with role flag
+
+  return false;
+};
+
+const authorizedRoutes = routes.filter(checkIsAuthorized);
+
+console.log({ routes, authorizedRoutes: authorizedRoutes });
+
+export default authorizedRoutes;

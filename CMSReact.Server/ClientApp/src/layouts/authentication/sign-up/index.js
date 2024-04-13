@@ -28,10 +28,14 @@ import curved6 from "assets/images/curved-images/curved14.jpg";
 import DatePicker from "react-flatpickr";
 
 function SignUp() {
-  const [isDoctor, setIsDoctor] = useState(true);
+  const [isDoctor, setIsDoctor] = useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [specialty, setSpecialty] = useState("");
+
+  const [AllSpecialties, setAllSpecialties] = useState([]);
+
   // const [gender, setGender] = useState("");
   // const [type, setType] = useState("");
   // const [dateOfBirth, setDateOfBirth] = useState("");
@@ -45,10 +49,21 @@ function SignUp() {
     const user = getUserData();
     if (user) {
       navigate("/dashboard");
+    } else {
+      fetchAllSpecialties();
     }
   }, []);
 
-  const handleSetAgreement = () => setAgreement(!agreement);
+  const fetchAllSpecialties = async () => {
+    try {
+      const response = await axios.get("/api/specialties");
+      setAllSpecialties(response?.data || []);
+    } catch (error) {
+      console.error("Fetching Users failed:", error);
+    }
+  };
+
+  // const handleSetAgreement = () => setAgreement(!agreement);
 
   const handleSignUp = async () => {
     if (!username || !email || !password) return;
@@ -58,6 +73,7 @@ function SignUp() {
       email,
       password,
       isDoctor,
+      ...(isDoctor ? { SpecialityId: specialty } : {}),
     };
 
     try {
@@ -67,7 +83,7 @@ function SignUp() {
         const user = response?.data;
         saveUser(user);
         toast(`Hi ${user.username}, You have signed up successfully`);
-        navigate("/dashboard");
+        navigate("/profile");
       }
     } catch (error) {
       console.error("Registration failed:", error);
@@ -104,6 +120,27 @@ function SignUp() {
                 <SoftTypography>Doctor</SoftTypography>
               </div>
             </SoftBox>
+            {isDoctor ? (
+              <SoftBox mb={2}>
+                <select
+                  className="form-select"
+                  onChange={(e) => {
+                    setSpecialty(e.target.value);
+                  }}
+                >
+                  <option selected>Select Specialty</option>
+                  {AllSpecialties.map((s) => {
+                    return (
+                      <option key={s.id} value={s.id} selected={specialty == s}>
+                        {s.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </SoftBox>
+            ) : (
+              <></>
+            )}
             <SoftBox mb={2}>
               <SoftInput
                 placeholder="Username"
@@ -177,11 +214,11 @@ function SignUp() {
             </SoftBox> */}
 
             {/* <SoftBox display="flex" alignItems="center">
-              <Checkbox checked={agreement} onChange={handleSetAgreement} />
+              // <Checkbox checked={agreement} onChange={handleSetAgreement} />
               <SoftTypography
                 variant="button"
                 fontWeight="regular"
-                onClick={handleSetAgreement}
+                // onClick={handleSetAgreement}
                 sx={{ cursor: "poiner", userSelect: "none" }}
               >
                 &nbsp;&nbsp;I agree the&nbsp;

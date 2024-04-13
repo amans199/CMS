@@ -120,18 +120,19 @@ function Overview() {
           </Grid> */}
         </Grid>
       </SoftBox>
-      <SoftBox mb={3}>
-        <Card>
-          <SoftBox pt={2} px={2}>
-            <SoftBox mb={0.5}>
-              <SoftTypography variant="h6" fontWeight="medium">
-                Appointments
-              </SoftTypography>
+      {userData.isApproved ? (
+        <SoftBox mb={3}>
+          <Card>
+            <SoftBox pt={2} px={2}>
+              <SoftBox mb={0.5}>
+                <SoftTypography variant="h6" fontWeight="medium">
+                  Appointments
+                </SoftTypography>
+              </SoftBox>
             </SoftBox>
-          </SoftBox>
-          <SoftBox p={2}>
-            <Grid container spacing={3}>
-              {/* {userAppointments.map((appointment) => (
+            <SoftBox p={2}>
+              <Grid container spacing={3}>
+                {/* {userAppointments.map((appointment) => (
                 <Grid key={appointment.id} item xs={12} md={6} xl={3}>
                   <DefaultProjectCard
                     // image={team3}
@@ -153,14 +154,16 @@ function Overview() {
                 </Grid>
               ))} */}
 
-              <Grid item xs={12} md={6} xl={3}>
-                <PlaceholderCard title={{ variant: "h5", text: "Add Appointment" }} outlined />
+                <Grid item xs={12} md={6} xl={3}>
+                  <PlaceholderCard title={{ variant: "h5", text: "Add Appointment" }} outlined />
+                </Grid>
               </Grid>
-            </Grid>
-          </SoftBox>
-        </Card>
-      </SoftBox>
-
+            </SoftBox>
+          </Card>
+        </SoftBox>
+      ) : (
+        <></>
+      )}
       <Footer />
     </DashboardLayout>
   );

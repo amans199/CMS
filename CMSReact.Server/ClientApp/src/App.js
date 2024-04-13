@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // react-router components
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import { ThemeProvider } from "@mui/material/styles";
@@ -38,6 +38,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 // pages
 import Home from "./HomePage/HomePage";
+import { getUserData } from "utils";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -45,6 +46,18 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userData = getUserData();
+    if (userData.id) {
+      if (userData.status !== "Approved") {
+        navigate("/profile");
+      }
+    } else {
+      navigate("/sign-in");
+    }
+  }, []);
 
   // Cache for the rtl
   useMemo(() => {
@@ -86,8 +99,8 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
+  const getRoutes = (allRoutes) => {
+    return allRoutes.map((route) => {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
@@ -98,6 +111,7 @@ export default function App() {
 
       return null;
     });
+  };
 
   const configsButton = (
     <SoftBox

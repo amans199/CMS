@@ -39,6 +39,10 @@ namespace CMSReact.Server.Services
                 IsDoctor = userDto.IsDoctor
             };
 
+            if(userDto.SpecialityId != null)
+            {
+                user.SpecialityId = (int)userDto.SpecialityId;
+            }
             
 
             //var result = await _userManager.CreateAsync(user, userDto.Password);

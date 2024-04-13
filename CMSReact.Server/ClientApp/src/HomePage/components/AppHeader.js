@@ -16,7 +16,8 @@ function AppHeader(props) {
 
   const handleLogOut = () => {
     removeCurrentUser();
-    navigate("/sign-in");
+    // navigate("/sign-in");
+    window.location.replace("/sign-in");
   };
 
   return (
