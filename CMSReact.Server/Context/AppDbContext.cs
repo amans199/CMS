@@ -1,6 +1,7 @@
 ﻿using CMSReact.Server.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace CMSReact.Server.Context
 {
@@ -17,10 +18,8 @@ namespace CMSReact.Server.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Appointment>()
-            //  .HasOne(b => b.User) // One Appointment has One User
-            //  .WithMany(a => a.Appointments) // One User has Many Appointments
-            //  .HasForeignKey(b => b.UserId); // Foreign Key configuration
+
+
         }
     }
 }

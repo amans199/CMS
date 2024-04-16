@@ -1,6 +1,7 @@
 ﻿using CMSReact.Server.Models;
 using CMSReact.Server.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,11 +19,11 @@ namespace CMSReact.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers([FromQuery] string? username = null, bool? isDoctor = null, int? specialtyId = null)
         {
             try
             {
-                var users = await _usersService.GetUsersAsync();
+                var users = await _usersService.GetUsersAsync(username, isDoctor, specialtyId);
                 return Ok(users);
             }
             catch (Exception ex)

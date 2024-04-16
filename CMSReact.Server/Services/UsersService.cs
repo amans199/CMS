@@ -2,6 +2,7 @@
 using CMSReact.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,26 @@ namespace CMSReact.Server.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<User>> GetUsersAsync()
+        public async Task<IEnumerable<User>> GetUsersAsync(string? username = null, bool? isDoctor = null, int? specialtyId= null)
         {
-            var users = await _dbContext.Users.ToListAsync();
-            //return users.Select(SanitizeUser);
-            return users;
+            var query = _dbContext.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(username))
+            {
+                query = query.Where(u => u.Username.ToLower().Contains(username.ToLower()));
+            }
+
+            if (isDoctor.HasValue)
+            {
+                query = query.Where(u => u.IsDoctor == isDoctor);
+            }
+
+            if (specialtyId != null)
+            {
+                query = query.Where(u => u.SpecialityId == specialtyId);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<User> GetUserByIdAsync(int id)

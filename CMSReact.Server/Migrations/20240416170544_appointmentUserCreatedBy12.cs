@@ -5,7 +5,7 @@
 namespace CMSReact.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class addSpecialityToDoctor : Migration
+    public partial class appointmentUserCreatedBy12 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -19,23 +19,67 @@ import Table from "examples/Tables/Table";
 
 // Images
 import team2 from "assets/images/team-2.jpg";
+import SoftButton from "components/SoftButton";
+import Checkbox from "@mui/material/Checkbox";
+import Switch from "@mui/material/Switch";
+
+//   React components
+import SoftInput from "components/SoftInput";
+
+// Images
+import { getColorOfStatus } from "utils";
+import { toast } from "react-toastify";
+import { Dialog, DialogContent, DialogTitle, Select } from "@mui/material";
+import { formatDate } from "utils";
+import { getUserData } from "utils";
 
 function Tables() {
   const [appointments, setAppointments] = useState([]);
+  const [isAddingDialogOpen, setIsAddingDialogOpen] = useState();
+  const [rejectDialogAppointmentId, setRejectDialogAppointmentId] = useState();
+  const [doctors, setDoctors] = useState([]);
+  const [allSpecialties, setAllSpecialties] = useState([]);
+
+  const userData = getUserData();
+
+  useEffect(() => {
+    // fetchDoctors();
+    fetchAll();
+    fetchAllSpecialties();
+  }, []);
+
+  const fetchDoctors = async (specialtyId) => {
+    try {
+      const response = await axios.get(`/api/users?isDoctor=true&specialtyId=${specialtyId}`);
+      if (response.data) {
+        setDoctors(response.data);
+      } else {
+        console.error("Failed to fetch doctors:", await response.text());
+      }
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    }
+  };
+
+  const fetchAllSpecialties = async () => {
+    try {
+      const response = await axios.get("/api/specialties");
+      setAllSpecialties(response?.data || []);
+    } catch (error) {
+      console.error("Fetching Specialties failed:", error);
+    }
+  };
+
   const columns = [
     { name: "id", align: "center" },
     { name: "patient", align: "left" },
-    // { name: "doctor", align: "left" },
+    { name: "doctor", align: "left" },
     { name: "created at", align: "left" },
+    { name: "status", align: "center" },
     { name: "schedule", align: "left" },
     { name: "comment", align: "left" },
-    // { name: "history", align: "center" },
     { name: "action", align: "left" },
   ];
-
-  useEffect(() => {
-    fetchAll();
-  }, []);
 
   const fetchAll = async () => {
     try {
@@ -46,39 +90,94 @@ function Tables() {
     }
   };
 
-  const rows = appointments.map((appointment) => {
-    console.log("🚀 ~ rows ~ appointment:", appointment);
+  const handleApproving = async (appointmentId) => {
+    try {
+      const response = await axios.post(`/api/appointments/approve/${appointmentId}`);
+      toast.success(`Appointment approved successfully`);
+    } catch (error) {
+      console.error("approval failed:", error);
+    } finally {
+      fetchAll();
+    }
+  };
 
-    const { user } = appointment;
-    const { result: userData } = user;
+  const handleDeleting = async (appointmentId) => {
+    try {
+      const response = await axios.post(`/api/appointments/delete/${appointmentId}`);
+      toast.success(`Appointment deleted successfully`);
+    } catch (error) {
+      console.error("Deletion failed:", error);
+    } finally {
+      fetchAll();
+    }
+  };
+
+  const getUserOfType = (users, isDoctor) => {
+    return users?.filter((u) => u.isDoctor === isDoctor)?.[0]?.user || {};
+  };
+
+  const rows = appointments.map((appointment) => {
+    const patient = getUserOfType(appointment.appointmentUsers, false);
+    const doctor = getUserOfType(appointment.appointmentUsers, true);
     return {
       id: <>{appointment.id}</>,
-      patient: <Author image={team2} name={userData.username} email={userData.email} />,
+      patient: (
+        <Author
+          image={patient.profilePicture}
+          name={patient.fullName || patient.username}
+          email={patient.email}
+        />
+      ),
+      doctor: (
+        <Author
+          image={doctor.profilePicture}
+          name={doctor.fullName || doctor.username}
+          email={doctor.email}
+        />
+      ),
       "created at": (
         <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-          {appointment.createdAt}
+          {formatDate(appointment.createdAt)}
         </SoftTypography>
       ),
       schedule: (
         <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-          {appointment.date} -{appointment.time}
+          {formatDate(appointment.date)} -{appointment.time}
         </SoftTypography>
+      ),
+      status: (
+        <SoftBadge
+          variant="gradient"
+          badgeContent={appointment.status}
+          color={getColorOfStatus(appointment.status)}
+          size="xs"
+          container
+        />
       ),
       comment: (
         <SoftTypography variant="caption" color="secondary" fontWeight="medium">
-          {appointment.comment || "-"}
+          {appointment.rejectionReason ? `(${appointment.rejectionReason})  ` : ""}{" "}
+          {appointment.comment ? `${appointment.comment}` : "-"}
         </SoftTypography>
       ),
       action: (
-        <SoftTypography
-          component="a"
-          href="#"
-          variant="caption"
-          color="secondary"
-          fontWeight="medium"
-        >
-          Open
-        </SoftTypography>
+        <>
+          {appointment.status !== "Approved" ? (
+            <SoftButton variant="primary" onClick={() => handleApproving(appointment.id)}>
+              Approve
+            </SoftButton>
+          ) : (
+            <SoftButton
+              variant="primary"
+              onClick={() => setRejectDialogAppointmentId(appointment.id)}
+            >
+              Reject
+            </SoftButton>
+          )}
+          <SoftButton variant="primary" onClick={() => handleDeleting(appointment.id)}>
+            Delete
+          </SoftButton>
+        </>
       ),
     };
   });
@@ -90,7 +189,10 @@ function Tables() {
         <SoftBox mb={3}>
           <Card>
             <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">Users table</SoftTypography>
+              <SoftTypography variant="h6">Appointments table</SoftTypography>
+              <SoftButton onClick={() => setIsAddingDialogOpen(true)} color="primary">
+                Add new appointment
+              </SoftButton>
             </SoftBox>
             <SoftBox
               sx={{
@@ -107,10 +209,89 @@ function Tables() {
           </Card>
         </SoftBox>
       </SoftBox>
+
+      <AddNewAppointmentDialog
+        isAddingDialogOpen={isAddingDialogOpen}
+        setIsAddingDialogOpen={setIsAddingDialogOpen}
+        doctors={doctors}
+        allSpecialties={allSpecialties}
+        fetchDoctors={fetchDoctors}
+        fetchAll={fetchAll}
+        userData={userData}
+      />
+
+      <RejectReasonDialog
+        rejectDialogAppointmentId={rejectDialogAppointmentId}
+        setRejectDialogAppointmentId={setRejectDialogAppointmentId}
+        fetchAll={fetchAll}
+      />
       <Footer />
     </DashboardLayout>
   );
 }
+
+const RejectReasonDialog = ({
+  rejectDialogAppointmentId,
+  setRejectDialogAppointmentId,
+  fetchAll,
+}) => {
+  const [rejectionReason, setRejectionReason] = useState("");
+
+  const handleRejecting = async () => {
+    try {
+      const body = new FormData();
+      body.append("rejectionReason", rejectionReason);
+
+      const response = await axios.post(
+        `/api/appointments/reject/${rejectDialogAppointmentId}?rejectionReason=${rejectionReason}`,
+        {
+          rejectionReason,
+        }
+      );
+      if (response) {
+        toast.success(`Appointment rejected successfully`);
+        fetchAll();
+        setRejectionReason("");
+        setRejectDialogAppointmentId();
+      }
+    } catch (error) {
+      console.error("Rejection failed:", error);
+    }
+  };
+
+  return (
+    <Dialog open={!!rejectDialogAppointmentId}>
+      <DialogTitle>Reject Appointment</DialogTitle>
+      <DialogContent>
+        <SoftBox mt={2} mb={3} px={0}>
+          <SoftBox mb={2}>
+            <SoftTypography variant="body2">Reason:</SoftTypography>
+            <SoftInput
+              multiline
+              rows={4}
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+            />
+          </SoftBox>
+          <SoftBox mt={4} display="flex" justifyContent="space-between" className="gap-3">
+            <SoftButton onClick={() => setRejectDialogAppointmentId()} className="mr-2">
+              Cancel
+            </SoftButton>
+            <SoftButton
+              className="ml-2"
+              variant="contained"
+              color="error"
+              onClick={handleRejecting}
+              disabled={!rejectionReason}
+            >
+              Reject
+            </SoftButton>
+          </SoftBox>
+        </SoftBox>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 function Author({ image, name, email }) {
   return (
@@ -130,26 +311,127 @@ function Author({ image, name, email }) {
   );
 }
 
-function Type({ type }) {
-  return (
-    <SoftBadge
-      variant="gradient"
-      badgeContent={type}
-      color={getColorOfUser(type)}
-      size="xs"
-      container
-    />
-  );
-}
+const AddNewAppointmentDialog = ({
+  isAddingDialogOpen,
+  setIsAddingDialogOpen,
+  doctors,
+  allSpecialties,
+  fetchDoctors,
+  fetchAll,
+  userData,
+}) => {
+  const [selectedDate, setSelectedDate] = useState("2024-04-18");
+  const [selectedTime, setSelectedTime] = useState("21:31");
+  const [reason, setReason] = useState("---");
+  const [patientId, setPatientId] = useState(userData.id);
+  const [doctorId, setDoctorId] = useState(0);
+  const [specialtyId, setSpecialtyId] = useState(0);
 
-function History() {
+  const handleAddingAppointment = async () => {
+    const response = await axios.post("/api/appointments", {
+      date: selectedDate,
+      time: selectedTime,
+      reason,
+      CreatedBy: userData.id,
+      patientId,
+      doctorId,
+      specialtyId,
+    });
+
+    if (response) {
+      console.log("🚀 ~ handleAddingAppointment ~ response:", response);
+      const data = response.data.value;
+      setIsAddingDialogOpen(false);
+      fetchAll();
+      toast.success(`Appointment has been created correctly on ${data.date} at ${data.time} `);
+    } else {
+      console.error("Failed to create appointment");
+    }
+  };
+
+  const handleChangingSpecialties = (e) => {
+    const spec = e.target.value;
+    setSpecialtyId(spec);
+    fetchDoctors(spec);
+  };
+
   return (
-    <SoftBox display="flex" flexDirection="column">
-      <SoftTypography variant="caption" color="secondary">
-        History
-      </SoftTypography>
-    </SoftBox>
+    <Dialog open={isAddingDialogOpen}>
+      <DialogTitle>Add New Appointment</DialogTitle>
+      <DialogContent>
+        {/* <DialogContentText>Please fill in the details for your new appointment.</DialogContentText> */}
+        <SoftBox mt={2} mb={3} px={3}>
+          <SoftBox mb={2}>
+            <SoftTypography variant="body2">Date:</SoftTypography>
+            <SoftInput
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+            />
+          </SoftBox>
+          <SoftBox mb={2}>
+            <SoftTypography variant="body2">Time:</SoftTypography>
+            <SoftInput
+              type="time"
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+            />
+          </SoftBox>
+          <SoftBox mb={2}>
+            <SoftTypography variant="body2">Reason:</SoftTypography>
+            <SoftInput
+              multiline
+              rows={4}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
+          </SoftBox>
+          <SoftBox mb={2}>
+            <SoftTypography variant="body2">Specialty:</SoftTypography>
+            <select
+              className="form-select"
+              value={specialtyId}
+              onChange={handleChangingSpecialties}
+            >
+              <option value="0">Select Specialty</option>
+              {allSpecialties.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
+          </SoftBox>
+          <SoftBox mb={2}>
+            <SoftTypography variant="body2">Doctor:</SoftTypography>
+            <select
+              className="form-select"
+              value={doctorId}
+              disabled={!specialtyId}
+              onChange={(e) => setDoctorId(parseInt(e.target.value))}
+            >
+              <option value="0">Select Doctor</option>
+              {doctors.map((doc) => (
+                <option key={doc.id} value={doc.id}>
+                  {doc.username} {doc.fullName ? `(${doc.fullName})` : ""}
+                </option>
+              ))}
+            </select>
+          </SoftBox>
+          <SoftBox mt={4} display="flex" justifyContent="space-between">
+            <SoftButton onClick={() => setIsAddingDialogOpen(false)}>Cancel</SoftButton>
+            <SoftButton
+              variant="contained"
+              color="primary"
+              onClick={handleAddingAppointment}
+              disabled={!selectedDate || !selectedTime || !reason || !doctorId}
+            >
+              Add Appointment
+            </SoftButton>
+          </SoftBox>
+        </SoftBox>
+      </DialogContent>
+    </Dialog>
   );
-}
+};
 
 export default Tables;

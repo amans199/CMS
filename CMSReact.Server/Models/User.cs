@@ -25,11 +25,14 @@ public class User
 
     public string DateOfBirth { get; set; } = string.Empty;
 
+    public string ProfilePicture { get; set; } = string.Empty;    
+
+
     public bool IsAdmin { get; set; } = false;  // Default user is not admin
     public bool IsDoctor { get; set; } = false;  // Default user is not doctor
     public string Status { get; set; } = "Pending";   // Pending - Rejected - Approved
 
-    public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
-
     public int SpecialityId { get; set; }
+
+    public ICollection<AppointmentUser> AppointmentUsers { get; set; } = new List<AppointmentUser>();
 }

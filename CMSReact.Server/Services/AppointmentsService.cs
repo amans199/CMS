@@ -1,11 +1,16 @@
 ﻿using CMSReact.Server.Context;
+using CMSReact.Server.DTOs;
+using CMSReact.Server.Migrations;
 using CMSReact.Server.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace CMSReact.Server.Services
@@ -13,54 +18,98 @@ namespace CMSReact.Server.Services
     public class AppointmentService
     {
         private readonly AppDbContext _dbContext;
+        private readonly UsersService _usersService;
 
-        public AppointmentService(AppDbContext dbContext)
+        public AppointmentService(AppDbContext dbContext, UsersService usersService)
         {
             _dbContext = dbContext;
+            _usersService = usersService;
         }
 
         public async Task<IEnumerable<Appointment>> GetAllAppointmentsAsync()
         {
-            return await _dbContext.Appointments.ToListAsync();
+            try
+            {
+                var appointments = await _dbContext.Appointments
+                    .Include(a => a.AppointmentUsers)
+                    .ThenInclude(au => au.User)
+                    .Select(a => new Appointment 
+                    {
+                        Id = a.Id,
+                        Date = a.Date,
+                        Time = a.Time,
+                        CreatedAt = a.CreatedAt,
+                        Reason = a.Reason,
+                        Comment = a.Comment,
+                        Status = a.Status,
+                        RejectionReason = a.RejectionReason,
+                        OriginalAppointmentId = a.OriginalAppointmentId,
+                        AppointmentUsers = a.AppointmentUsers.Select(au => new AppointmentUser 
+                        {
+                            IsDoctor = au.IsDoctor,
+                            UserId = au.UserId, 
+                            User = au.User,
+                        }).ToList()
+                    })
+                    .ToListAsync();
+
+                return appointments;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception
+                return null;
+            }
+            //var appointments = await _dbContext.Appointments.ToListAsync();
+
+            //return appointments;
         }
 
         public async Task<Appointment> GetAppointmentByIdAsync(int id)
         {
-            return await _dbContext.Appointments.FirstOrDefaultAsync(a => a.Id == id);
-        }
 
-        public async Task<IActionResult> CreateAppointmentAsync(Appointment appointment)
+            var appointment =  await _dbContext.Appointments.FirstOrDefaultAsync(a => a.Id == id);
+
+            return appointment;
+        }
+        public async Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto)
         {
             try
             {
-                var doctor = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == appointment.DoctorId);
-                var patient = await _dbContext.Users.FirstOrDefaultAsync(d => d.Id == appointment.UserId);
+                var doctor = await _usersService.GetUserByIdAsync(appointmentDto.DoctorId);
+                var patient = await _usersService.GetUserByIdAsync(appointmentDto.PatientId);
 
-                if (patient == null)
+                var appointment = new Appointment
                 {
-                    throw new KeyNotFoundException($"User with ID '{appointment.UserId}' not found.");
-                }
+                    Date = appointmentDto.Date,
+                    Time = appointmentDto.Time,
+                    Reason = appointmentDto.Reason,
+                    Status = "Pending",
+                    //CreatedBy = appointmentDto.CreatedBy,
+                    CreatedAt = DateTime.Now,
+                    AppointmentUsers = new List<AppointmentUser>()
+                };
 
-                if (doctor == null)
+                appointment.AppointmentUsers.Add(new AppointmentUser
                 {
-                    throw new KeyNotFoundException($"Doctor with ID '{appointment.DoctorId}' not found.");
-                }
+                    UserId = doctor.Id,
+                    IsDoctor = true
+                });
 
-                appointment.UserId = patient.Id;
-                appointment.DoctorId = doctor.Id;
+                appointment.AppointmentUsers.Add(new AppointmentUser
+                {
+                    UserId = patient.Id,
+                    IsDoctor = false
+                });
 
                 _dbContext.Appointments.Add(appointment);
                 await _dbContext.SaveChangesAsync();
 
                 return new OkObjectResult(appointment);
             }
-            catch (KeyNotFoundException ex)
-            {
-                throw new Exception($"Failed to create appointment: {ex.Message}", ex);
-            }
             catch (Exception ex)
             {
-                throw new Exception("Failed to create appointment.", ex);
+                return new BadRequestObjectResult($"Failed to create appointment: {ex.Message}");
             }
         }
 
@@ -80,22 +129,106 @@ namespace CMSReact.Server.Services
             }
         }
 
-        public async Task<IActionResult> GetAppointmentsByUsernameAsync(string username)
-        {
-            var patient = await _dbContext.Users.FirstOrDefaultAsync(p => p.Username == username);
+        //public async Task<IActionResult> GetAppointmentsByUsernameAsync(string username)
+        //{
+        //    var patient = await _dbContext.Users.FirstOrDefaultAsync(p => p.Username == username);
 
-            if (patient == null)
+        //    if (patient == null)
+        //    {
+        //        return new BadRequestObjectResult("Patient with username not found");
+        //    }
+
+        //    var appointments = await _dbContext.Users
+        //        .Where(p => p.Username == username)
+        //        .Include(p => p.Appointments)
+        //        .SelectMany(p => p.Appointments)
+        //        .ToListAsync();
+
+        //    return new OkObjectResult(appointments);
+        //}
+
+        public async Task<IActionResult> ApproveAppointmentAsync(int appointmentId)
+        {
+            var appointment = await _dbContext.Appointments.FindAsync(appointmentId);
+            if (appointment == null)
             {
-                return new BadRequestObjectResult("Patient with username not found");
+                throw new KeyNotFoundException($"Appointment with ID {appointmentId} not found.");
+            }
+            appointment.Status = "Approved";
+
+            _dbContext.Entry(appointment).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            return new OkObjectResult(appointment);
+        }
+        public async Task<IActionResult> RejectAppointmentAsync(int appointmentId,string? rejectionReason)
+        {
+            var appointment = await _dbContext.Appointments.FindAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new KeyNotFoundException($"Appointment with ID {appointmentId} not found.");
+            }
+            
+            appointment.Status = "Rejected";
+            
+            if(rejectionReason!= null)
+            {
+                appointment.RejectionReason = rejectionReason;
             }
 
-            var appointments = await _dbContext.Users
-                .Where(p => p.Username == username)
-                .Include(p => p.Appointments)
-                .SelectMany(p => p.Appointments)
-                .ToListAsync();
+            _dbContext.Entry(appointment).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
 
-            return new OkObjectResult(appointments);
+            return new OkObjectResult(appointment);
         }
+
+        public async Task<IActionResult> MarkAppointmentFinishedAsync(int appointmentId)
+        {
+            var appointment = await _dbContext.Appointments.FindAsync(appointmentId);
+            if (appointment == null)
+            {
+                throw new KeyNotFoundException($"Appointment with ID '{appointmentId}' not found.");
+            }
+
+            appointment.Status = "Completed";
+
+            _dbContext.Entry(appointment).State = EntityState.Modified;
+            await _dbContext.SaveChangesAsync();
+
+            return new OkObjectResult(appointment);
+        }
+
+        //public async Task<IActionResult> CreateFollowUpAppointmentAsync(Appointment appointment)
+        //{
+        //    var originalAppointmentId = appointment.Id; // Modify based on your request object structure
+        //    var originalAppointment = await _dbContext.Appointments.FindAsync(originalAppointmentId);
+
+        //    if (originalAppointment == null)
+        //    {
+        //        throw new KeyNotFoundException($"Original appointment with ID '{originalAppointmentId}' not found.");
+        //    }
+
+        //    // Create a new appointment with follow-up details (consider copying relevant data)
+        //    var followUpAppointment = new Appointment
+        //    {
+        //        Date = appointment.Date, 
+        //        Time = appointment.Time, 
+        //        Reason = appointment.Reason + " (Follow-Up)", 
+        //        UserId = originalAppointment.UserId, 
+        //        DoctorId = originalAppointment.DoctorId, 
+        //        Status = "Pending", // Set initial status for follow-up
+        //        OriginalAppointmentId = originalAppointmentId
+        //    };
+
+
+        //    _dbContext.Appointments.Add(followUpAppointment);
+        //    await _dbContext.SaveChangesAsync();
+
+        //    return new OkObjectResult(followUpAppointment);
+        //}
+
+
     }
 }
+
+

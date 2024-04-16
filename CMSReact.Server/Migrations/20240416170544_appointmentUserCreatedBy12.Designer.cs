@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMSReact.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240412170529_addSpecialityToDoctor")]
-    partial class addSpecialityToDoctor
+    [Migration("20240416170544_appointmentUserCreatedBy12")]
+    partial class appointmentUserCreatedBy12
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace CMSReact.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("CMSReact.Server.Models.Appointment", b =>
+            modelBuilder.Entity("Appointment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,10 +44,17 @@ namespace CMSReact.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DoctorId")
+                    b.Property<int?>("OriginalAppointmentId")
                         .HasColumnType("int");
 
                     b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RejectionReason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -55,14 +62,35 @@ namespace CMSReact.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.HasKey("Id");
+
+                    b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("AppointmentUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AppointmentId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDoctor")
+                        .HasColumnType("bit");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AppointmentId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("AppointmentUser");
                 });
 
             modelBuilder.Entity("CMSReact.Server.Models.Speciality", b =>
@@ -127,6 +155,10 @@ namespace CMSReact.Server.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("SpecialityId")
                         .HasColumnType("int");
 
@@ -143,18 +175,33 @@ namespace CMSReact.Server.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CMSReact.Server.Models.Appointment", b =>
+            modelBuilder.Entity("AppointmentUser", b =>
                 {
-                    b.HasOne("CMSReact.Server.Models.User", null)
-                        .WithMany("Appointments")
+                    b.HasOne("Appointment", "Appointment")
+                        .WithMany("AppointmentUsers")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CMSReact.Server.Models.User", "User")
+                        .WithMany("AppointmentUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Appointment");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Appointment", b =>
+                {
+                    b.Navigation("AppointmentUsers");
                 });
 
             modelBuilder.Entity("CMSReact.Server.Models.User", b =>
                 {
-                    b.Navigation("Appointments");
+                    b.Navigation("AppointmentUsers");
                 });
 #pragma warning restore 612, 618
         }

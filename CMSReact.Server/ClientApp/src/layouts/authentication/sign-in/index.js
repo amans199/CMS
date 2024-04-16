@@ -31,7 +31,8 @@ function SignIn() {
   useEffect(() => {
     const user = getUserData();
     if (user) {
-      navigate("/dashboard");
+      // navigate("/dashboard");
+      window.location.replace("/dashboard");
     }
   }, []);
 
@@ -52,7 +53,8 @@ function SignIn() {
         const user = response?.data;
         saveUser(user);
         toast(`Hi ${user.username}, You have logged in successfully`);
-        navigate("/dashboard");
+        // navigate("/dashboard");
+        window.location.replace("/dashboard");
       }
     } catch (error) {
       console.error("Registration failed:", error);

@@ -1,4 +1,6 @@
-﻿using CMSReact.Server.Context;
+﻿using Azure;
+using CMSReact.Server.Context;
+using CMSReact.Server.DTOs;
 using CMSReact.Server.Models;
 using CMSReact.Server.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -39,15 +41,10 @@ namespace CMSReact.Server.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateAppointment(Appointment appointment)
+        public async Task<ActionResult<int>> CreateAppointment(AppointmentDto appointment)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var id = await _appointmentService.CreateAppointmentAsync(appointment);
-            return Ok(id);
+            var createdAppointment = await _appointmentService.CreateAppointmentAsync(appointment);
+            return Ok(createdAppointment); // Return the created appointment ID
         }
 
         [HttpPut("{id}")]
@@ -62,36 +59,47 @@ namespace CMSReact.Server.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpPost("delete/{id}")]
         public async Task<IActionResult> DeleteAppointment(int id)
         {
             await _appointmentService.DeleteAppointmentAsync(id);
             return NoContent();
         }
 
-        [HttpGet("user/{username}")]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByUsername(string username)
+        //[HttpGet("user/{username}")]
+        //public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByUsername(string username)
+        //{
+        //    var appointments = await _appointmentService.GetAppointmentsByUsernameAsync(username);
+        //    return Ok(appointments);
+        //}
+
+        //[HttpPost("follow-up")]
+        //public async Task<ActionResult<Appointment>> CreateFollowUpAppointment(Appointment appointment)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+
+        //    var createdAppointment = await _appointmentService.CreateFollowUpAppointmentAsync(appointment);
+        //    return Ok(createdAppointment);
+        //}
+
+        [HttpPost("approve/{id}")]
+        public async Task<IActionResult> ApproveAppointment(int id)
         {
-            var appointments = await _appointmentService.GetAppointmentsByUsernameAsync(username);
-            return Ok(appointments);
+            var response = await _appointmentService.ApproveAppointmentAsync(id);
+            return Ok(response);
+        }
+
+        [HttpPost("reject/{id}")]
+        public async Task<IActionResult> RejectAppointment(int id,  string rejectionReason)
+        {
+            await _appointmentService.RejectAppointmentAsync(id, rejectionReason);
+            return Ok("Appointment has been rejected");
         }
 
         // Consider adding endpoint to retrieve appointments for a specific doctor (if applicable)
-        //[HttpGet("doctor/{doctorId}")]
-        //public async Task<ActionResult<IEnumerable<Appointment>>> GetAppointmentsByDoctorId(int doctorId)
-        //{
-        //var appointments = await _dbContext.Appointments  // Assuming direct access to DbContext in controller (not recommended)
-        //    .Include(a => a.Patient)  // Eager loading of Patient navigation property
-        //    .Include(a => a.Doctor)  // Eager loading of Doctor navigation property
-        //    .Where(a => a.DoctorId == doctorId)
-        //    .ToListAsync();
-
-        //if (!appointments.Any())
-        //{
-        //    return NotFound("No appointments found for this doctor.");
-        //}
-
-        //return Ok(appointments);
-        //}
+        // Implement authorization checks in controllers to restrict access based on user roles
     }
 }
