@@ -1,4 +1,5 @@
-﻿using CMSReact.Server.Models;
+﻿using CMSReact.Server.DTOs;
+using CMSReact.Server.Models;
 using CMSReact.Server.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,11 +20,11 @@ namespace CMSReact.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers([FromQuery] string? username = null, bool? isDoctor = null, int? specialtyId = null)
+        public async Task<ActionResult<IEnumerable<User>>> GetUsers([FromQuery] string? username = null, string? status= null, bool? isDoctor = null, int? specialtyId = null)
         {
             try
             {
-                var users = await _usersService.GetUsersAsync(username, isDoctor, specialtyId);
+                var users = await _usersService.GetUsersAsync(username, isDoctor, status, specialtyId);
                 return Ok(users);
             }
             catch (Exception ex)
@@ -81,14 +82,14 @@ namespace CMSReact.Server.Controllers
 
 
         [HttpPut("update/{id}")]
-        public async Task<IActionResult> UpdateUserById(User user)
+        public async Task<IActionResult> UpdateUserById(int id, UserDto user)
         {
             if (user == null)
             {
                 return NotFound();
             }
 
-            var response = await _usersService.UpdateUserAsync(user);
+            var response = await _usersService.UpdateUserAsync(id, user);
 
             return response;
         }

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Numerics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CMSReact.Server.Services
@@ -26,8 +27,71 @@ namespace CMSReact.Server.Services
             _usersService = usersService;
         }
 
-        public async Task<IEnumerable<Appointment>> GetAllAppointmentsAsync()
+        public async Task<IEnumerable<Appointment>> GetAllAppointmentsAsync(int userId)
         {
+
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user  == null)
+            {
+                throw new KeyNotFoundException($"Not found");
+            }
+
+
+            //      var query = _dbContext.Appointments.Where(a => a.AppointmentUsers.Any(au =>
+            //(user.IsAdmin || !au.IsDoctor) && au.UserId == userId));
+
+
+            //      var appointments = await query.ToListAsync(); 
+
+            //      if (appointments.Any() && (user.IsAdmin || !user.IsDoctor)) 
+            //      {
+            //          appointments = appointments.Select(async a =>
+            //          {
+            //              a.AppointmentUsers = await _dbContext.AppointmentUser
+            //                .Where(au => au.AppointmentId == a.Id);
+            //              a.AppointmentUsers.ForEach(au => au.User = await _dbContext.Users.FindAsync(au.UserId));
+            //              return a;
+            //          }).Select(t => t.Result).ToList();
+            //      }
+
+            //      return appointments;
+
+            var query = _dbContext.Appointments.Include(a => a.AppointmentUsers).ThenInclude(au => au.User).Select(a => new Appointment
+            {
+                Id = a.Id,
+                Date = a.Date,
+                Time = a.Time,
+                CreatedAt = a.CreatedAt,
+                Reason = a.Reason,
+                Comment = a.Comment,
+                Status = a.Status,
+                RejectionReason = a.RejectionReason,
+                OriginalAppointmentId = a.OriginalAppointmentId,
+                AppointmentUsers = a.AppointmentUsers.Select(au => new AppointmentUser
+                {
+                    IsDoctor = au.IsDoctor,
+                    UserId = au.UserId,
+                    User = au.User,
+                }).ToList()
+            });
+
+            if (user.IsAdmin) // Check for admin
+            {
+                return await query.ToListAsync(); // Return all appointments for admin
+            }
+            else if (user.IsDoctor) // Check for doctor
+            {
+                return await query
+                  .Where(a => a.AppointmentUsers.Any(au => au.IsDoctor && au.UserId == userId)) // Filter by doctor appointments
+                  .ToListAsync();
+            }
+            else // Patient or other role (assuming no IsPatient property)
+            {
+                return await query
+                  .Where(a => a.AppointmentUsers.Any(au => !au.IsDoctor && au.UserId == userId)) // Filter by patient appointments
+                  .ToListAsync();
+            }
+
             try
             {
                 var appointments = await _dbContext.Appointments
@@ -57,12 +121,8 @@ namespace CMSReact.Server.Services
             }
             catch (Exception ex)
             {
-                // Handle exception
                 return null;
             }
-            //var appointments = await _dbContext.Appointments.ToListAsync();
-
-            //return appointments;
         }
 
         public async Task<Appointment> GetAppointmentByIdAsync(int id)
@@ -74,8 +134,8 @@ namespace CMSReact.Server.Services
         }
         public async Task<IActionResult> CreateAppointmentAsync(AppointmentDto appointmentDto)
         {
-            try
-            {
+            //try
+            //{
                 var doctor = await _usersService.GetUserByIdAsync(appointmentDto.DoctorId);
                 var patient = await _usersService.GetUserByIdAsync(appointmentDto.PatientId);
 
@@ -106,11 +166,11 @@ namespace CMSReact.Server.Services
                 await _dbContext.SaveChangesAsync();
 
                 return new OkObjectResult(appointment);
-            }
-            catch (Exception ex)
-            {
-                return new BadRequestObjectResult($"Failed to create appointment: {ex.Message}");
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return new BadRequestObjectResult($"Failed to create appointment: {ex.Message}");
+            //}
         }
 
         public async Task UpdateAppointmentAsync(Appointment appointment)

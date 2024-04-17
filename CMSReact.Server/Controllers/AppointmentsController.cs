@@ -22,10 +22,10 @@ namespace CMSReact.Server.Controllers
             _appointmentService = appointmentService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Appointment>>> GetAllAppointments()
+        [HttpGet("user/{userId}")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> GetAllAppointments(int userId)
         {
-            var appointments = await _appointmentService.GetAllAppointmentsAsync();
+            var appointments = await _appointmentService.GetAllAppointmentsAsync(userId);
             return Ok(appointments);
         }
 

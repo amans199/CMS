@@ -105,7 +105,7 @@ function Header({ user }) {
         <Grid container spacing={3} alignItems="center">
           <Grid item>
             <SoftAvatar
-              src={burceMars}
+              src={user.profilePicture}
               alt="profile-image"
               variant="rounded"
               size="xl"

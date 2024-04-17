@@ -39,6 +39,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // pages
 import Home from "./HomePage/HomePage";
 import { getUserData } from "utils";
+import { removeCurrentUser } from "utils";
+import axios from "utils/Axios";
 
 export default function App() {
   const [controller, dispatch] = useSoftUIController();
@@ -51,6 +53,7 @@ export default function App() {
   useEffect(() => {
     const userData = getUserData();
     if (userData.id) {
+      // fetchUserData(userData.id);
       if (userData.status !== "Approved") {
         navigate("/profile");
       }
@@ -58,6 +61,16 @@ export default function App() {
       navigate("/sign-in");
     }
   }, []);
+
+  // const fetchUserData = async (userId) => {
+  //   try {
+  //     const response = await axios.get(`/api/users/${userId}`);
+  //     removeCurrentUser();
+  //     saveUser(response.data);
+  //   } catch (error) {
+  //     console.error("Failed to fetch user appointments:", error);
+  //   }
+  // };
 
   // Cache for the rtl
   useMemo(() => {

@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 const instance = axios.create({
   baseURL: "https://localhost:7219/",
-  timeout: 5000,
+  timeout: 60000,
 });
 
 instance.interceptors.response.use(

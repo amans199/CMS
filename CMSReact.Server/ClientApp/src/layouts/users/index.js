@@ -41,6 +41,8 @@ function Users() {
   const [specialty, setSpecialty] = useState("");
   const [AllSpecialties, setAllSpecialties] = useState([]);
 
+  const [isLoading, setIsLoading] = useState();
+
   const navigate = useNavigate();
 
   const columns = [
@@ -61,11 +63,14 @@ function Users() {
   }, []);
 
   const fetchAllUsers = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get("/api/users");
       setUsers(response?.data || []);
+      setIsLoading(false);
     } catch (error) {
       console.error("Fetching Users failed:", error);
+      setIsLoading(false);
     }
   };
 
@@ -155,10 +160,10 @@ function Users() {
     type: (
       <SoftBadge
         variant="gradient"
-        badgeContent={`${getUserType(user.isDoctor)}${
+        badgeContent={`${user.isAdmin ? "Admin" : getUserType(user.isDoctor)}${
           user.isDoctor ? `(${getSpecialtyName(user.specialityId)})` : ""
         }`}
-        color={getColorOfUser(getUserType(user.isDoctor))}
+        color={getColorOfUser(user.isAdmin ? "Admin" : getUserType(user.isDoctor))}
         size="xs"
         container
       />
@@ -183,18 +188,24 @@ function Users() {
         <SoftButton variant="primary" onClick={() => openProfile(user.id)}>
           Open
         </SoftButton>
-        {user.status !== "Approved" ? (
-          <SoftButton variant="primary" onClick={() => handleApproving(user.id)}>
-            Approve
-          </SoftButton>
+        {!user.isAdmin ? (
+          <>
+            {user.status !== "Approved" ? (
+              <SoftButton variant="primary" onClick={() => handleApproving(user.id)}>
+                Approve
+              </SoftButton>
+            ) : (
+              <SoftButton variant="primary" onClick={() => handleRejecting(user.id)}>
+                Reject
+              </SoftButton>
+            )}
+            <SoftButton variant="primary" onClick={() => handleDeleting(user.username, user.id)}>
+              Delete
+            </SoftButton>
+          </>
         ) : (
-          <SoftButton variant="primary" onClick={() => handleRejecting(user.id)}>
-            Reject
-          </SoftButton>
+          <></>
         )}
-        <SoftButton variant="primary" onClick={() => handleDeleting(user.username, user.id)}>
-          Delete
-        </SoftButton>
       </>
     ),
   }));
@@ -221,7 +232,7 @@ function Users() {
                 },
               }}
             >
-              <Table columns={columns} rows={rows} />
+              <Table columns={columns} rows={rows} isLoading={isLoading} />
             </SoftBox>
           </Card>
         </SoftBox>

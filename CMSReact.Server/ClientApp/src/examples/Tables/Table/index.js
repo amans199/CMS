@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Soft UI Dashboard React - v4.0.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/soft-ui-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useMemo } from "react";
 
 // prop-types is a library for typechecking of props
@@ -36,8 +21,9 @@ import SoftTypography from "components/SoftTypography";
 import colors from "assets/theme/base/colors";
 import typography from "assets/theme/base/typography";
 import borders from "assets/theme/base/borders";
+import { Spinner } from "react-bootstrap";
 
-function Table({ columns, rows }) {
+function Table({ columns, rows, isLoading = false }) {
   const { light } = colors;
   const { size, fontWeightBold } = typography;
   const { borderWidth } = borders;
@@ -131,14 +117,26 @@ function Table({ columns, rows }) {
 
   return useMemo(
     () => (
-      <TableContainer>
-        <MuiTable>
-          <SoftBox component="thead">
-            <TableRow>{renderColumns}</TableRow>
-          </SoftBox>
-          <TableBody>{renderRows}</TableBody>
-        </MuiTable>
-      </TableContainer>
+      <>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "16px",
+          }}
+        >
+          {isLoading ? <Spinner /> : <></>}
+        </div>
+        <TableContainer>
+          <MuiTable>
+            <SoftBox component="thead">
+              <TableRow>{renderColumns}</TableRow>
+            </SoftBox>
+            <TableBody>{renderRows}</TableBody>
+          </MuiTable>
+        </TableContainer>
+      </>
     ),
     [columns, rows]
   );

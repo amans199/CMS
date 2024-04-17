@@ -39,6 +39,7 @@ function Tables() {
   const [rejectDialogAppointmentId, setRejectDialogAppointmentId] = useState();
   const [doctors, setDoctors] = useState([]);
   const [allSpecialties, setAllSpecialties] = useState([]);
+  const [isLoading, setIsLoading] = useState();
 
   const userData = getUserData();
 
@@ -50,7 +51,9 @@ function Tables() {
 
   const fetchDoctors = async (specialtyId) => {
     try {
-      const response = await axios.get(`/api/users?isDoctor=true&specialtyId=${specialtyId}`);
+      const response = await axios.get(
+        `/api/users?isDoctor=true&specialtyId=${specialtyId}&status=Approved`
+      );
       if (response.data) {
         setDoctors(response.data);
       } else {
@@ -82,11 +85,14 @@ function Tables() {
   ];
 
   const fetchAll = async () => {
+    setIsLoading(true);
     try {
-      const response = await axios.get("/api/appointments");
+      const response = await axios.get(`/api/appointments/user/${userData.id}`);
       setAppointments(response?.data || []);
+      setIsLoading(false);
     } catch (error) {
       console.error("Registration failed:", error);
+      setIsLoading(false);
     }
   };
 
@@ -162,21 +168,27 @@ function Tables() {
       ),
       action: (
         <>
-          {appointment.status !== "Approved" ? (
-            <SoftButton variant="primary" onClick={() => handleApproving(appointment.id)}>
-              Approve
-            </SoftButton>
+          {userData.isAdmin ? (
+            <>
+              {appointment.status !== "Approved" ? (
+                <SoftButton variant="primary" onClick={() => handleApproving(appointment.id)}>
+                  Approve
+                </SoftButton>
+              ) : (
+                <SoftButton
+                  variant="primary"
+                  onClick={() => setRejectDialogAppointmentId(appointment.id)}
+                >
+                  Reject
+                </SoftButton>
+              )}
+              <SoftButton variant="primary" onClick={() => handleDeleting(appointment.id)}>
+                Delete
+              </SoftButton>
+            </>
           ) : (
-            <SoftButton
-              variant="primary"
-              onClick={() => setRejectDialogAppointmentId(appointment.id)}
-            >
-              Reject
-            </SoftButton>
+            <></>
           )}
-          <SoftButton variant="primary" onClick={() => handleDeleting(appointment.id)}>
-            Delete
-          </SoftButton>
         </>
       ),
     };
@@ -204,7 +216,7 @@ function Tables() {
                 },
               }}
             >
-              <Table columns={columns} rows={rows} />
+              <Table columns={columns} rows={rows} isLoading={isLoading} />
             </SoftBox>
           </Card>
         </SoftBox>

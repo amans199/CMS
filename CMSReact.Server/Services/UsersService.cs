@@ -1,4 +1,5 @@
 ﻿using CMSReact.Server.Context;
+using CMSReact.Server.DTOs;
 using CMSReact.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,13 +20,18 @@ namespace CMSReact.Server.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<User>> GetUsersAsync(string? username = null, bool? isDoctor = null, int? specialtyId= null)
+        public async Task<IEnumerable<User>> GetUsersAsync(string? username = null, bool? isDoctor = null, string? status = null, int? specialtyId= null)
         {
             var query = _dbContext.Users.AsQueryable();
 
             if (!string.IsNullOrEmpty(username))
             {
                 query = query.Where(u => u.Username.ToLower().Contains(username.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(u => u.Status.ToLower() == status.ToLower());
             }
 
             if (isDoctor.HasValue)
@@ -48,7 +54,6 @@ namespace CMSReact.Server.Services
             {
                 throw new KeyNotFoundException($"User with ID {id} not found");
             }
-            //return SanitizeUser(user);
             return user;
         }
 
@@ -99,20 +104,52 @@ namespace CMSReact.Server.Services
         }
 
 
-        public async Task<IActionResult> UpdateUserAsync(User user)
+        public async Task<IActionResult> UpdateUserAsync(int id, UserDto user)
         {
-            var userExists = await _dbContext.Users.FindAsync(user.Id);
+            var userExists = await _dbContext.Users.FindAsync(id);
             if (userExists == null)
             {
-                throw new KeyNotFoundException($"User with ID {user.Id} not found");
+                throw new KeyNotFoundException($"User with ID {id} not found");
             }
 
-            _dbContext.Users.Update(user); // Update method might be preferred here
+            if (user.FullName != null) // Update specific properties if received
+            {
+                userExists.FullName = user.FullName;
+            }
+
+            if (user.DateOfBirth != null)
+            {
+                userExists.DateOfBirth = user.DateOfBirth;
+            }
+
+
+            if (user.ProfilePicture != null)
+            {
+                userExists.ProfilePicture = user.ProfilePicture;
+            }
+
+
+            if (user.Gender != null)
+            {
+                userExists.Gender = user.Gender;
+            }
+
+            if (user.Phone != null)
+            {
+                userExists.Phone = user.Phone;
+            }
+
+            if (user.Address != null)
+            {
+                userExists.Address = user.Address;
+            }
+
+            _dbContext.Users.Update(userExists); // Update method might be preferred here
 
             //_dbContext.Entry(user).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
-            return new OkObjectResult(user);
+            return new OkObjectResult(userExists);
         }
 
         public async Task DeleteUserAsync(int id)

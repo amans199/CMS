@@ -1,4 +1,6 @@
 using System.IO;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using CMSReact.Server.Context;
 using CMSReact.Server.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -33,6 +35,16 @@ namespace CMSReact.Server
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+
+            builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+
+            JsonSerializerOptions options = new()
+            {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
+                WriteIndented = true
+            };
 
             var app = builder.Build();
 
