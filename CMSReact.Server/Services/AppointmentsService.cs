@@ -1,6 +1,5 @@
 ﻿using CMSReact.Server.Context;
 using CMSReact.Server.DTOs;
-using CMSReact.Server.Migrations;
 using CMSReact.Server.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;

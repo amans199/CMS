@@ -77,7 +77,7 @@ namespace CMSReact.Server.Controllers
 
             var response = await _usersService.CreateUserAsync(user);
 
-            return new OkObjectResult("User Created Successfully");
+            return response;
         }
 
 

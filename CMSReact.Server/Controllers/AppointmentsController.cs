@@ -1,5 +1,4 @@
-﻿using Azure;
-using CMSReact.Server.Context;
+﻿using CMSReact.Server.Context;
 using CMSReact.Server.DTOs;
 using CMSReact.Server.Models;
 using CMSReact.Server.Services;

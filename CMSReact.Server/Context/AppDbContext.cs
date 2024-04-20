@@ -1,6 +1,8 @@
 ﻿using CMSReact.Server.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
 using System.Text.RegularExpressions;
 
 namespace CMSReact.Server.Context
@@ -19,8 +21,18 @@ namespace CMSReact.Server.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var adminUser = new User
+            {
+                Id=1,
+                FullName = "Admin User",
+                Username = "admin",
+                Email = "admin@gmail.com",
+                PasswordHash = "admin123",
+                IsAdmin = true,
+                Status="Approved"
+            };
 
-
+            modelBuilder.Entity<User>().HasData(adminUser);
         }
     }
 }

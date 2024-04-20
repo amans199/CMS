@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "utils/Axios";
-import Author from "./Author";
+import Author from "components/Global/Author";
 import History from "./History";
 import SoftBadge from "components/SoftBadge";
 import { useLocation, Link, useNavigate } from "react-router-dom";
@@ -156,7 +156,9 @@ function Users() {
 
   const rows = users.map((user) => ({
     id: <>{user.id}</>,
-    user: <Author image={team2} name={user.fullName || user.username} email={user.email} />,
+    user: (
+      <Author image={user.profilePhoto} name={user.fullName || user.username} email={user.email} />
+    ),
     type: (
       <SoftBadge
         variant="gradient"

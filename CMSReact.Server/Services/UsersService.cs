@@ -3,7 +3,6 @@ using CMSReact.Server.DTOs;
 using CMSReact.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -181,18 +180,18 @@ namespace CMSReact.Server.Services
         }
 
 
-        public async Task<int> CreateUserAsync(User newUser)
+        public async Task<IActionResult> CreateUserAsync(User newUser)
         {
             // Check if username or email already exists
             bool userExists = await _dbContext.Users.AnyAsync(u => u.Username == newUser.Username || u.Email == newUser.Email);
             if (userExists)
             {
-                throw new InvalidOperationException("Username or email already exists");
+                return new BadRequestObjectResult("Username or email already exists");
             }
 
             if (newUser.IsAdmin)
             {
-                throw new BadHttpRequestException($"Not allowed to create this kind of user");
+                return new BadRequestObjectResult($"Not allowed to create this kind of user");
             }
 
             newUser.PasswordHash = HashPassword(newUser.PasswordHash);
@@ -200,7 +199,7 @@ namespace CMSReact.Server.Services
 
             _dbContext.Users.Add(newUser);
             await _dbContext.SaveChangesAsync();
-            return newUser.Id;
+            return new OkObjectResult(newUser);
         }
 
         private string HashPassword(string password)
