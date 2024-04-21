@@ -51,22 +51,22 @@ namespace CMSReact.Server.Services
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with ID {id} not found");
+                throw new BadHttpRequestException($"User with ID {id} not found");
             }
             return user;
         }
 
-        public async Task<User> ApproveUserByIdAsync(int id)
+        public async Task<IActionResult> ApproveUserByIdAsync(int id)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with ID {id} not found");
+                return new BadRequestObjectResult($"User with ID {id} not found");
             }
 
             if (user.IsAdmin)
             {
-                throw new BadHttpRequestException($"Not allowed to approve this user");
+                return new BadRequestObjectResult($"Not allowed to approve this user");
             }
 
             user.Status = "Approved";
@@ -75,21 +75,21 @@ namespace CMSReact.Server.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return user;
+            return new OkObjectResult( user);
         }
 
 
-        public async Task<User> RejectUserByIdAsync(int id)
+        public async Task<IActionResult> RejectUserByIdAsync(int id)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with ID {id} not found");
+                return new BadRequestObjectResult($"User with ID {id} not found");
             }
 
             if (user.IsAdmin)
             {
-                throw new BadHttpRequestException($"Not allowed to reject this user");
+                return new BadRequestObjectResult($"Not allowed to reject this user");
             }
 
 
@@ -99,7 +99,7 @@ namespace CMSReact.Server.Services
 
             await _dbContext.SaveChangesAsync();
 
-            return user;
+            return new OkObjectResult( user);
         }
 
 
@@ -108,7 +108,7 @@ namespace CMSReact.Server.Services
             var userExists = await _dbContext.Users.FindAsync(id);
             if (userExists == null)
             {
-                throw new KeyNotFoundException($"User with ID {id} not found");
+                return new BadRequestObjectResult($"User with ID {id} not found");
             }
 
             if (user.FullName != null) // Update specific properties if received
@@ -151,32 +151,34 @@ namespace CMSReact.Server.Services
             return new OkObjectResult(userExists);
         }
 
-        public async Task DeleteUserAsync(int id)
+        public async Task<IActionResult> DeleteUserAsync(int id)
         {
             var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with ID {id} not found");
+                return new BadRequestObjectResult($"User with ID {id} not found");
             }
 
             if (user.IsAdmin)
             {
-                throw new BadHttpRequestException($"Not allowed to delete this user");
+                return new BadRequestObjectResult($"Not allowed to delete this user");
             }
 
             _dbContext.Users.Remove(user);
             await _dbContext.SaveChangesAsync();
+
+            return new OkObjectResult("User removed correctly");
         }
 
-        public async Task<User> GetUserByUsernameAsync(string username)
+        public async Task<IActionResult> GetUserByUsernameAsync(string username)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
             {
-                throw new KeyNotFoundException($"User with username '{username}' not found");
+                return new BadRequestObjectResult($"User with username '{username}' not found");
             }
             //return SanitizeUser(user);
-            return user;
+            return new OkObjectResult( user);
         }
 
 

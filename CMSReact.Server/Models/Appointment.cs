@@ -1,4 +1,5 @@
-﻿using CMSReact.Server.Models;
+﻿using CMSReact.Server.Enums;
+using CMSReact.Server.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -22,7 +23,7 @@ public class Appointment
 
    
 
-    public string Status { get; set; } = "Pending"; // Pending - Rejected - Approved
+    public AppointmentStatus Status { get; set; } = AppointmentStatus.Pending; // Pending - Rejected - Approved
 
     public string? RejectionReason { get; set; } = String.Empty;
 

@@ -29,6 +29,7 @@ import { getColorOfStatus } from "utils";
 import { toast } from "react-toastify";
 import { Dialog, DialogContent, DialogTitle, Select } from "@mui/material";
 import { formatDate } from "utils";
+import AppointmentStatusBadge from "components/Global/AppointmentStatusBadge";
 
 function Users() {
   const [users, setUsers] = useState([]);
@@ -176,15 +177,7 @@ function Users() {
       </SoftTypography>
     ),
     history: <History />,
-    isApproved: (
-      <SoftBadge
-        variant="gradient"
-        badgeContent={user.status}
-        color={getColorOfStatus(user.status)}
-        size="xs"
-        container
-      />
-    ),
+    isApproved: <AppointmentStatusBadge status={user.status} />,
     action: (
       <>
         <SoftButton variant="primary" onClick={() => openProfile(user.id)}>

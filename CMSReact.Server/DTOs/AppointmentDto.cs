@@ -7,4 +7,5 @@ public class AppointmentDto
     public int CreatedBy { get; set; }
     public int DoctorId { get; set; }
     public int PatientId { get; set; }
+    public int? OriginalAppointmentId { get; set; }
 }

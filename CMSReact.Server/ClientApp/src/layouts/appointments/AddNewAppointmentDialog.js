@@ -35,9 +35,10 @@ import { getUserData } from "utils";
 
 export const AddNewAppointmentDialog = ({
   isAddingDialogOpen,
-  setIsAddingDialogOpen,
+  originalAppointmentToBeFollowedUp: originalAppointment,
   fetchAll,
   userData,
+  onClose,
 }) => {
   const [selectedDate, setSelectedDate] = useState("2024-04-18");
   const [selectedTime, setSelectedTime] = useState("21:31");
@@ -91,7 +92,7 @@ export const AddNewAppointmentDialog = ({
   };
 
   const handleAddingAppointment = async () => {
-    const response = await axios.post("/api/appointments", {
+    var appointment = {
       date: selectedDate,
       time: selectedTime,
       reason,
@@ -99,12 +100,19 @@ export const AddNewAppointmentDialog = ({
       patientId,
       doctorId,
       specialtyId,
-    });
+    };
+    if (originalAppointment) {
+      appointment.OriginalAppointmentId = originalAppointment.id;
+      appointment.doctorId = originalAppointment.doctor?.id;
+      appointment.patientId = originalAppointment.patient?.id;
+      appointment.specialtyId = originalAppointment.doctor.specialityId;
+    }
+    const response = await axios.post("/api/appointments", appointment);
 
     if (response) {
-      console.log("🚀 ~ handleAddingAppointment ~ response:", response);
       const data = response.data.value;
-      setIsAddingDialogOpen(false);
+      onClose();
+      // setIsAddingDialogOpen(false);
       fetchAll();
       toast.success(`Appointment has been created correctly on ${data.date} at ${data.time} `);
     } else {
@@ -129,7 +137,7 @@ export const AddNewAppointmentDialog = ({
       <DialogContent>
         {/* <DialogContentText>Please fill in the details for your new appointment.</DialogContentText> */}
         <SoftBox mt={2} mb={3} px={3}>
-          {userData.isAdmin ? (
+          {userData.isAdmin && !originalAppointment ? (
             <>
               <SoftBox mb={2}>
                 <SoftTypography variant="body2">Patient:</SoftTypography>
@@ -171,44 +179,53 @@ export const AddNewAppointmentDialog = ({
               onChange={(e) => setReason(e.target.value)}
             />
           </SoftBox>
-          <SoftBox mb={2}>
-            <SoftTypography variant="body2">Specialty:</SoftTypography>
-            <select
-              className="form-select"
-              value={specialtyId}
-              onChange={handleChangingSpecialties}
-            >
-              <option value="0">Select Specialty</option>
-              {allSpecialties.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-          </SoftBox>
-          <SoftBox mb={2}>
-            <SoftTypography variant="body2">Doctor:</SoftTypography>
-            <select
-              className="form-select"
-              value={doctorId}
-              disabled={!specialtyId}
-              onChange={(e) => setDoctorId(parseInt(e.target.value))}
-            >
-              <option value="0">Select Doctor</option>
-              {doctors.map((doc) => (
-                <option key={doc.id} value={doc.id}>
-                  {doc.username} {doc.fullName ? `(${doc.fullName})` : ""}
-                </option>
-              ))}
-            </select>
-          </SoftBox>
+          {!originalAppointment ? (
+            <>
+              <SoftBox mb={2}>
+                <SoftTypography variant="body2">Specialty:</SoftTypography>
+                <select
+                  className="form-select"
+                  value={specialtyId}
+                  onChange={handleChangingSpecialties}
+                >
+                  <option value="0">Select Specialty</option>
+                  {allSpecialties.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </SoftBox>
+
+              <SoftBox mb={2}>
+                <SoftTypography variant="body2">Doctor:</SoftTypography>
+                <select
+                  className="form-select"
+                  value={doctorId}
+                  disabled={!specialtyId}
+                  onChange={(e) => setDoctorId(parseInt(e.target.value))}
+                >
+                  <option value="0">Select Doctor</option>
+                  {doctors.map((doc) => (
+                    <option key={doc.id} value={doc.id}>
+                      {doc.username} {doc.fullName ? `(${doc.fullName})` : ""}
+                    </option>
+                  ))}
+                </select>
+              </SoftBox>
+            </>
+          ) : (
+            <></>
+          )}
           <SoftBox mt={4} display="flex" justifyContent="space-between">
-            <SoftButton onClick={() => setIsAddingDialogOpen(false)}>Cancel</SoftButton>
+            <SoftButton onClick={onClose}>Cancel</SoftButton>
             <SoftButton
               variant="contained"
               color="primary"
               onClick={handleAddingAppointment}
-              disabled={!selectedDate || !selectedTime || !reason || !doctorId}
+              disabled={
+                !selectedDate || !selectedTime || !reason || (!originalAppointment && !doctorId)
+              }
             >
               Add Appointment
             </SoftButton>

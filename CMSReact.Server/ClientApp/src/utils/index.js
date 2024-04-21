@@ -29,16 +29,32 @@ export const getColorOfUser = (type) => {
   }[type];
 };
 
-export const getColorOfStatus = (status) => {
+export const getColorOfStatus = (key) => {
+  console.log(
+    "🚀 ~ getColorOfStatus ~ key:",
+    key,
+    getAppointmentStatus(key),
+    {
+      Approved: "success",
+      Pending: "warning",
+      Rejected: "error",
+      Done: "dark",
+    }[getAppointmentStatus(key)]
+  );
   return {
     Approved: "success",
     Pending: "warning",
     Rejected: "error",
-  }[status];
+    Done: "dark",
+  }[getAppointmentStatus(key)];
 };
 
 export const formatDate = (dateString) => {
   const date = new Date(dateString);
   const formattedDate = date.toLocaleDateString();
   return formattedDate;
+};
+
+export const getAppointmentStatus = (key) => {
+  return ["Pending", "Approved", "Rejected", "Done"][key];
 };

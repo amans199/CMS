@@ -72,17 +72,17 @@ namespace CMSReact.Server.Controllers
         //    return Ok(appointments);
         //}
 
-        //[HttpPost("follow-up")]
-        //public async Task<ActionResult<Appointment>> CreateFollowUpAppointment(Appointment appointment)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
+        [HttpPost("follow-up")]
+        public async Task<ActionResult<Appointment>> CreateFollowUpAppointment(AppointmentDto appointmentDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        //    var createdAppointment = await _appointmentService.CreateFollowUpAppointmentAsync(appointment);
-        //    return Ok(createdAppointment);
-        //}
+            var createdAppointment = await _appointmentService.CreateFollowUpAppointmentAsync(appointmentDto);
+            return Ok(createdAppointment);
+        }
 
         [HttpPost("approve/{id}")]
         public async Task<IActionResult> ApproveAppointment(int id)

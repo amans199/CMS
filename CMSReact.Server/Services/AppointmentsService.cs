@@ -1,5 +1,6 @@
 ﻿using CMSReact.Server.Context;
 using CMSReact.Server.DTOs;
+using CMSReact.Server.Enums;
 using CMSReact.Server.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -34,26 +35,6 @@ namespace CMSReact.Server.Services
             {
                 throw new KeyNotFoundException($"Not found");
             }
-
-
-            //      var query = _dbContext.Appointments.Where(a => a.AppointmentUsers.Any(au =>
-            //(user.IsAdmin || !au.IsDoctor) && au.UserId == userId));
-
-
-            //      var appointments = await query.ToListAsync(); 
-
-            //      if (appointments.Any() && (user.IsAdmin || !user.IsDoctor)) 
-            //      {
-            //          appointments = appointments.Select(async a =>
-            //          {
-            //              a.AppointmentUsers = await _dbContext.AppointmentUser
-            //                .Where(au => au.AppointmentId == a.Id);
-            //              a.AppointmentUsers.ForEach(au => au.User = await _dbContext.Users.FindAsync(au.UserId));
-            //              return a;
-            //          }).Select(t => t.Result).ToList();
-            //      }
-
-            //      return appointments;
 
             var query = _dbContext.Appointments.Include(a => a.AppointmentUsers).ThenInclude(au => au.User).Select(a => new Appointment
             {
@@ -90,38 +71,6 @@ namespace CMSReact.Server.Services
                   .Where(a => a.AppointmentUsers.Any(au => !au.IsDoctor && au.UserId == userId)) // Filter by patient appointments
                   .ToListAsync();
             }
-
-            try
-            {
-                var appointments = await _dbContext.Appointments
-                    .Include(a => a.AppointmentUsers)
-                    .ThenInclude(au => au.User)
-                    .Select(a => new Appointment 
-                    {
-                        Id = a.Id,
-                        Date = a.Date,
-                        Time = a.Time,
-                        CreatedAt = a.CreatedAt,
-                        Reason = a.Reason,
-                        Comment = a.Comment,
-                        Status = a.Status,
-                        RejectionReason = a.RejectionReason,
-                        OriginalAppointmentId = a.OriginalAppointmentId,
-                        AppointmentUsers = a.AppointmentUsers.Select(au => new AppointmentUser 
-                        {
-                            IsDoctor = au.IsDoctor,
-                            UserId = au.UserId, 
-                            User = au.User,
-                        }).ToList()
-                    })
-                    .ToListAsync();
-
-                return appointments;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
         }
 
         public async Task<Appointment> GetAppointmentByIdAsync(int id)
@@ -143,13 +92,20 @@ namespace CMSReact.Server.Services
                     Date = appointmentDto.Date,
                     Time = appointmentDto.Time,
                     Reason = appointmentDto.Reason,
-                    Status = "Pending",
+                    Status = AppointmentStatus.Pending,
                     //CreatedBy = appointmentDto.CreatedBy,
                     CreatedAt = DateTime.Now,
                     AppointmentUsers = new List<AppointmentUser>()
                 };
 
-                appointment.AppointmentUsers.Add(new AppointmentUser
+                if(appointmentDto.OriginalAppointmentId != null)
+                {
+                    appointment.OriginalAppointmentId = appointmentDto.OriginalAppointmentId;
+                appointment.Status = AppointmentStatus.Approved;
+
+            }
+
+            appointment.AppointmentUsers.Add(new AppointmentUser
                 {
                     UserId = doctor.Id,
                     IsDoctor = true
@@ -213,7 +169,7 @@ namespace CMSReact.Server.Services
             {
                 throw new KeyNotFoundException($"Appointment with ID {appointmentId} not found.");
             }
-            appointment.Status = "Approved";
+            appointment.Status = AppointmentStatus.Approved;
 
             _dbContext.Entry(appointment).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
@@ -228,7 +184,7 @@ namespace CMSReact.Server.Services
                 throw new KeyNotFoundException($"Appointment with ID {appointmentId} not found.");
             }
             
-            appointment.Status = "Rejected";
+            appointment.Status = AppointmentStatus.Rejected;
             
             if(rejectionReason!= null)
             {
@@ -249,7 +205,7 @@ namespace CMSReact.Server.Services
                 throw new KeyNotFoundException($"Appointment with ID '{appointmentId}' not found.");
             }
 
-            appointment.Status = "Completed";
+            appointment.Status = AppointmentStatus.Done;
 
             _dbContext.Entry(appointment).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
@@ -257,34 +213,57 @@ namespace CMSReact.Server.Services
             return new OkObjectResult(appointment);
         }
 
-        //public async Task<IActionResult> CreateFollowUpAppointmentAsync(Appointment appointment)
-        //{
-        //    var originalAppointmentId = appointment.Id; // Modify based on your request object structure
-        //    var originalAppointment = await _dbContext.Appointments.FindAsync(originalAppointmentId);
+        public async Task<IActionResult> CreateFollowUpAppointmentAsync(AppointmentDto appointmentDto)
+        {
+            var originalAppointmentId = appointmentDto.OriginalAppointmentId;
+            var originalAppointment = await _dbContext.Appointments.FindAsync(originalAppointmentId);
 
-        //    if (originalAppointment == null)
-        //    {
-        //        throw new KeyNotFoundException($"Original appointment with ID '{originalAppointmentId}' not found.");
-        //    }
-
-        //    // Create a new appointment with follow-up details (consider copying relevant data)
-        //    var followUpAppointment = new Appointment
-        //    {
-        //        Date = appointment.Date, 
-        //        Time = appointment.Time, 
-        //        Reason = appointment.Reason + " (Follow-Up)", 
-        //        UserId = originalAppointment.UserId, 
-        //        DoctorId = originalAppointment.DoctorId, 
-        //        Status = "Pending", // Set initial status for follow-up
-        //        OriginalAppointmentId = originalAppointmentId
-        //    };
+            if (originalAppointment == null)
+            {
+                return new BadRequestObjectResult($"Original appointment with ID '{originalAppointmentId}' not found.");
+            }
 
 
-        //    _dbContext.Appointments.Add(followUpAppointment);
-        //    await _dbContext.SaveChangesAsync();
+            var doctor = await _usersService.GetUserByIdAsync(appointmentDto.DoctorId);
+            var patient = await _usersService.GetUserByIdAsync(appointmentDto.PatientId);
 
-        //    return new OkObjectResult(followUpAppointment);
-        //}
+            if (doctor == null)
+            {
+                return new BadRequestObjectResult($"Doctor is not found");
+            }
+
+            if (patient == null)
+            {
+                return new BadRequestObjectResult($"Patient is not found");
+            }
+
+            var followUpAppointment = new Appointment
+            {
+                Date = appointmentDto.Date,
+                Time = appointmentDto.Time,
+                Status = AppointmentStatus.Approved,
+                Reason = appointmentDto.Reason + " (Follow-Up)",
+                OriginalAppointmentId = originalAppointmentId,
+                AppointmentUsers = new List<AppointmentUser>()
+            };
+
+            followUpAppointment.AppointmentUsers.Add(new AppointmentUser
+            {
+                UserId = doctor.Id,
+                IsDoctor = true
+            });
+
+            followUpAppointment.AppointmentUsers.Add(new AppointmentUser
+            {
+                UserId = patient.Id,
+                IsDoctor = false
+            });
+
+            _dbContext.Appointments.Add(followUpAppointment);
+            await _dbContext.SaveChangesAsync();
+
+            return new OkObjectResult(followUpAppointment);
+        }
 
 
     }

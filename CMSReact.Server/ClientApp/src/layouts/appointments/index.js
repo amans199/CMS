@@ -4,6 +4,7 @@ import { getColorOfUser } from "utils";
 import AddNewAppointmentDialog from "./AddNewAppointmentDialog";
 import RejectReasonDialog from "./RejectReasonDialog";
 import Author from "components/Global/Author";
+import AppointmentStatusBadge from "components/Global/AppointmentStatusBadge";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -35,12 +36,14 @@ import { toast } from "react-toastify";
 import { Dialog, DialogContent, DialogTitle, Select } from "@mui/material";
 import { formatDate } from "utils";
 import { getUserData } from "utils";
+import { getAppointmentStatus } from "utils";
 
 function Tables() {
   const [appointments, setAppointments] = useState([]);
   const [isAddingDialogOpen, setIsAddingDialogOpen] = useState();
   const [rejectDialogAppointmentId, setRejectDialogAppointmentId] = useState();
   const [isLoading, setIsLoading] = useState();
+  const [originalAppointmentToBeFollowedUp, setOriginalAppointmentToBeFollowedUp] = useState();
 
   const userData = getUserData();
 
@@ -98,6 +101,18 @@ function Tables() {
     return users?.filter((u) => u.isDoctor === isDoctor)?.[0]?.user || {};
   };
 
+  const handleFollowup = (appointment, doctor, patient) => {
+    setOriginalAppointmentToBeFollowedUp({ ...appointment, doctor, patient });
+    setIsAddingDialogOpen(true);
+  };
+
+  const getOriginalAppointmentSchedule = (appointmentId) => {
+    const appointment = appointments.filter((appointment) => {
+      return appointment.id === appointmentId;
+    })?.[0];
+    return appointment;
+  };
+
   const rows = appointments.map((appointment) => {
     const patient = getUserOfType(appointment.appointmentUsers, false);
     const doctor = getUserOfType(appointment.appointmentUsers, true);
@@ -127,17 +142,18 @@ function Tables() {
           {formatDate(appointment.date)} -{appointment.time}
         </SoftTypography>
       ),
-      status: (
-        <SoftBadge
-          variant="gradient"
-          badgeContent={appointment.status}
-          color={getColorOfStatus(appointment.status)}
-          size="xs"
-          container
-        />
-      ),
+      status: <AppointmentStatusBadge status={appointment.status} />,
       comment: (
         <SoftTypography variant="caption" color="secondary" fontWeight="medium">
+          {appointment.originalAppointmentId ? (
+            <div className="p-3 m-2 rounded bg-light">
+              <div>original Appointment was at:</div>
+              {getOriginalAppointmentSchedule(appointment.originalAppointmentId)?.date} -
+              {getOriginalAppointmentSchedule(appointment.originalAppointmentId)?.time}
+            </div>
+          ) : (
+            ""
+          )}{" "}
           {appointment.rejectionReason ? `(${appointment.rejectionReason})  ` : ""}{" "}
           {appointment.comment ? `${appointment.comment}` : "-"}
         </SoftTypography>
@@ -146,17 +162,27 @@ function Tables() {
         <>
           {userData.isAdmin ? (
             <>
-              {appointment.status !== "Approved" ? (
-                <SoftButton variant="primary" onClick={() => handleApproving(appointment.id)}>
-                  Approve
-                </SoftButton>
+              {getAppointmentStatus(appointment.status) !== "Approved" ? (
+                <>
+                  <SoftButton variant="primary" onClick={() => handleApproving(appointment.id)}>
+                    Approve
+                  </SoftButton>
+                </>
               ) : (
-                <SoftButton
-                  variant="primary"
-                  onClick={() => setRejectDialogAppointmentId(appointment.id)}
-                >
-                  Reject
-                </SoftButton>
+                <>
+                  <SoftButton
+                    variant="primary"
+                    onClick={() => setRejectDialogAppointmentId(appointment.id)}
+                  >
+                    Reject
+                  </SoftButton>
+                  <SoftButton
+                    variant="primary"
+                    onClick={() => handleFollowup(appointment, doctor, patient)}
+                  >
+                    Follow-up
+                  </SoftButton>
+                </>
               )}
               <SoftButton variant="primary" onClick={() => handleDeleting(appointment.id)}>
                 Delete
@@ -200,9 +226,13 @@ function Tables() {
 
       <AddNewAppointmentDialog
         isAddingDialogOpen={isAddingDialogOpen}
-        setIsAddingDialogOpen={setIsAddingDialogOpen}
         fetchAll={fetchAll}
         userData={userData}
+        originalAppointmentToBeFollowedUp={originalAppointmentToBeFollowedUp}
+        onClose={() => {
+          setIsAddingDialogOpen(false);
+          setOriginalAppointmentToBeFollowedUp();
+        }}
       />
 
       <RejectReasonDialog
