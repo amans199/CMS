@@ -36,7 +36,7 @@ namespace CMSReact.Server.Services
                 throw new KeyNotFoundException($"Not found");
             }
 
-            var query = _dbContext.Appointments.Include(a => a.AppointmentUsers).ThenInclude(au => au.User).Select(a => new Appointment
+            var query = _dbContext.Appointments.Include(a => a.AppointmentUsers).ThenInclude(au => au.User).Include(a => a.Prescriptions).Select(a => new Appointment
             {
                 Id = a.Id,
                 Date = a.Date,
@@ -197,7 +197,7 @@ namespace CMSReact.Server.Services
             return new OkObjectResult(appointment);
         }
 
-        public async Task<IActionResult> MarkAppointmentFinishedAsync(int appointmentId)
+        public async Task<IActionResult> MarkAppointmentDoneAsync(int appointmentId)
         {
             var appointment = await _dbContext.Appointments.FindAsync(appointmentId);
             if (appointment == null)

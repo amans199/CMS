@@ -35,4 +35,6 @@ public class Appointment
 
     public ICollection<AppointmentUser> AppointmentUsers { get; set; } = new List<AppointmentUser>();
 
+    public ICollection<Prescription> Prescriptions { get; set; }
+
 }

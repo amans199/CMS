@@ -37,6 +37,7 @@ import { Dialog, DialogContent, DialogTitle, Select } from "@mui/material";
 import { formatDate } from "utils";
 import { getUserData } from "utils";
 import { getAppointmentStatus } from "utils";
+import DeleteWarningDialog from "./DeleteWarningDialog";
 
 function Tables() {
   const [appointments, setAppointments] = useState([]);
@@ -44,6 +45,8 @@ function Tables() {
   const [rejectDialogAppointmentId, setRejectDialogAppointmentId] = useState();
   const [isLoading, setIsLoading] = useState();
   const [originalAppointmentToBeFollowedUp, setOriginalAppointmentToBeFollowedUp] = useState();
+  const [appointmentToBeDeleted, setAppointmentToBeDeleted] = useState();
+  const [isDeleteWarningDialogOpen, setIsDeleteWarningDialogOpen] = useState(false);
 
   const userData = getUserData();
 
@@ -87,14 +90,8 @@ function Tables() {
   };
 
   const handleDeleting = async (appointmentId) => {
-    try {
-      const response = await axios.post(`/api/appointments/delete/${appointmentId}`);
-      toast.success(`Appointment deleted successfully`);
-    } catch (error) {
-      console.error("Deletion failed:", error);
-    } finally {
-      fetchAll();
-    }
+    setAppointmentsAppointmentToBeDeleted(appointmentId);
+    setIsDeleteWarningDialogOpen(true);
   };
 
   const getUserOfType = (users, isDoctor) => {
@@ -111,6 +108,21 @@ function Tables() {
       return appointment.id === appointmentId;
     })?.[0];
     return appointment;
+  };
+
+  const handleMarkingAppointmentAsDone = async (appointmentId) => {
+    try {
+      const response = await axios.post(`/api/appointments/done/${appointmentId}`);
+      toast.success(`Appointment Marked as done successfully`);
+    } catch (error) {
+      console.error("marking appointment as done failed:", error);
+    } finally {
+      fetchAll();
+    }
+  };
+
+  const handleWritingPrescription = (appointmentId) => {
+    //
   };
 
   const rows = appointments.map((appointment) => {
@@ -161,33 +173,62 @@ function Tables() {
       action: (
         <>
           {userData.isAdmin ? (
-            <>
-              {getAppointmentStatus(appointment.status) !== "Approved" ? (
+            <div className="d-flex flex-column gap-2">
+              {getAppointmentStatus(appointment.status) === "Pending" ||
+              getAppointmentStatus(appointment.status) === "Rejected" ? (
                 <>
-                  <SoftButton variant="primary" onClick={() => handleApproving(appointment.id)}>
+                  <SoftButton color="success" onClick={() => handleApproving(appointment.id)}>
                     Approve
                   </SoftButton>
                 </>
               ) : (
+                <></>
+              )}
+
+              {getAppointmentStatus(appointment.status) === "Done" && (
                 <>
                   <SoftButton
-                    variant="primary"
+                    color="primary"
+                    onClick={() => handleWritingPrescription(appointment.id)}
+                  >
+                    Write Prescription
+                  </SoftButton>
+                </>
+              )}
+
+              {getAppointmentStatus(appointment.status) === "Approved" && (
+                <>
+                  <SoftButton
+                    color="success"
+                    onClick={() => handleMarkingAppointmentAsDone(appointment.id)}
+                  >
+                    Done
+                  </SoftButton>
+                  <SoftButton
+                    color="warning"
                     onClick={() => setRejectDialogAppointmentId(appointment.id)}
                   >
                     Reject
                   </SoftButton>
                   <SoftButton
-                    variant="primary"
+                    color="primary"
                     onClick={() => handleFollowup(appointment, doctor, patient)}
                   >
                     Follow-up
                   </SoftButton>
                 </>
               )}
-              <SoftButton variant="primary" onClick={() => handleDeleting(appointment.id)}>
+
+              <SoftButton
+                color="error"
+                onClick={() => {
+                  setAppointmentToBeDeleted(appointment.id);
+                  setIsDeleteWarningDialogOpen(true);
+                }}
+              >
                 Delete
               </SoftButton>
-            </>
+            </div>
           ) : (
             <></>
           )}
@@ -239,6 +280,16 @@ function Tables() {
         rejectDialogAppointmentId={rejectDialogAppointmentId}
         setRejectDialogAppointmentId={setRejectDialogAppointmentId}
         fetchAll={fetchAll}
+      />
+
+      <DeleteWarningDialog
+        isOpen={isDeleteWarningDialogOpen}
+        fetchAll={fetchAll}
+        appointmentId={appointmentToBeDeleted}
+        onClose={() => {
+          setIsDeleteWarningDialogOpen(false);
+          setAppointmentToBeDeleted();
+        }}
       />
       <Footer />
     </DashboardLayout>

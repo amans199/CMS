@@ -1265,3 +1265,11 @@ html {
     }
   }
 }
+
+table {
+  tbody {
+    tr:hover {
+      background-color: var(--bs-primary-bg-subtle);
+    }
+  }
+}

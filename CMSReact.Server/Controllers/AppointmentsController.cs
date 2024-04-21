@@ -98,6 +98,13 @@ namespace CMSReact.Server.Controllers
             return Ok("Appointment has been rejected");
         }
 
+        [HttpPost("done/{id}")]
+        public async Task<IActionResult> MarkAppointmentDone(int id)
+        {
+            await _appointmentService.MarkAppointmentDoneAsync(id);
+            return Ok("Appointment has been marked as done");
+        }
+
         // Consider adding endpoint to retrieve appointments for a specific doctor (if applicable)
         // Implement authorization checks in controllers to restrict access based on user roles
     }
