@@ -21,6 +21,7 @@ import Document from "examples/Icons/Document";
 import Settings from "examples/Icons/Settings";
 import SpaceShip from "examples/Icons/SpaceShip";
 import { getUserData } from "utils";
+import InvoicesItems from "layouts/invoicesItems";
 
 // allowedRoles:
 // ["all"] : All Roles
@@ -68,26 +69,26 @@ const routes = [
     noCollapse: true,
     allowedRoles: [],
   },
-  // {
-  //   type: "collapse",
-  //   name: "Billing",
-  //   key: "billing",
-  //   route: "/billing",
-  //   icon: <CreditCard size="12px" />,
-  //   component: <Billing />,
-  //   noCollapse: true,
-  //   allowedRoles: ["approved_user"],
-  // },
-  // {
-  //   type: "collapse",
-  //   name: "Invoices",
-  //   key: "invoices",
-  //   route: "/invoices",
-  //   icon: <Document size="12px" />,
-  //   component: <Invoices />,
-  //   noCollapse: true,
-  //   allowedRoles: ["approved_user"],
-  // },
+  {
+    type: "collapse",
+    name: "Billing",
+    key: "billing",
+    route: "/billing",
+    icon: <CreditCard size="12px" />,
+    component: <Billing />,
+    noCollapse: true,
+    allowedRoles: ["approved_user"],
+  },
+  {
+    type: "collapse",
+    name: "Invoices",
+    key: "invoices",
+    route: "/invoices",
+    icon: <Document size="12px" />,
+    component: <Invoices />,
+    noCollapse: true,
+    allowedRoles: ["approved_user"],
+  },
   { type: "title", title: "Settings", key: "settings-pages" },
   {
     type: "collapse",
@@ -96,6 +97,16 @@ const routes = [
     route: "/specialties",
     icon: <Document size="12px" />,
     component: <Specialties />,
+    noCollapse: true,
+    allowedRoles: [],
+  },
+  {
+    type: "collapse",
+    name: "Invoice Items",
+    key: "invoice-items",
+    route: "/invoice-items",
+    icon: <Document size="12px" />,
+    component: <InvoicesItems />,
     noCollapse: true,
     allowedRoles: [],
   },

@@ -14,6 +14,8 @@ namespace CMSReact.Server.Context
         public DbSet<Speciality> Specialities { get; set; }
         public DbSet<AppointmentUser> AppointmentUsers { get; set; }
         public DbSet<Prescription> Prescriptions { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<InvoiceItem> InvoiceItems { get; set; }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 

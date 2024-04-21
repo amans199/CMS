@@ -58,3 +58,9 @@ export const formatDate = (dateString) => {
 export const getAppointmentStatus = (key) => {
   return ["Pending", "Approved", "Rejected", "Done"][key];
 };
+
+export const toDateInputValue = (dateObject) => {
+  const local = new Date(dateObject);
+  local.setMinutes(dateObject.getMinutes() - dateObject.getTimezoneOffset());
+  return local.toJSON().slice(0, 10);
+};

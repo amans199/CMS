@@ -3,6 +3,7 @@ using System;
 using CMSReact.Server.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMSReact.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240421112650_invoices")]
+    partial class invoices
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -34,13 +37,7 @@ namespace CMSReact.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("InvoiceId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int?>("OriginalAppointmentId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("PrescriptionId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Reason")
@@ -119,8 +116,7 @@ namespace CMSReact.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId")
-                        .IsUnique();
+                    b.HasIndex("AppointmentId");
 
                     b.ToTable("Invoices");
                 });
@@ -177,8 +173,7 @@ namespace CMSReact.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppointmentId")
-                        .IsUnique();
+                    b.HasIndex("AppointmentId");
 
                     b.ToTable("Prescriptions");
                 });
@@ -303,8 +298,8 @@ namespace CMSReact.Server.Migrations
             modelBuilder.Entity("CMSReact.Server.Models.Invoice", b =>
                 {
                     b.HasOne("Appointment", "Appointment")
-                        .WithOne("Invoice")
-                        .HasForeignKey("CMSReact.Server.Models.Invoice", "AppointmentId")
+                        .WithMany()
+                        .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -325,8 +320,8 @@ namespace CMSReact.Server.Migrations
             modelBuilder.Entity("CMSReact.Server.Models.Prescription", b =>
                 {
                     b.HasOne("Appointment", "Appointment")
-                        .WithOne("Prescription")
-                        .HasForeignKey("CMSReact.Server.Models.Prescription", "AppointmentId")
+                        .WithMany("Prescriptions")
+                        .HasForeignKey("AppointmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -337,11 +332,7 @@ namespace CMSReact.Server.Migrations
                 {
                     b.Navigation("AppointmentUsers");
 
-                    b.Navigation("Invoice")
-                        .IsRequired();
-
-                    b.Navigation("Prescription")
-                        .IsRequired();
+                    b.Navigation("Prescriptions");
                 });
 
             modelBuilder.Entity("CMSReact.Server.Models.Invoice", b =>

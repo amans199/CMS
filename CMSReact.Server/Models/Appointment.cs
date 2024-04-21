@@ -35,6 +35,13 @@ public class Appointment
 
     public ICollection<AppointmentUser> AppointmentUsers { get; set; } = new List<AppointmentUser>();
 
-    public ICollection<Prescription> Prescriptions { get; set; }
 
+    [ForeignKey("PrescriptionId")]
+    public int? PrescriptionId { get; set; }
+    public Prescription Prescription { get; set; }
+
+
+    [ForeignKey("InvoiceId")]
+    public int? InvoiceId { get; set; }
+    public Invoice Invoice { get; set; }
 }

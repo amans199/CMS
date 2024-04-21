@@ -38,6 +38,7 @@ import { formatDate } from "utils";
 import { getUserData } from "utils";
 import { getAppointmentStatus } from "utils";
 import DeleteWarningDialog from "./DeleteWarningDialog";
+import CreateInvoiceDialog from "./CreateInvoiceDialog";
 
 function Tables() {
   const [appointments, setAppointments] = useState([]);
@@ -45,8 +46,9 @@ function Tables() {
   const [rejectDialogAppointmentId, setRejectDialogAppointmentId] = useState();
   const [isLoading, setIsLoading] = useState();
   const [originalAppointmentToBeFollowedUp, setOriginalAppointmentToBeFollowedUp] = useState();
-  const [appointmentToBeDeleted, setAppointmentToBeDeleted] = useState();
+  const [selectedAppointment, setSelectedAppointment] = useState();
   const [isDeleteWarningDialogOpen, setIsDeleteWarningDialogOpen] = useState(false);
+  const [isCreateInvoiceDialogOpen, setIsCreateInvoiceDialogOpen] = useState(false);
 
   const userData = getUserData();
 
@@ -121,8 +123,12 @@ function Tables() {
     }
   };
 
-  const handleWritingPrescription = (appointmentId) => {
+  const handleCreatingPrescription = (appointmentId) => {
     //
+  };
+  const handleCreatingInvoice = (appointmentId) => {
+    setIsCreateInvoiceDialogOpen(true);
+    setSelectedAppointment(appointmentId);
   };
 
   const rows = appointments.map((appointment) => {
@@ -189,9 +195,12 @@ function Tables() {
                 <>
                   <SoftButton
                     color="primary"
-                    onClick={() => handleWritingPrescription(appointment.id)}
+                    onClick={() => handleCreatingPrescription(appointment.id)}
                   >
-                    Write Prescription
+                    Create Prescription
+                  </SoftButton>
+                  <SoftButton color="primary" onClick={() => handleCreatingInvoice(appointment.id)}>
+                    Create Invoice
                   </SoftButton>
                 </>
               )}
@@ -222,7 +231,7 @@ function Tables() {
               <SoftButton
                 color="error"
                 onClick={() => {
-                  setAppointmentToBeDeleted(appointment.id);
+                  setSelectedAppointment(appointment.id);
                   setIsDeleteWarningDialogOpen(true);
                 }}
               >
@@ -285,10 +294,19 @@ function Tables() {
       <DeleteWarningDialog
         isOpen={isDeleteWarningDialogOpen}
         fetchAll={fetchAll}
-        appointmentId={appointmentToBeDeleted}
+        appointmentId={selectedAppointment}
         onClose={() => {
           setIsDeleteWarningDialogOpen(false);
-          setAppointmentToBeDeleted();
+          setSelectedAppointment();
+        }}
+      />
+
+      <CreateInvoiceDialog
+        isDialogOpen={isCreateInvoiceDialogOpen}
+        selectedAppointment={selectedAppointment}
+        onClose={() => {
+          setIsCreateInvoiceDialogOpen(false);
+          setSelectedAppointment();
         }}
       />
       <Footer />
