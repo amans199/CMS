@@ -8,7 +8,7 @@ function Author({ image, name, email }) {
   return (
     <SoftBox display="flex" px={0} py={0.5}>
       <SoftBox mr={2}>
-        <SoftAvatar src={profilePhotoPlaceholder || image} alt={name} size="sm" variant="rounded" />
+        <SoftAvatar src={image || profilePhotoPlaceholder} alt={name} size="sm" variant="rounded" />
       </SoftBox>
       <SoftBox display="flex" flexDirection="column">
         <SoftTypography variant="button" fontWeight="medium">

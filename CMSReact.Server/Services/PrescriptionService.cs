@@ -43,8 +43,20 @@ public class PrescriptionService
             return new BadRequestObjectResult("Appointment ID is required");
         }
 
+
         _dbContext.Prescriptions.Add(newPrescription);
         await _dbContext.SaveChangesAsync();
+
+        // Update Appointment with PrescriptionId
+        var appointment = await _dbContext.Appointments.FindAsync(newPrescription.AppointmentId);
+        if (appointment != null)
+        {
+            appointment.PrescriptionId = newPrescription.Id;
+            _dbContext.Appointments.Update(appointment);
+        }
+
+        await _dbContext.SaveChangesAsync();
+
 
         return new OkObjectResult(newPrescription);
     }

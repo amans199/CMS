@@ -34,6 +34,21 @@ public class InvoicesController : ControllerBase
         }
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Invoice>>> GetAllInvoices()
+    {
+        try
+        {
+            var invoices = await _invoiceService.GetAllInvoicesAsync();
+            return Ok(invoices);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Invoice>> GetInvoiceById(int id)
     {

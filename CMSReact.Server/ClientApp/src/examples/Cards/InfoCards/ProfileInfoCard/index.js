@@ -92,28 +92,20 @@ function ProfileInfoCard({ title, description, info, social, action }) {
         </SoftBox>
         <SoftBox>
           {renderItems}
-          <SoftBox display="flex" py={1} pr={2}>
-            <SoftTypography variant="button" fontWeight="bold" textTransform="capitalize">
-              social: &nbsp;
-            </SoftTypography>
-            {renderSocial}
-          </SoftBox>
+          {social && social.length ? (
+            <SoftBox display="flex" py={1} pr={2}>
+              <SoftTypography variant="button" fontWeight="bold" textTransform="capitalize">
+                social: &nbsp;
+              </SoftTypography>
+              {renderSocial}
+            </SoftBox>
+          ) : (
+            <></>
+          )}
         </SoftBox>
       </SoftBox>
     </Card>
   );
 }
-
-// Typechecking props for the ProfileInfoCard
-ProfileInfoCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  info: PropTypes.objectOf(PropTypes.string).isRequired,
-  social: PropTypes.arrayOf(PropTypes.object).isRequired,
-  action: PropTypes.shape({
-    onClick: PropTypes.any,
-    tooltip: PropTypes.string.isRequired,
-  }).isRequired,
-};
 
 export default ProfileInfoCard;

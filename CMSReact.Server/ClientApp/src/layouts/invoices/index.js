@@ -12,39 +12,69 @@ import Footer from "examples/Footer";
 import Table from "examples/Tables/Table";
 
 // Data
-import authorsTableData from "./data/authorsTableData";
-// import projectsTableData from "./data/projectsTableData";
+import Invoice from "./Invoice";
+import SoftButton from "components/SoftButton";
+import { useEffect, useState } from "react";
+import axios from "utils/Axios";
 
 function Invoices() {
-  const { columns, rows } = authorsTableData;
-  // const { columns: prCols, rows: prRows } = projectsTableData;
+  const [allInvoices, setAllInvoices] = useState([]);
 
+  useEffect(() => {
+    fetchAllInvoices();
+  }, []);
+
+  const fetchAllInvoices = async () => {
+    try {
+      const response = await axios.get("/api/invoices");
+      setAllInvoices(response?.data || []);
+    } catch (error) {
+      console.error("Fetching Specialties failed:", error);
+    }
+  };
   return (
-    <DashboardLayout>
-      <DashboardNavbar />
-      <SoftBox py={3}>
-        <SoftBox mb={3}>
+    <>
+      <DashboardLayout>
+        <DashboardNavbar />
+        <SoftBox py={3}>
           <Card>
-            <SoftBox display="flex" justifyContent="space-between" alignItems="center" p={3}>
-              <SoftTypography variant="h6">Invoices table</SoftTypography>
-            </SoftBox>
             <SoftBox
-              sx={{
-                "& .MuiTableRow-root:not(:last-child)": {
-                  "& td": {
-                    borderBottom: ({ borders: { borderWidth, borderColor } }) =>
-                      `${borderWidth[1]} solid ${borderColor}`,
-                  },
-                },
-              }}
+              pt={2}
+              px={2}
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
             >
-              <Table columns={columns} rows={rows} />
+              <SoftTypography variant="h6" fontWeight="medium">
+                Invoices
+              </SoftTypography>
+              {/* <SoftButton variant="outlined" color="info" size="small">
+                view all
+              </SoftButton> */}
+            </SoftBox>
+            <SoftBox p={2}>
+              <SoftBox component="ul" display="flex" flexDirection="column" p={0} m={0}>
+                {allInvoices.map((invoice, index) => (
+                  <Invoice
+                    key={invoice.id}
+                    invoice={invoice}
+                    noGutter={index === allInvoices.length - 1}
+                    // date="March, 01, 2020"
+                    // id="#MS-415646"
+                    // price="$180"
+                  />
+                ))}
+                {/* <Invoice date="February, 10, 2021" id="#RV-126749" price="$250" />
+                <Invoice date="April, 05, 2020" id="#QW-103578" price="$120" />
+                <Invoice date="June, 25, 2019" id="#MS-415646" price="$180" />
+                <Invoice date="March, 01, 2019" id="#AR-803481" price="$300" noGutter /> */}
+              </SoftBox>
             </SoftBox>
           </Card>
         </SoftBox>
-      </SoftBox>
-      <Footer />
-    </DashboardLayout>
+        <Footer />
+      </DashboardLayout>
+    </>
   );
 }
 

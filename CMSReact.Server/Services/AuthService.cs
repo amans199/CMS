@@ -31,12 +31,14 @@ namespace CMSReact.Server.Services
                 return new BadRequestObjectResult("User already exists.");
             }
 
+
             var user = new User
             {
                 Username = userDto.Username,
                 Email = userDto.Email,
                 PasswordHash = userDto.Password,
-                IsDoctor = userDto.IsDoctor
+                IsDoctor = userDto.IsDoctor,
+                CreatedAt = DateTime.UtcNow
             };
 
             if(userDto.SpecialityId != null)
@@ -44,12 +46,6 @@ namespace CMSReact.Server.Services
                 user.SpecialityId = (int)userDto.SpecialityId;
             }
             
-
-            //var result = await _userManager.CreateAsync(user, userDto.Password);
-            //if (!result.Succeeded)
-            //{
-            //    return new BadRequestObjectResult(result.Errors); 
-            //}
 
             _dbContext.Users.Add(user);
             

@@ -1,4 +1,5 @@
 ﻿using CMSReact.Server.Context;
+using CMSReact.Server.DTOs;
 using CMSReact.Server.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,7 @@ public class InvoiceService
 
     public async Task<IEnumerable<Invoice>> GetInvoicesAsync(int? appointmentId = null)
     {
-        var query = _dbContext.Invoices.Include(i => i.Appointment) // Eager loading for Appointment
-          .AsQueryable();
+        var query = _dbContext.Invoices.AsQueryable();
 
         if (appointmentId.HasValue)
         {
@@ -31,9 +31,7 @@ public class InvoiceService
     public async Task<Invoice> GetInvoiceByIdAsync(int id)
     {
         var invoice = await _dbContext.Invoices
-          .Include(i => i.Appointment) // Eager loading for Appointment
-          .Include(i => i.InvoiceItems) // Eager loading for InvoiceItems
-          .FirstOrDefaultAsync(i => i.Id == id);
+          .Include(i => i.InvoiceItems).FirstOrDefaultAsync(i => i.Id == id);
 
         if (invoice == null)
         {
@@ -44,15 +42,24 @@ public class InvoiceService
 
     public async Task<IActionResult> CreateInvoiceAsync(Invoice newInvoice)
     {
+        if (newInvoice == null)
+        {
+            return new BadRequestObjectResult("Invoice data is required");
+        }
+
         if (newInvoice.AppointmentId == null)
         {
             return new BadRequestObjectResult("Appointment ID is required");
         }
 
-        // Validate other invoice properties (e.g., service description, total amount)
+        var appointment = await _dbContext.Appointments.FirstOrDefaultAsync(a => a.Id == newInvoice.AppointmentId);
+        appointment.InvoiceId = newInvoice.Id;
 
         _dbContext.Invoices.Add(newInvoice);
+        _dbContext.Appointments.Update(appointment);
         await _dbContext.SaveChangesAsync();
+
+
 
         return new OkObjectResult(newInvoice);
     }
@@ -163,5 +170,9 @@ public class InvoiceService
     public async Task<IEnumerable<InvoiceItem>> GetAllInvoiceItemsAsync()
     {
         return await _dbContext.InvoiceItems.ToListAsync();
+    }
+    public async Task<IEnumerable<Invoice>> GetAllInvoicesAsync()
+    {
+        return await _dbContext.Invoices.ToListAsync();
     }
 }

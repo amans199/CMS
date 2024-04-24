@@ -123,12 +123,12 @@ function Tables() {
     }
   };
 
-  const handleCreatingPrescription = (appointmentId) => {
+  const handleCreatingPrescription = (appointment) => {
     //
   };
-  const handleCreatingInvoice = (appointmentId) => {
+  const handleCreatingInvoice = (appointment) => {
     setIsCreateInvoiceDialogOpen(true);
-    setSelectedAppointment(appointmentId);
+    setSelectedAppointment(appointment);
   };
 
   const rows = appointments.map((appointment) => {
@@ -195,13 +195,22 @@ function Tables() {
                 <>
                   <SoftButton
                     color="primary"
-                    onClick={() => handleCreatingPrescription(appointment.id)}
+                    onClick={() => handleCreatingPrescription({ ...appointment, doctor, patient })}
                   >
                     Create Prescription
                   </SoftButton>
-                  <SoftButton color="primary" onClick={() => handleCreatingInvoice(appointment.id)}>
+                  {/* {!isNaN(appointment.invoiceId) ? (
+                    <SoftButton color="dark" onClick={() => {}}>
+                      View Invoice
+                    </SoftButton>
+                  ) : ( */}
+                  <SoftButton
+                    color="primary"
+                    onClick={() => handleCreatingInvoice({ ...appointment, doctor, patient })}
+                  >
                     Create Invoice
                   </SoftButton>
+                  {/* )} */}
                 </>
               )}
 

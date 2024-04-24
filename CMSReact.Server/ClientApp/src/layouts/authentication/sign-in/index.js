@@ -23,7 +23,6 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import curved9 from "assets/images/curved-images/curved-6.jpg";
 
 function SignIn() {
-  const [rememberMe, setRememberMe] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -94,7 +93,7 @@ function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </SoftBox>
-        <SoftBox display="flex" alignItems="center">
+        {/* <SoftBox display="flex" alignItems="center">
           <Switch checked={rememberMe} onChange={handleSetRememberMe} />
           <SoftTypography
             variant="button"
@@ -104,7 +103,7 @@ function SignIn() {
           >
             &nbsp;&nbsp;Remember me
           </SoftTypography>
-        </SoftBox>
+        </SoftBox> */}
         <SoftBox mt={4} mb={1}>
           <SoftButton variant="gradient" color="info" fullWidth onClick={handleSignIn}>
             sign in

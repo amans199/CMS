@@ -158,7 +158,11 @@ function Users() {
   const rows = users.map((user) => ({
     id: <>{user.id}</>,
     user: (
-      <Author image={user.profilePhoto} name={user.fullName || user.username} email={user.email} />
+      <Author
+        image={user.profilePicture}
+        name={user.fullName || user.username}
+        email={user.email}
+      />
     ),
     type: (
       <SoftBadge

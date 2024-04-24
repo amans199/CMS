@@ -104,26 +104,9 @@ function Overview() {
                 email: userData.email,
                 address: userData.address,
                 address: userData.dateOfBirth,
-                type: userData.type,
                 createdAt: formatDate(userData.createdAt),
               }}
-              social={[
-                {
-                  link: "https://www.facebook.com/",
-                  icon: <FacebookIcon />,
-                  color: "facebook",
-                },
-                {
-                  link: "https://twitter.com/",
-                  icon: <TwitterIcon />,
-                  color: "twitter",
-                },
-                {
-                  link: "https://www.instagram.com/",
-                  icon: <InstagramIcon />,
-                  color: "instagram",
-                },
-              ]}
+              social={[]}
               action={{ onClick: handleEditingProfile, tooltip: "Edit Profile" }}
             />
           </Grid>

@@ -38,10 +38,10 @@ public class Appointment
 
     [ForeignKey("PrescriptionId")]
     public int? PrescriptionId { get; set; }
-    public Prescription Prescription { get; set; }
+    //public Prescription Prescription { get; set; }
 
 
     [ForeignKey("InvoiceId")]
     public int? InvoiceId { get; set; }
-    public Invoice Invoice { get; set; }
+    //public Invoice? Invoice { get; set; }
 }
