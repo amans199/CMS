@@ -29,7 +29,8 @@ namespace CMSReact.Server
             builder.Services.AddScoped<AppointmentService>();
             builder.Services.AddScoped<SpecialityService>();
             builder.Services.AddScoped<InvoiceService>();
-
+            builder.Services.AddScoped<PrescriptionService>();
+            
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
             builder.Services.AddDbContext<AppDbContext>(options =>

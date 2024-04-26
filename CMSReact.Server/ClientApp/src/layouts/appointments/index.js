@@ -39,6 +39,7 @@ import { getUserData } from "utils";
 import { getAppointmentStatus } from "utils";
 import DeleteWarningDialog from "./DeleteWarningDialog";
 import CreateInvoiceDialog from "./CreateInvoiceDialog";
+import CreatePrescriptionDialog from "./CreatePrescriptionDialog";
 
 function Tables() {
   const [appointments, setAppointments] = useState([]);
@@ -49,6 +50,7 @@ function Tables() {
   const [selectedAppointment, setSelectedAppointment] = useState();
   const [isDeleteWarningDialogOpen, setIsDeleteWarningDialogOpen] = useState(false);
   const [isCreateInvoiceDialogOpen, setIsCreateInvoiceDialogOpen] = useState(false);
+  const [isCreatePrescriptionDialogOpen, setIsCreatePrescriptionDialogOpen] = useState(false);
 
   const userData = getUserData();
 
@@ -124,12 +126,16 @@ function Tables() {
   };
 
   const handleCreatingPrescription = (appointment) => {
-    //
+    setIsCreatePrescriptionDialogOpen(true);
+    setSelectedAppointment(appointment);
   };
   const handleCreatingInvoice = (appointment) => {
     setIsCreateInvoiceDialogOpen(true);
     setSelectedAppointment(appointment);
   };
+
+  const isAdmin = userData.isAdmin;
+  const isDoctor = userData.isDoctor;
 
   const rows = appointments.map((appointment) => {
     const patient = getUserOfType(appointment.appointmentUsers, false);
@@ -178,78 +184,120 @@ function Tables() {
       ),
       action: (
         <>
-          {userData.isAdmin ? (
-            <div className="d-flex flex-column gap-2">
-              {getAppointmentStatus(appointment.status) === "Pending" ||
-              getAppointmentStatus(appointment.status) === "Rejected" ? (
-                <>
-                  <SoftButton color="success" onClick={() => handleApproving(appointment.id)}>
-                    Approve
-                  </SoftButton>
-                </>
-              ) : (
-                <></>
-              )}
+          <div className="d-flex flex-column gap-2">
+            {/* <ButtonWithConditions
+              conditions={[
+                getAppointmentStatus(appointment.status) === "Done" ||
+                  getAppointmentStatus(appointment.status) === "Rejected",
+                isAdmin,
+              ]}
+              color="success"
+              onClick={() => handleApproving(appointment.id)}
+            >
+              Approve
+            </ButtonWithConditions> */}
 
-              {getAppointmentStatus(appointment.status) === "Done" && (
-                <>
-                  <SoftButton
-                    color="primary"
-                    onClick={() => handleCreatingPrescription({ ...appointment, doctor, patient })}
-                  >
-                    Create Prescription
-                  </SoftButton>
-                  {/* {!isNaN(appointment.invoiceId) ? (
-                    <SoftButton color="dark" onClick={() => {}}>
-                      View Invoice
-                    </SoftButton>
-                  ) : ( */}
-                  <SoftButton
-                    color="primary"
-                    onClick={() => handleCreatingInvoice({ ...appointment, doctor, patient })}
-                  >
-                    Create Invoice
-                  </SoftButton>
-                  {/* )} */}
-                </>
-              )}
+            <ButtonWithConditions
+              conditions={[
+                appointment.prescriptionId !== null,
+                getAppointmentStatus(appointment.status) === "Done",
+              ]}
+              color="dark"
+              onClick={() => handleCreatingPrescription({ ...appointment, doctor, patient })}
+            >
+              View Prescription
+            </ButtonWithConditions>
 
-              {getAppointmentStatus(appointment.status) === "Approved" && (
-                <>
-                  <SoftButton
-                    color="success"
-                    onClick={() => handleMarkingAppointmentAsDone(appointment.id)}
-                  >
-                    Done
-                  </SoftButton>
-                  <SoftButton
-                    color="warning"
-                    onClick={() => setRejectDialogAppointmentId(appointment.id)}
-                  >
-                    Reject
-                  </SoftButton>
-                  <SoftButton
-                    color="primary"
-                    onClick={() => handleFollowup(appointment, doctor, patient)}
-                  >
-                    Follow-up
-                  </SoftButton>
-                </>
-              )}
+            <ButtonWithConditions
+              conditions={[
+                appointment.prescriptionId === null,
+                getAppointmentStatus(appointment.status) === "Done",
+              ]}
+              color="primary"
+              onClick={() => handleCreatingPrescription({ ...appointment, doctor, patient })}
+            >
+              Create Prescription
+            </ButtonWithConditions>
 
-              <SoftButton
-                color="error"
-                onClick={() => {
-                  setSelectedAppointment(appointment.id);
-                  setIsDeleteWarningDialogOpen(true);
-                }}
-              >
-                Delete
-              </SoftButton>
-            </div>
-          ) : (
-            <></>
-          )}
+            <ButtonWithConditions
+              conditions={[
+                appointment.invoiceId !== null,
+                getAppointmentStatus(appointment.status) === "Done",
+              ]}
+              color="dark"
+              onClick={() => {}}
+            >
+              View Invoice
+            </ButtonWithConditions>
+            <ButtonWithConditions
+              conditions={[
+                appointment.invoiceId === null,
+                getAppointmentStatus(appointment.status) === "Done",
+                isAdmin,
+              ]}
+              color="primary"
+              onClick={() => handleCreatingInvoice({ ...appointment, doctor, patient })}
+            >
+              Create Invoice
+            </ButtonWithConditions>
+
+            <ButtonWithConditions
+              conditions={[
+                getAppointmentStatus(appointment.status) === "Pending" ||
+                  getAppointmentStatus(appointment.status) === "Rejected",
+                isAdmin,
+              ]}
+              color="success"
+              onClick={() => handleApproving(appointment.id)}
+            >
+              Approve
+            </ButtonWithConditions>
+
+            <ButtonWithConditions
+              conditions={[
+                getAppointmentStatus(appointment.status) === "Pending" ||
+                  getAppointmentStatus(appointment.status) === "Approved",
+                isDoctor || isAdmin,
+              ]}
+              color="warning"
+              onClick={() => setRejectDialogAppointmentId(appointment.id)}
+            >
+              Reject
+            </ButtonWithConditions>
+
+            <ButtonWithConditions
+              conditions={[
+                getAppointmentStatus(appointment.status) === "Approved",
+                isDoctor || isAdmin,
+              ]}
+              color="success"
+              onClick={() => handleMarkingAppointmentAsDone(appointment.id)}
+            >
+              Done
+            </ButtonWithConditions>
+
+            <ButtonWithConditions
+              conditions={[
+                getAppointmentStatus(appointment.status) === "Done",
+                isDoctor || isAdmin,
+              ]}
+              color="primary"
+              onClick={() => handleFollowup(appointment, doctor, patient)}
+            >
+              Follow-up
+            </ButtonWithConditions>
+
+            <ButtonWithConditions
+              conditions={[isAdmin]}
+              color="error"
+              onClick={() => {
+                setSelectedAppointment(appointment.id);
+                setIsDeleteWarningDialogOpen(true);
+              }}
+            >
+              Delete
+            </ButtonWithConditions>
+          </div>
         </>
       ),
     };
@@ -318,9 +366,34 @@ function Tables() {
           setSelectedAppointment();
         }}
       />
+
+      <CreatePrescriptionDialog
+        isDialogOpen={isCreatePrescriptionDialogOpen}
+        selectedAppointment={selectedAppointment}
+        onClose={() => {
+          setIsCreatePrescriptionDialogOpen(false);
+          setSelectedAppointment();
+          fetchAll();
+        }}
+      />
+
       <Footer />
     </DashboardLayout>
   );
 }
+
+const ButtonWithConditions = ({ conditions, color, onClick, children }) => {
+  const allConditionsAreMet = conditions.filter((condition) => !condition).length === 0;
+
+  return allConditionsAreMet ? (
+    <>
+      <SoftButton color={color} onClick={onClick}>
+        {children}
+      </SoftButton>
+    </>
+  ) : (
+    <></>
+  );
+};
 
 export default Tables;

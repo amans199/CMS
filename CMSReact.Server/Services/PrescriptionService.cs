@@ -70,7 +70,6 @@ public class PrescriptionService
         }
 
         prescription.Medication = updatedPrescription.Medication;
-        prescription.Dosage = updatedPrescription.Dosage;
         prescription.Instructions = updatedPrescription.Instructions;
 
         _dbContext.Prescriptions.Update(prescription);

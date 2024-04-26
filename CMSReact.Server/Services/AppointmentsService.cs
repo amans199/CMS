@@ -48,6 +48,7 @@ namespace CMSReact.Server.Services
                 RejectionReason = a.RejectionReason,
                 OriginalAppointmentId = a.OriginalAppointmentId,
                 InvoiceId = a.InvoiceId,
+                PrescriptionId = a.PrescriptionId,
                 AppointmentUsers = a.AppointmentUsers.Select(au => new AppointmentUser
                 {
                     IsDoctor = au.IsDoctor,

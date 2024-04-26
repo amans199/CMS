@@ -223,6 +223,7 @@ export const AddNewAppointmentDialog = ({
               variant="contained"
               color="primary"
               onClick={handleAddingAppointment}
+              className="ml-3"
               disabled={
                 !selectedDate || !selectedTime || !reason || (!originalAppointment && !doctorId)
               }

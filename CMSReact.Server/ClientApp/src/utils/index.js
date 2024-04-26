@@ -30,17 +30,6 @@ export const getColorOfUser = (type) => {
 };
 
 export const getColorOfStatus = (key) => {
-  console.log(
-    "🚀 ~ getColorOfStatus ~ key:",
-    key,
-    getAppointmentStatus(key),
-    {
-      Approved: "success",
-      Pending: "warning",
-      Rejected: "error",
-      Done: "dark",
-    }[getAppointmentStatus(key)]
-  );
   return {
     Approved: "success",
     Pending: "warning",

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace CMSReact.Server.Controllers;
 
 [ApiController]
-[Route("api/appointments/{appointmentId}/prescriptions")]
+[Route("api/prescriptions/{appointmentId}")]
 public class PrescriptionsController : ControllerBase
 {
     private readonly PrescriptionService _prescriptionService;
