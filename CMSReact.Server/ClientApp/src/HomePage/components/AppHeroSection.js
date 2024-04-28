@@ -30,30 +30,18 @@ function AppHeroSection(props) {
                 <span>Hi</span> <span className="text-dark">{`${userData.username},`}</span>
               </p>
             )}
-            Welcome To CMS
+            Welcome To CMS (Clinic Managment System)
           </p>
 
-          <h1 className="h1 hero-title">We Are Best Dental Service</h1>
+          <h1 className="h1 hero-title">We Are Best CMS Service</h1>
 
           <p className="hero-text">
-            Donec vitae libero non enim placerat eleifend aliquam erat volutpat. Curabitur diam ex,
-            dapibus purus sapien, cursus sed nisl tristique, commodo gravida lectus non.
+          The CMS will serve as a centralized system that consolidates and organizes important clinic-related information.
+          It will enhance the overall efficiency, accuracy, and productivity of clinic operations, leading to improved patient care and satisfaction.
           </p>
+            
 
-          <form action="" className="hero-form">
-            <input
-              type="email"
-              name="email_address"
-              aria-label="email"
-              placeholder="Your Email Address..."
-              required
-              className="email-field"
-            />
-
-            <button type="submit" className="btn">
-              Get Call Back
-            </button>
-          </form>
+          
         </div>
 
         <figure className="hero-banner">
