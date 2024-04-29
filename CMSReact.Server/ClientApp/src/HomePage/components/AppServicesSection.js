@@ -4,8 +4,6 @@ import serviceIconFirst from "assets/images/service-icon-1.png";
 import serviceIconSecond from "assets/images/service-icon-2.png";
 import serviceIconThird from "assets/images/service-icon-3.png";
 import serviceIconFourth from "assets/images/service-icon-4.png";
-import serviceIconFifth from "assets/images/service-icon-5.png";
-import serviceIconSixth from "assets/images/service-icon-6.png";
 import ServiceBanner from "assets/images/service-banner.png";
 
 function AppServicesSection(props) {
@@ -31,10 +29,11 @@ function AppServicesSection(props) {
               </div>
 
               <div>
-                <h3 className="h3 card-title">Root Canal</h3>
+                <h3 className="h3 card-title">Appointment Scheduling</h3>
 
                 <p className="card-text">
-                  Aenean eleifend turpis tellus, nec laoreet metus elementum ac.
+                Enables the creation and cancellation of patient appointments.
+                This feature facilitates the organization of clinic schedules, ensuring efficient time management for both patients and healthcare providers.
                 </p>
               </div>
             </div>
@@ -54,10 +53,11 @@ function AppServicesSection(props) {
               </div>
 
               <div>
-                <h3 className="h3 card-title">Alignment Teeth</h3>
+                <h3 className="h3 card-title">Patient Management</h3>
 
                 <p className="card-text">
-                  Aenean eleifend turpis tellus, nec laoreet metus elementum ac.
+                Manages all aspects of patient information, including registration and appointments records.
+                It ensures that patient data is accurate and easily accessible to authorized users.
                 </p>
               </div>
             </div>
@@ -77,10 +77,11 @@ function AppServicesSection(props) {
               </div>
 
               <div>
-                <h3 className="h3 card-title">Cosmetic Teeth</h3>
+                <h3 className="h3 card-title">Prescription Management</h3>
 
                 <p className="card-text">
-                  Aenean eleifend turpis tellus, nec laoreet metus elementum ac.
+                Allows doctors to create and update prescriptions electronically.
+                This feature integrates with patient appointments for accurate and efficient drug dispensation.
                 </p>
               </div>
             </div>
@@ -113,60 +114,16 @@ function AppServicesSection(props) {
               </div>
 
               <div>
-                <h3 className="h3 card-title">Oral Hygiene</h3>
+                <h3 className="h3 card-title">Invoice Management</h3>
 
                 <p className="card-text">
-                  Aenean eleifend turpis tellus, nec laoreet metus elementum ac.
+                Handles the financial transactions within the clinic, including generating invoices for finished appointments.
                 </p>
               </div>
             </div>
           </li>
 
-          <li>
-            <div className="service-card">
-              <div className="card-icon">
-                <img
-                  src={serviceIconFifth}
-                  width="100"
-                  height="100"
-                  loading="lazy"
-                  alt="service icon"
-                  className="w-100"
-                />
-              </div>
-
-              <div>
-                <h3 className="h3 card-title">Live Advisory</h3>
-
-                <p className="card-text">
-                  Aenean eleifend turpis tellus, nec laoreet metus elementum ac.
-                </p>
-              </div>
-            </div>
-          </li>
-
-          <li>
-            <div className="service-card">
-              <div className="card-icon">
-                <img
-                  src={serviceIconSixth}
-                  width="100"
-                  height="100"
-                  loading="lazy"
-                  alt="service icon"
-                  className="w-100"
-                />
-              </div>
-
-              <div>
-                <h3 className="h3 card-title">Cavity Inspection</h3>
-
-                <p className="card-text">
-                  Aenean eleifend turpis tellus, nec laoreet metus elementum ac.
-                </p>
-              </div>
-            </div>
-          </li>
+  
         </ul>
       </div>
     </section>
