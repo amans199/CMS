@@ -28,16 +28,16 @@ function AppHeader(props) {
             <ul className="contact-list">
               <li className="contact-item">
                 {/* <MailOutline title="nothing" color={"#00000"} height="250px" width="250px" /> */}
-                <a href="mailto:info@example.com" className="contact-link">
-                  info@example.com
+                <a href="mailto:info@cms-eg.com" className="contact-link">
+                  info@cms-eg.com
                 </a>
               </li>
 
               <li className="contact-item">
                 <ion-icon name="call-outline"></ion-icon>
 
-                <a href="tel:+917052101786" className="contact-link">
-                  +91-7052-101-786
+                <a href="tel:+201001234567" className="contact-link">
+                  (+20) 01001234567
                 </a>
               </li>
             </ul>
@@ -93,12 +93,6 @@ function AppHeader(props) {
                 <li>
                   <a href="#about" className="navbar-link" data-nav-link>
                     About Us
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#blog" className="navbar-link" data-nav-link>
-                    Blog
                   </a>
                 </li>
 

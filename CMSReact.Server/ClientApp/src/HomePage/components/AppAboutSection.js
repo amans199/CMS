@@ -20,23 +20,16 @@ function AppAboutSection(props) {
         <div className="about-content">
           <p className="section-subtitle">About Us</p>
 
-          <h2 className="h2 section-title">We Care For Your Dental Health</h2>
+          <h2 className="h2 section-title">We Care For Your Health</h2>
 
           <p className="section-text section-text-1">
-            Aliquam ac sem et diam iaculis efficitur. Morbi in enim odio. Nullam quis volutpat est,
-            sed dapibus sapien. Cras condimentum eu velit id tempor. Curabitur purus sapien, cursus
-            sed nisl tristique, commodo vehicula arcu.
+            Our Clinic Management System is designed to streamline operations and enhance the quality of patient care.
+            By integrating all essential functions into a single platform, our system simplifies appointment scheduling,
+            patient record management, billing processes, and prescription handling. This holistic approach ensures that 
+            healthcare providers can focus on delivering superior care without the hassle of managing multiple disjointed systems.
+            Our web application is user-friendly and accessible from any device, making it an indispensable tool for medical practitioners
+            aiming to optimize their workflow and improve patient interactions.
           </p>
-
-          <p className="section-text">
-            Aliquam erat volutpat. Aliquam enim massa, sagittis blandit ex mattis, ultricies posuere
-            sapien. Morbi a dignissim enim. Fusce elementum, augue in elementum porta, sapien nunc
-            volutpat ex, a accumsan nunc lectus eu lectus.
-          </p>
-
-          <a href="#" className="btn">
-            Read more
-          </a>
         </div>
       </div>
     </section>

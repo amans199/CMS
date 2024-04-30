@@ -3,7 +3,7 @@
 "ServerUrl": "https://localhost:5173",
 "RedirectUrl": "",
 "LaunchCommand": "npm run start",
-"WorkingDirectory": "C:\\study-projects\\2024\\cairouniversity\\CMSReact\\CMSReact.Server\\ClientApp\\",
+"WorkingDirectory": "C:\\DATA\\Cairo University\\SE23-24\\Second Term\\CMS-Fork\\CMS\\CMSReact.Server\\ClientApp\\",
 "MaxTimeoutInSeconds": "120",
 "KeepRunning": "false"
 }

@@ -3515,19 +3515,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\": {}
+    "C:\\Users\\wbahg\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\study-projects\\2024\\cairouniversity\\CMSReact\\CMSReact.Server\\CMSReact.Server.csproj",
+      "projectUniqueName": "C:\\DATA\\Cairo University\\SE23-24\\Second Term\\CMS-Fork\\CMS\\CMSReact.Server\\CMSReact.Server.csproj",
       "projectName": "CMSReact.Server",
-      "projectPath": "C:\\study-projects\\2024\\cairouniversity\\CMSReact\\CMSReact.Server\\CMSReact.Server.csproj",
-      "packagesPath": "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\",
-      "outputPath": "C:\\study-projects\\2024\\cairouniversity\\CMSReact\\CMSReact.Server\\obj\\",
+      "projectPath": "C:\\DATA\\Cairo University\\SE23-24\\Second Term\\CMS-Fork\\CMS\\CMSReact.Server\\CMSReact.Server.csproj",
+      "packagesPath": "C:\\Users\\wbahg\\.nuget\\packages\\",
+      "outputPath": "C:\\DATA\\Cairo University\\SE23-24\\Second Term\\CMS-Fork\\CMS\\CMSReact.Server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Ahmed Mansour\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\wbahg\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -3547,6 +3547,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -3607,7 +3612,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.104/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

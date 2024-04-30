@@ -25,12 +25,9 @@ function Index() {
           <AppServicesSection />
 
           <AppAboutSection />
-
-          <AppDoctorSection />
-
+          <br></br><br></br><br></br><br></br><br></br>
           <AppCtaSection />
 
-          <AppBlogSection />
         </article>
       </main>
 
