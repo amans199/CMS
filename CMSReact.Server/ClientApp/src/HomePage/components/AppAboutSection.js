@@ -18,25 +18,22 @@ function AppAboutSection(props) {
         </figure>
 
         <div className="about-content">
-          <p className="section-subtitle">About Us</p>
+          <p className="section-subtitle" style={{color: '#3380CC'}}>About Us</p>
 
-          <h2 className="h2 section-title">We Care For Your Dental Health</h2>
+          <h2 className="h2 section-title">We Care For Your Health</h2>
 
           <p className="section-text section-text-1">
-            Aliquam ac sem et diam iaculis efficitur. Morbi in enim odio. Nullam quis volutpat est,
-            sed dapibus sapien. Cras condimentum eu velit id tempor. Curabitur purus sapien, cursus
-            sed nisl tristique, commodo vehicula arcu.
+            Welcome to CMS, where we prioritize your health and well-being. Our dedicated team of healthcare professionals
+            are committed to providing high-quality medical care in a compassionate and patient-centered environment. 
+            We offer a wide range of services, including preventative care, diagnosis, treatment, and ongoing management 
+            of your health needs.
           </p>
 
           <p className="section-text">
-            Aliquam erat volutpat. Aliquam enim massa, sagittis blandit ex mattis, ultricies posuere
-            sapien. Morbi a dignissim enim. Fusce elementum, augue in elementum porta, sapien nunc
-            volutpat ex, a accumsan nunc lectus eu lectus.
+            we believe in using the latest medical technology and evidence-based practices to ensure you receive the best 
+            possible care. Our mission is to enhance your health and improve your quality of life through personalized and 
+            comprehensive medical services.
           </p>
-
-          <a href="#" className="btn">
-            Read more
-          </a>
         </div>
       </div>
     </section>

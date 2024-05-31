@@ -8,13 +8,13 @@ function AppFooter(props) {
           <div className="container">
             <div className="footer-brand">
               <a href="#" className="logo">
-                CMS.
+                CMS
               </a>
 
               <p className="footer-text">
-                Mauris non nisi semper, lacinia neque in, dapibus leo. Curabitur sagittis libero
-                tincidunt tempor finibus. Mauris at dignissim ligula, nec tristique orci.Quisque
-                vitae metus.
+                Our CMS streamlines clinic operations by integrating scheduling, patient management, prescriptions, 
+                and billing into one platform. This reduces errors and administrative tasks, allowing healthcare providers 
+                to focus on delivering high-quality patient care.
               </p>
 
               <div className="schedule">
@@ -23,7 +23,7 @@ function AppFooter(props) {
                 </div>
 
                 <span className="span">
-                  Monday - Saturday:
+                  Saturday - Thursday:
                   <br />
                   9:00am - 10:00Pm
                 </span>
@@ -58,87 +58,9 @@ function AppFooter(props) {
                   <span className="span">Services</span>
                 </a>
               </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Project</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Our Team</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Latest Blog</span>
-                </a>
-              </li>
             </ul>
 
-            <ul className="footer-list">
-              <li>
-                <p className="footer-list-title">Our Services</p>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Root Canal</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Alignment Teeth</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Cosmetic Teeth</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Oral Hygiene</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Live Advisory</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Cavity Inspection</span>
-                </a>
-              </li>
-            </ul>
-
-            <ul className="footer-list">
+            <ul className="footer-list" id="contact">
               <li>
                 <p className="footer-list-title">Contact Us</p>
               </li>
@@ -149,7 +71,7 @@ function AppFooter(props) {
                 </div>
 
                 <address className="item-text">
-                  1247/Plot No. 39, 15th Phase, LHB Colony, Kanpur
+                  Cairo, Egypt
                 </address>
               </li>
 
@@ -158,8 +80,8 @@ function AppFooter(props) {
                   <ion-icon name="call-outline"></ion-icon>
                 </div>
 
-                <a href="tel:+917052101786" className="footer-link">
-                  +91-7052-101-786
+                <a href="tel:+201001234567" className="contact-link">
+                  (+20)1001234567
                 </a>
               </li>
 
@@ -168,8 +90,8 @@ function AppFooter(props) {
                   <ion-icon name="mail-outline"></ion-icon>
                 </div>
 
-                <a href="mailto:help@example.com" className="footer-link">
-                  help@example.com
+                <a href="mailto:info@cms.com.eg" className="contact-link">
+                  info@cms.com.eg
                 </a>
               </li>
             </ul>
@@ -178,27 +100,7 @@ function AppFooter(props) {
 
         <div className="footer-bottom">
           <div className="container">
-            <p className="copyright">&copy; 2022 All Rights Reserved by codewithsadee.</p>
-
-            <ul className="social-list">
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-facebook"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-instagram"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-twitter"></ion-icon>
-                </a>
-              </li>
-            </ul>
+            <p className="copyright">&copy; 2024 All Rights Reserved.</p>
           </div>
         </div>
       </footer>

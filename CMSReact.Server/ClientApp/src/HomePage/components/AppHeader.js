@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getUserData, removeCurrentUser } from "utils";
 import { useNavigate } from "react-router-dom";
+import logo from "assets/images/logo.gif";
+
 
 function AppHeader(props) {
   const navigate = useNavigate();
@@ -28,42 +30,16 @@ function AppHeader(props) {
             <ul className="contact-list">
               <li className="contact-item">
                 {/* <MailOutline title="nothing" color={"#00000"} height="250px" width="250px" /> */}
-                <a href="mailto:info@example.com" className="contact-link">
-                  info@example.com
+                <a href="mailto:info@cms.com.eg" className="contact-link">
+                  info@cms.com.eg
                 </a>
               </li>
 
               <li className="contact-item">
                 <ion-icon name="call-outline"></ion-icon>
 
-                <a href="tel:+917052101786" className="contact-link">
-                  +91-7052-101-786
-                </a>
-              </li>
-            </ul>
-
-            <ul className="social-list">
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-facebook"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-instagram"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-twitter"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-youtube"></ion-icon>
+                <a href="tel:+201001234567" className="contact-link">
+                  (+20)1001234567
                 </a>
               </li>
             </ul>
@@ -73,6 +49,7 @@ function AppHeader(props) {
         <div className="header-bottom" data-header>
           <div className="container">
             <a href="#" className="logo">
+              <img className="logo" src={logo} width="40" height="40"></img>
               CMS
             </a>
 
@@ -97,13 +74,7 @@ function AppHeader(props) {
                 </li>
 
                 <li>
-                  <a href="#blog" className="navbar-link" data-nav-link>
-                    Blog
-                  </a>
-                </li>
-
-                <li>
-                  <a href="#" className="navbar-link" data-nav-link>
+                  <a href="#contact" className="navbar-link" data-nav-link>
                     Contact
                   </a>
                 </li>
