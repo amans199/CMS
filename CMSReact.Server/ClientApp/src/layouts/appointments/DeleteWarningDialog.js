@@ -35,6 +35,7 @@ import { getUserData } from "utils";
 
 export const DeleteWarningDialog = ({ isOpen, fetchAll, appointmentId, onClose }) => {
   const handleDeleting = async () => {
+    if (!appointmentId) return;
     try {
       const response = await axios.post(`/api/appointments/delete/${appointmentId}`);
       toast.success(`Appointment deleted successfully`);

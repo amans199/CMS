@@ -212,6 +212,7 @@ function Tables() {
               conditions={[
                 appointment.prescriptionId === null,
                 getAppointmentStatus(appointment.status) === "Done",
+                isAdmin || isDoctor,
               ]}
               color="primary"
               onClick={() => handleCreatingPrescription({ ...appointment, doctor, patient })}
@@ -291,7 +292,7 @@ function Tables() {
               conditions={[isAdmin]}
               color="error"
               onClick={() => {
-                setSelectedAppointment(appointment.id);
+                // setSelectedAppointment(appointment.id);
                 setIsDeleteWarningDialogOpen(true);
               }}
             >

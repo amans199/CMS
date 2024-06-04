@@ -11,7 +11,7 @@ function AppDoctorSection(props) {
       <div className="container">
         <p className="section-subtitle text-center">Our Doctor</p>
 
-        <h2 className="h2 section-title text-center">Best Expert Dentist</h2>
+        <h2 className="h2 section-title text-center">Best Expert Doctor</h2>
 
         <ul className="has-scrollbar">
           <li className="scrollbar-item">
@@ -36,7 +36,7 @@ function AppDoctorSection(props) {
                 </a>
               </h3>
 
-              <p className="card-subtitle">Dentist</p>
+              <p className="card-subtitle">Doctor</p>
 
               <ul className="card-social-list">
                 <li>
@@ -82,7 +82,7 @@ function AppDoctorSection(props) {
                 </a>
               </h3>
 
-              <p className="card-subtitle">Dentist</p>
+              <p className="card-subtitle">Doctor</p>
 
               <ul className="card-social-list">
                 <li>
@@ -128,7 +128,7 @@ function AppDoctorSection(props) {
                 </a>
               </h3>
 
-              <p className="card-subtitle">Dentist</p>
+              <p className="card-subtitle">Doctor</p>
 
               <ul className="card-social-list">
                 <li>
@@ -174,7 +174,7 @@ function AppDoctorSection(props) {
                 </a>
               </h3>
 
-              <p className="card-subtitle">Dentist</p>
+              <p className="card-subtitle">Doctor</p>
 
               <ul className="card-social-list">
                 <li>

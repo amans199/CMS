@@ -30,7 +30,7 @@ function Index() {
 
           <AppCtaSection />
 
-          <AppBlogSection />
+          {/* <AppBlogSection /> */}
         </article>
       </main>
 

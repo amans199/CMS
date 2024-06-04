@@ -89,88 +89,28 @@ function AppCtaSection(props) {
         <div className="cta-content">
           <p className="section-subtitle">Book Appointment</p>
 
-          <h2 className="h2 section-title">
-            {userData?.username ? `Hi ${userData.username}, ` : ""}
-            We Are open And Welcoming Patients
-          </h2>
+          <h2 className="h2 section-title">Hi, We Are open And Welcoming Patients</h2>
 
           <article className="d-flex flex-column ">
-            {isBooked ? (
-              <div className="w-100 d-flex justify-content-center flex-column align-items-center bg-white border p-4  text-center rounded">
+            {/* <div className="w-100 d-flex justify-content-center flex-column align-items-center bg-white border p-4  text-center rounded">
                 <img width="50" height="50" src={checkIcon} alt="instagram-check-mark" />
                 <p className="text-dark mt-3" style={{ fontSize: "16px" }}>
                   Thanks for booking. We are looking forward to seeing you soon.
                 </p>
+              </div> */}
+            <div className="gap-3 mb-3 d-flex flex-column" style={{ display: "flex" }}>
+              <p className="text-white mt-3" style={{ fontSize: "16px", color: "white " }}>
+                You need to sign in or sign up first to book an appointment.
+              </p>
+              <div className="d-flex">
+                <a href="/sign-in" className="btn mr-2" style={{ marginRight: "1rem" }}>
+                  Sign in
+                </a>
+                <a href="/sign-up" className="btn" style={{ marginLeft: "1rem" }}>
+                  Sign Up
+                </a>
               </div>
-            ) : (
-              <div className="gap-3 mb-3">
-                {!userData?.username ? (
-                  <>
-                    <p className="text-dark mt-3" style={{ fontSize: "16px" }}>
-                      Hi, You need to sign in or sign up first to book an appointment.
-                      <a href="/sign-in" className="btn">
-                        Sign in
-                      </a>
-                      <a href="/sign-up" className="btn">
-                        Sign Up
-                      </a>
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <div className="row mb-3">
-                      {/* <Input label="Full Name" value={name} onChange={(e) => setName(e.target.value)} /> */}
-                      {/* <Input
-                    label="Date of Birth"
-                    type="date"
-                    value={dateOfBirth}
-                    onChange={(e) => setDateOfBirth(e.target.value)}
-                  /> */}
-                      {/* <Select label="Gender" value={gender} onChange={(e) => setGender(e.target.value)}>
-                    <option className="text-dark">Gender</option>
-                    <option value="male" className="text-dark">
-                      Male
-                    </option>
-                    <option value="female" className="text-dark">
-                      Female
-                    </option>
-                  </Select> */}
-
-                      {/* <Input label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} /> */}
-                      {/* <Input label="Email" value={email} onChange={(e) => setEmail(e.target.value)} /> */}
-                      {/* <Input
-                    label="Address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                  /> */}
-                      <Input
-                        label="Day"
-                        type="date"
-                        value={appointmentDay}
-                        onChange={(e) => setAppointmentDay(e.target.value)}
-                      />
-                      <Input
-                        label="Time"
-                        type="time"
-                        value={appointmentTime}
-                        onChange={(e) => setAppointmentTime(e.target.value)}
-                      />
-                    </div>
-                    <TextArea
-                      label="Comment"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                    />
-                  </>
-                )}
-              </div>
-            )}
-
-            {userData?.username && (
-              <button className="btn btn-primary py-4 mt-3" onClick={handleBooking}>
-                Book
-              </button>
-            )}
+            </div>
           </article>
         </div>
       </div>

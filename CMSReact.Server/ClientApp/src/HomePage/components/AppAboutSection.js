@@ -23,15 +23,16 @@ function AppAboutSection(props) {
           <h2 className="h2 section-title">We Care For Your Dental Health</h2>
 
           <p className="section-text section-text-1">
-            Aliquam ac sem et diam iaculis efficitur. Morbi in enim odio. Nullam quis volutpat est,
-            sed dapibus sapien. Cras condimentum eu velit id tempor. Curabitur purus sapien, cursus
-            sed nisl tristique, commodo vehicula arcu.
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
+            has been the industrys standard dummy text ever since the 1500s, when an unknown printer
+            took a galley of type and scrambled it to make a type specimen book.
           </p>
 
           <p className="section-text">
-            Aliquam erat volutpat. Aliquam enim massa, sagittis blandit ex mattis, ultricies posuere
-            sapien. Morbi a dignissim enim. Fusce elementum, augue in elementum porta, sapien nunc
-            volutpat ex, a accumsan nunc lectus eu lectus.
+            It has survived not only five centuries, but also the leap into electronic typesetting,
+            remaining essentially unchanged. It was popularised in the 1960s with the release of
+            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
+            publishing software like Aldus PageMaker including versions of Lorem Ipsum.
           </p>
 
           <a href="#" className="btn">

@@ -25,23 +25,19 @@ function AppHeroSection(props) {
       <div className="container">
         <div className="hero-content">
           <p className="section-subtitle">
-            {userData?.username && (
-              <p className="d-flex gap-2">
-                <span>Hi</span> <span className="text-dark">{`${userData.username},`}</span>
-              </p>
-            )}
+            <p className="d-flex gap-2">
+              <span>Hi,</span>
+            </p>
             Welcome To CMS (Clinic Managment System)
           </p>
 
           <h1 className="h1 hero-title">We Are Best CMS Service</h1>
 
           <p className="hero-text">
-          The CMS will serve as a centralized system that consolidates and organizes important clinic-related information.
-          It will enhance the overall efficiency, accuracy, and productivity of clinic operations, leading to improved patient care and satisfaction.
+            The CMS will serve as a centralized system that consolidates and organizes important
+            clinic-related information. It will enhance the overall efficiency, accuracy, and
+            productivity of clinic operations, leading to improved patient care and satisfaction.
           </p>
-            
-
-          
         </div>
 
         <figure className="hero-banner">

@@ -12,9 +12,8 @@ function AppFooter(props) {
               </a>
 
               <p className="footer-text">
-                Mauris non nisi semper, lacinia neque in, dapibus leo. Curabitur sagittis libero
-                tincidunt tempor finibus. Mauris at dignissim ligula, nec tristique orci.Quisque
-                vitae metus.
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
+                Ipsum has been the standard dummy text ever since the 1500s, when an unknown printer
               </p>
 
               <div className="schedule">
@@ -36,7 +35,7 @@ function AppFooter(props) {
               </li>
 
               <li>
-                <a href="#" className="footer-link">
+                <a href="#home" className="footer-link">
                   <ion-icon name="add-outline"></ion-icon>
 
                   <span className="span">Home</span>
@@ -44,7 +43,7 @@ function AppFooter(props) {
               </li>
 
               <li>
-                <a href="#" className="footer-link">
+                <a href="#about" className="footer-link">
                   <ion-icon name="add-outline"></ion-icon>
 
                   <span className="span">About Us</span>
@@ -52,13 +51,13 @@ function AppFooter(props) {
               </li>
 
               <li>
-                <a href="#" className="footer-link">
+                <a href="#service" className="footer-link">
                   <ion-icon name="add-outline"></ion-icon>
 
                   <span className="span">Services</span>
                 </a>
               </li>
-
+              {/* 
               <li>
                 <a href="#" className="footer-link">
                   <ion-icon name="add-outline"></ion-icon>
@@ -73,72 +72,18 @@ function AppFooter(props) {
 
                   <span className="span">Our Team</span>
                 </a>
-              </li>
+              </li> */}
 
-              <li>
+              {/* <li>
                 <a href="#" className="footer-link">
                   <ion-icon name="add-outline"></ion-icon>
 
                   <span className="span">Latest Blog</span>
                 </a>
-              </li>
+              </li> */}
             </ul>
 
-            <ul className="footer-list">
-              <li>
-                <p className="footer-list-title">Our Services</p>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Root Canal</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Alignment Teeth</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Cosmetic Teeth</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Oral Hygiene</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Live Advisory</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Cavity Inspection</span>
-                </a>
-              </li>
-            </ul>
-
-            <ul className="footer-list">
+            <ul className="footer-list ml-auto">
               <li>
                 <p className="footer-list-title">Contact Us</p>
               </li>
