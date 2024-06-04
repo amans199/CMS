@@ -8,9 +8,7 @@ import AppHeader from "./components/AppHeader";
 import AppHeroSection from "./components/AppHeroSection";
 import AppServicesSection from "./components/AppServicesSection";
 import AppAboutSection from "./components/AppAboutSection";
-import AppDoctorSection from "./components/AppDoctorSection";
 import AppCtaSection from "./components/AppCtaSection";
-import AppBlogSection from "./components/AppBlogSection";
 import AppFooter from "./components/AppFooter";
 
 function Index() {
@@ -25,12 +23,8 @@ function Index() {
           <AppServicesSection />
 
           <AppAboutSection />
-
-          <AppDoctorSection />
-
+          <br></br><br></br><br></br><br></br><br></br>
           <AppCtaSection />
-
-          <AppBlogSection />
         </article>
       </main>
 
