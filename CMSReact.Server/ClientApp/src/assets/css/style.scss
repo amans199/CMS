@@ -292,10 +292,11 @@ html {
   }
 
   .logo {
-    color: var(--oxford-blue-1);
+    color: #3380CC;
     font-family: var(--ff-poppins);
     font-size: 3.4rem;
     font-weight: var(--fw-800);
+    display: flex;
   }
 
   .nav-toggle-btn {

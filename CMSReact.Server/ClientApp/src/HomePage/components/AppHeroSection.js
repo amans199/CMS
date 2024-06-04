@@ -24,10 +24,12 @@ function AppHeroSection(props) {
     >
       <div className="container">
         <div className="hero-content">
-          <p className="section-subtitle">
-            <p className="d-flex gap-2">
-              <span>Hi,</span>
-            </p>
+          <p className="section-subtitle" style={{ color: "#3380CC" }}>
+            {userData?.username && (
+              <p className="d-flex gap-2">
+                <span>Hi</span> <span className="text-dark">{`${userData.username},`}</span>
+              </p>
+            )}
             Welcome To CMS (Clinic Managment System)
           </p>
 

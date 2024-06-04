@@ -8,12 +8,14 @@ function AppFooter(props) {
           <div className="container">
             <div className="footer-brand">
               <a href="#" className="logo">
-                CMS.
+                CMS
               </a>
 
               <p className="footer-text">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
-                Ipsum has been the standard dummy text ever since the 1500s, when an unknown printer
+                Our CMS streamlines clinic operations by integrating scheduling, patient management,
+                prescriptions, and billing into one platform. This reduces errors and administrative
+                tasks, allowing healthcare providers to focus on delivering high-quality patient
+                care.
               </p>
 
               <div className="schedule">
@@ -22,7 +24,7 @@ function AppFooter(props) {
                 </div>
 
                 <span className="span">
-                  Monday - Saturday:
+                  Saturday - Thursday:
                   <br />
                   9:00am - 10:00Pm
                 </span>
@@ -57,33 +59,9 @@ function AppFooter(props) {
                   <span className="span">Services</span>
                 </a>
               </li>
-              {/* 
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Project</span>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Our Team</span>
-                </a>
-              </li> */}
-
-              {/* <li>
-                <a href="#" className="footer-link">
-                  <ion-icon name="add-outline"></ion-icon>
-
-                  <span className="span">Latest Blog</span>
-                </a>
-              </li> */}
             </ul>
 
-            <ul className="footer-list ml-auto">
+            <ul className="footer-list" id="contact">
               <li>
                 <p className="footer-list-title">Contact Us</p>
               </li>
@@ -93,9 +71,7 @@ function AppFooter(props) {
                   <ion-icon name="location-outline"></ion-icon>
                 </div>
 
-                <address className="item-text">
-                  1247/Plot No. 39, 15th Phase, LHB Colony, Kanpur
-                </address>
+                <address className="item-text">Cairo, Egypt</address>
               </li>
 
               <li className="footer-item">
@@ -103,8 +79,8 @@ function AppFooter(props) {
                   <ion-icon name="call-outline"></ion-icon>
                 </div>
 
-                <a href="tel:+917052101786" className="footer-link">
-                  +91-7052-101-786
+                <a href="tel:+201001234567" className="contact-link">
+                  (+20)1001234567
                 </a>
               </li>
 
@@ -113,8 +89,8 @@ function AppFooter(props) {
                   <ion-icon name="mail-outline"></ion-icon>
                 </div>
 
-                <a href="mailto:help@example.com" className="footer-link">
-                  help@example.com
+                <a href="mailto:info@cms.com.eg" className="contact-link">
+                  info@cms.com.eg
                 </a>
               </li>
             </ul>
@@ -123,27 +99,7 @@ function AppFooter(props) {
 
         <div className="footer-bottom">
           <div className="container">
-            <p className="copyright">&copy; 2022 All Rights Reserved by codewithsadee.</p>
-
-            <ul className="social-list">
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-facebook"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-instagram"></ion-icon>
-                </a>
-              </li>
-
-              <li>
-                <a href="#" className="social-link">
-                  <ion-icon name="logo-twitter"></ion-icon>
-                </a>
-              </li>
-            </ul>
+            <p className="copyright">&copy; 2024 All Rights Reserved.</p>
           </div>
         </div>
       </footer>

@@ -10,7 +10,7 @@ function AppServicesSection(props) {
   return (
     <section className="section service" id="service" aria-label="service">
       <div className="container">
-        <p className="section-subtitle text-center">Our Services</p>
+        <p className="section-subtitle text-center" style={{color: '#3380CC'}}>Our Services</p>
 
         <h2 className="h2 section-title text-center">What We Provide</h2>
 

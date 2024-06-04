@@ -18,26 +18,25 @@ function AppAboutSection(props) {
         </figure>
 
         <div className="about-content">
-          <p className="section-subtitle">About Us</p>
+          <p className="section-subtitle" style={{ color: "#3380CC" }}>
+            About Us
+          </p>
 
-          <h2 className="h2 section-title">We Care For Your Dental Health</h2>
+          <h2 className="h2 section-title">We Care For Your Health</h2>
 
           <p className="section-text section-text-1">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industrys standard dummy text ever since the 1500s, when an unknown printer
-            took a galley of type and scrambled it to make a type specimen book.
+            Welcome to CMS, where we prioritize your health and well-being. Our dedicated team of
+            healthcare professionals are committed to providing high-quality medical care in a
+            compassionate and patient-centered environment. We offer a wide range of services,
+            including preventative care, diagnosis, treatment, and ongoing management of your health
+            needs.
           </p>
 
           <p className="section-text">
-            It has survived not only five centuries, but also the leap into electronic typesetting,
-            remaining essentially unchanged. It was popularised in the 1960s with the release of
-            Letraset sheets containing Lorem Ipsum passages, and more recently with desktop
-            publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            we believe in using the latest medical technology and evidence-based practices to ensure
+            you receive the best possible care. Our mission is to enhance your health and improve
+            your quality of life through personalized and comprehensive medical services.
           </p>
-
-          <a href="#" className="btn">
-            Read more
-          </a>
         </div>
       </div>
     </section>
