@@ -47,6 +47,7 @@ export const CreatePrescriptionDialog = ({
   const [selectedPrescription, setSelectedPrescription] = useState();
 
   useEffect(() => {
+    if (!isDialogOpen) return;
     setSelectedPrescription();
     if (selectedAppointment && selectedAppointment?.prescriptionId !== null) {
       fetchPrescription(selectedAppointment.prescriptionId);
@@ -161,14 +162,6 @@ export const CreatePrescriptionDialog = ({
                   rows={4}
                   value={instructions}
                   onChange={(e) => setInstructions(e.target.value)}
-                />
-              </SoftBox>
-              <SoftBox mb={2}>
-                <SoftTypography variant="body2">Date:</SoftTypography>
-                <SoftInput
-                  type="date"
-                  value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
                 />
               </SoftBox>
               <SoftBox mt={4} display="flex" justifyContent="space-between">

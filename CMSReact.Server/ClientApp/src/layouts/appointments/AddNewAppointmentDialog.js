@@ -133,7 +133,9 @@ export const AddNewAppointmentDialog = ({
 
   return (
     <Dialog open={isAddingDialogOpen}>
-      <DialogTitle>Add New Appointment</DialogTitle>
+      <DialogTitle>
+        {originalAppointment?.id ? "Follow up Appointment" : "Add New Appointment"}
+      </DialogTitle>
       <DialogContent>
         {/* <DialogContentText>Please fill in the details for your new appointment.</DialogContentText> */}
         <SoftBox mt={2} mb={3} px={3}>

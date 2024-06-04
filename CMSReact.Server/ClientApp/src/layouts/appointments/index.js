@@ -136,6 +136,7 @@ function Tables() {
 
   const isAdmin = userData.isAdmin;
   const isDoctor = userData.isDoctor;
+  const isPatient = !userData.isDoctor && !userData.isAdmin;
 
   const rows = appointments.map((appointment) => {
     const patient = getUserOfType(appointment.appointmentUsers, false);
@@ -226,7 +227,7 @@ function Tables() {
                 getAppointmentStatus(appointment.status) === "Done",
               ]}
               color="dark"
-              onClick={() => {}}
+              onClick={() => handleCreatingInvoice({ ...appointment, doctor, patient })}
             >
               View Invoice
             </ButtonWithConditions>
@@ -289,10 +290,10 @@ function Tables() {
             </ButtonWithConditions>
 
             <ButtonWithConditions
-              conditions={[isAdmin]}
+              conditions={[isAdmin || isPatient]}
               color="error"
               onClick={() => {
-                // setSelectedAppointment(appointment.id);
+                setSelectedAppointment(appointment);
                 setIsDeleteWarningDialogOpen(true);
               }}
             >
@@ -352,7 +353,7 @@ function Tables() {
       <DeleteWarningDialog
         isOpen={isDeleteWarningDialogOpen}
         fetchAll={fetchAll}
-        appointmentId={selectedAppointment}
+        appointmentId={selectedAppointment?.id}
         onClose={() => {
           setIsDeleteWarningDialogOpen(false);
           setSelectedAppointment();
@@ -365,6 +366,7 @@ function Tables() {
         onClose={() => {
           setIsCreateInvoiceDialogOpen(false);
           setSelectedAppointment();
+          fetchAll();
         }}
       />
 

@@ -47,7 +47,7 @@ const routes = [
     icon: <Shop size="12px" />,
     component: <Dashboard />,
     noCollapse: true,
-    allowedRoles: ["user"],
+    allowedRoles: [],
   },
   {
     type: "collapse",
@@ -87,7 +87,7 @@ const routes = [
     icon: <Document size="12px" />,
     component: <Invoices />,
     noCollapse: true,
-    allowedRoles: ["approved_user"],
+    allowedRoles: [],
   },
   { type: "title", title: "Settings", key: "settings-pages" },
   {
@@ -100,16 +100,16 @@ const routes = [
     noCollapse: true,
     allowedRoles: [],
   },
-  {
-    type: "collapse",
-    name: "Invoice Items",
-    key: "invoice-items",
-    route: "/invoice-items",
-    icon: <Document size="12px" />,
-    component: <InvoicesItems />,
-    noCollapse: true,
-    allowedRoles: [],
-  },
+  // {
+  //   type: "collapse",
+  //   name: "Invoice Items",
+  //   key: "invoice-items",
+  //   route: "/invoice-items",
+  //   icon: <Document size="12px" />,
+  //   component: <InvoicesItems />,
+  //   noCollapse: true,
+  //   allowedRoles: [],
+  // },
   {
     type: "hide",
     name: "Profile",
@@ -157,16 +157,6 @@ const checkIsAuthorized = (route) => {
 
   const userData = getUserData();
   const isSignedIn = userData?.id;
-  // if (!userData) {
-  //   if (
-  //     window.location.pathname !== "/sign-up" ||
-  //     window.location.pathname !== "/sign-in" ||
-  //     window.location.pathname !== "/"
-  //   )
-  //     window.location.replace("/sign-in");
-
-  //   return false;
-  // }
 
   if (!isSignedIn) return false;
 
@@ -178,17 +168,11 @@ const checkIsAuthorized = (route) => {
 
   if (isAdmin) return true;
 
-  console.log("🚀 ~ checkIsAuthorized ~ isApproved:", isApproved);
   if (!isApproved) {
-    // if (window.location.pathname !== "/profile") window.location.replace("/profile");
     return route.key === "profile";
   }
 
   if (route?.allowedRoles?.includes("approved_user")) return true;
-
-  // if()
-  // if (userData.status === 'pending') return 'pending'; // Pending user can only see profile
-  // return userData.isDoctor ? 'doctor' : 'patient'; // Approved with role flag
 
   return false;
 };
