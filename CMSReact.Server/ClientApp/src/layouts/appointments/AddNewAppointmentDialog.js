@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "utils/Axios";
-import { getColorOfUser } from "utils";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -8,30 +7,20 @@ import Card from "@mui/material/Card";
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
 import SoftTypography from "components/SoftTypography";
-import SoftAvatar from "components/SoftAvatar";
-import SoftBadge from "components/SoftBadge";
-
-// Soft UI Dashboard React examples
-import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
-import DashboardNavbar from "examples/Navbars/DashboardNavbar";
-import Footer from "examples/Footer";
-import Table from "examples/Tables/Table";
+import { Form } from "react-bootstrap";
 
 // Images
-import team2 from "assets/images/team-2.jpg";
 import SoftButton from "components/SoftButton";
-import Checkbox from "@mui/material/Checkbox";
-import Switch from "@mui/material/Switch";
 
 //   React components
 import SoftInput from "components/SoftInput";
 
 // Images
-import { getColorOfStatus } from "utils";
 import { toast } from "react-toastify";
-import { Dialog, DialogContent, DialogTitle, Select } from "@mui/material";
-import { formatDate } from "utils";
-import { getUserData } from "utils";
+import { Dialog, DialogContent, DialogTitle, Select, Typography } from "@mui/material";
+import { formatTimeTo12Hour } from "utils";
+import { isTimeSlotAvailable } from "utils";
+import SoftBadge from "components/SoftBadge";
 
 export const AddNewAppointmentDialog = ({
   isAddingDialogOpen,
@@ -123,6 +112,7 @@ export const AddNewAppointmentDialog = ({
   const handleChangingSpecialties = (e) => {
     const spec = e.target.value;
     setSpecialtyId(spec);
+    setDoctorId(0);
     fetchDoctors(spec);
   };
 
@@ -201,19 +191,13 @@ export const AddNewAppointmentDialog = ({
 
               <SoftBox mb={2}>
                 <SoftTypography variant="body2">Doctor:</SoftTypography>
-                <select
-                  className="form-select"
+                <SelectDoctor
+                  doctors={doctors}
                   value={doctorId}
-                  disabled={!specialtyId}
-                  onChange={(e) => setDoctorId(parseInt(e.target.value))}
-                >
-                  <option value="0">Select Doctor</option>
-                  {doctors.map((doc) => (
-                    <option key={doc.id} value={doc.id}>
-                      {doc.username} {doc.fullName ? `(${doc.fullName})` : ""}
-                    </option>
-                  ))}
-                </select>
+                  selectedDate={selectedDate}
+                  selectedTime={selectedTime}
+                  onChange={(id) => setDoctorId(id)}
+                />
               </SoftBox>
             </>
           ) : (
@@ -236,6 +220,84 @@ export const AddNewAppointmentDialog = ({
         </SoftBox>
       </DialogContent>
     </Dialog>
+  );
+};
+
+const SelectDoctor = ({ doctors, value, onChange, selectedDate, selectedTime }) => {
+  const isAvailable = (doctor) => isTimeSlotAvailable(doctor, selectedDate, selectedTime);
+
+  function hasSufficientAvailabilityData(doctor) {
+    return (
+      doctor.availableWeekDays?.length > 0 && doctor.availableTimeFrom && doctor.availableTimeTo
+    );
+  }
+  return (
+    <div className="doctor-selection">
+      {doctors.map((doctor) => (
+        <Card
+          key={doctor.id}
+          className={`doctor-card ${
+            value === doctor.id ? "selected" : ""
+          } border-1 p-2 cursor-pointer`}
+          onClick={() => {
+            if (hasSufficientAvailabilityData(doctor) && !isAvailable(doctor)) return;
+            onChange(doctor.id);
+          }}
+          style={{ cursor: "pointer", marginBottom: "1rem", borderRadius: "4px" }}
+          disabled={hasSufficientAvailabilityData(doctor) && !isAvailable(doctor)}
+        >
+          <div className="d-flex align-items-center justify-content-between">
+            <Form.Check
+              type="radio"
+              name="doctor"
+              id={`doctor-${doctor.id}`}
+              label={doctor.fullName || doctor.username}
+              checked={value === doctor.id}
+              onChange={() => onChange(doctor.id)}
+              className="cursor-pointer"
+              disabled={hasSufficientAvailabilityData(doctor) && !isAvailable(doctor)}
+            />
+            <SoftBadge
+              variant="gradient"
+              badgeContent={isAvailable(doctor) ? "Available" : "Not Available"}
+              color={isAvailable(doctor) ? "success" : "error"}
+              size="xs"
+              container
+            />
+          </div>
+          {!hasSufficientAvailabilityData(doctor) && (
+            <p className="mb-1 bg-light p-1" style={{ fontSize: "12px", color: "red" }}>
+              The doctor hasn&apos;t added enough data regarding availability.
+            </p>
+          )}
+          {hasSufficientAvailabilityData(doctor) && (
+            <p className="mb-1 bg-light p-1" style={{ fontSize: "12px" }}>
+              {isAvailable(doctor)
+                ? "Doctor is available during the time slot selected."
+                : "Doctor isn't available during the time slot selected."}
+            </p>
+          )}
+          <Typography className="mb-1" variant="caption">
+            <strong> Available Time From: </strong>{" "}
+            {doctor.availableTimeFrom ? formatTimeTo12Hour(doctor.availableTimeFrom) : "-"}
+          </Typography>
+          <Typography className="mb-1" variant="caption">
+            <strong> Available Time To: </strong>{" "}
+            {doctor.availableTimeTo ? formatTimeTo12Hour(doctor.availableTimeTo) : "-"}
+          </Typography>
+          <Typography className="mb-1" variant="caption">
+            <strong> Available Time Note: </strong> {doctor.availableTimeNote || "-"}
+          </Typography>
+          <Typography className="mb-1" variant="caption">
+            <strong> Available Week Days: </strong>{" "}
+            {doctor.availableWeekDays?.length ? doctor.availableWeekDays.join(", ") : "-"}
+          </Typography>
+          <Typography className="mb-1" variant="caption">
+            <strong>Gender:</strong> {doctor.gender || "-"}
+          </Typography>
+        </Card>
+      ))}
+    </div>
   );
 };
 

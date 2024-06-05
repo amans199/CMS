@@ -61,3 +61,27 @@ export const formatTimeTo12Hour = (time24) => {
   const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
   return `${hours12}:${formattedMinutes} ${period}`;
 };
+
+export const isTimeSlotAvailable = (doctor, selectedDate, selectedTime) => {
+  if (!doctor || !selectedDate || !selectedTime) return false;
+
+  const selectedDay = new Date(selectedDate).toLocaleString("en-US", { weekday: "long" });
+  const selectedTimeInMinutes = convertTimeToMinutes(selectedTime);
+
+  if (!doctor?.availableWeekDays?.includes(selectedDay)) {
+    return false;
+  }
+
+  const availableTimeFromInMinutes = convertTimeToMinutes(doctor.availableTimeFrom);
+  const availableTimeToInMinutes = convertTimeToMinutes(doctor.availableTimeTo);
+
+  return (
+    selectedTimeInMinutes >= availableTimeFromInMinutes &&
+    selectedTimeInMinutes <= availableTimeToInMinutes
+  );
+};
+
+export const convertTimeToMinutes = (time) => {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
+};

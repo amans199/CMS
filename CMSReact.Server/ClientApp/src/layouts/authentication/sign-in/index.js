@@ -53,7 +53,7 @@ function SignIn() {
         saveUser(user);
         toast(`Hi ${user.username}, You have logged in successfully`);
         // navigate("/dashboard");
-        window.location.replace("/dashboard");
+        window.location.replace("/profile");
       }
     } catch (error) {
       console.error("Registration failed:", error);
