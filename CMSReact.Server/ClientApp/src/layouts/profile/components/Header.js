@@ -115,8 +115,9 @@ function Header({ user }) {
           <Grid item>
             <SoftBox height="100%" mt={0.5} lineHeight={1}>
               <SoftTypography variant="h5" fontWeight="medium">
-                {user.username}{" "}
+                {user?.fullName || user.username}{" "}
                 <SoftBadge
+                  className="ml-3"
                   variant="gradient"
                   badgeContent={user.status}
                   color={getColorOfStatus(user.status)}

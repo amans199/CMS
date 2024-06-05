@@ -9,6 +9,7 @@ import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import Icon from "@mui/material/Icon";
+import SoftButton from "components/SoftButton";
 
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
@@ -75,11 +76,11 @@ function ProfileInfoCard({ title, description, info, social, action }) {
         <SoftTypography variant="h6" fontWeight="medium" textTransform="capitalize">
           {title}
         </SoftTypography>
-        <softButton onClick={action.onClick} color="secondary">
+        <button onClick={action.onClick} className="btn btn-transparent">
           <Tooltip title={action.tooltip} placement="top">
             <Icon>edit</Icon>
           </Tooltip>
-        </softButton>
+        </button>
       </SoftBox>
       <SoftBox p={2}>
         <SoftBox mb={2} lineHeight={1}>

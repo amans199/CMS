@@ -143,6 +143,30 @@ namespace CMSReact.Server.Services
                 userExists.Address = user.Address;
             }
 
+
+            if (user.AvailableTimeFrom != null)
+            {
+                userExists.AvailableTimeFrom = user.AvailableTimeFrom;
+            }
+
+
+            if (user.AvailableTimeNote != null)
+            {
+                userExists.AvailableTimeNote = user.AvailableTimeNote;
+            }
+
+
+            if (user.AvailableTimeTo != null)
+            {
+                userExists.AvailableTimeTo = user.AvailableTimeTo;
+            }
+
+
+            if (user.AvailableWeekDays != null)
+            {
+                userExists.AvailableWeekDays = user.AvailableWeekDays;
+            }
+
             _dbContext.Users.Update(userExists); // Update method might be preferred here
 
             //_dbContext.Entry(user).State = EntityState.Modified;

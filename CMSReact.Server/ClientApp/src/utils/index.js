@@ -53,3 +53,11 @@ export const toDateInputValue = (dateObject) => {
   local.setMinutes(dateObject.getMinutes() - dateObject.getTimezoneOffset());
   return local.toJSON().slice(0, 10);
 };
+
+export const formatTimeTo12Hour = (time24) => {
+  const [hours, minutes] = time24.split(":").map(Number);
+  const period = hours >= 12 ? "PM" : "AM";
+  const hours12 = hours % 12 || 12; // 0 should be converted to 12
+  const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
+  return `${hours12}:${formattedMinutes} ${period}`;
+};

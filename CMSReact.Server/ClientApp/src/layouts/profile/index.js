@@ -11,6 +11,7 @@ import Card from "@mui/material/Card";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import TwitterIcon from "@mui/icons-material/Twitter";
 import InstagramIcon from "@mui/icons-material/Instagram";
+import { Form } from "react-bootstrap";
 
 // Soft UI Dashboard React components
 import SoftBox from "components/SoftBox";
@@ -39,6 +40,7 @@ import SoftInput from "components/SoftInput";
 import SoftButton from "components/SoftButton";
 import { toast } from "react-toastify";
 import { formatDate } from "utils";
+import { formatTimeTo12Hour } from "utils";
 function Overview() {
   const [userAppointments, setUserAppointments] = useState([]);
   const [userData, setUserData] = useState();
@@ -81,6 +83,10 @@ function Overview() {
 
   if (!userData) return;
 
+  const isAdmin = userData.isAdmin;
+  const isDoctor = userData.isDoctor;
+  const isPatient = !userData.isDoctor && !userData.isAdmin;
+
   return (
     <DashboardLayout>
       <Header user={userData} />
@@ -90,7 +96,7 @@ function Overview() {
             <PlatformSettings />
           </Grid> */}
 
-          <Grid item xs={12} md={6} xl={4}>
+          <Grid item xs={12} md={8} xl={6}>
             {/* /** address appointments createdAt dateOfBirth email fullName gender id isAdmin */}
             {/* isApproved isDoctor passwordHash phone specialityId username */}
             <ProfileInfoCard
@@ -103,8 +109,20 @@ function Overview() {
                 phone: userData.phone,
                 email: userData.email,
                 address: userData.address,
-                address: userData.dateOfBirth,
+                dateOfBirth: userData.dateOfBirth,
                 createdAt: formatDate(userData.createdAt),
+                ...(isDoctor
+                  ? {
+                      availableWeekDays: userData.availableWeekDays?.join(", ") || "-",
+                      availableTimeFrom: userData.availableTimeFrom
+                        ? formatTimeTo12Hour(userData.availableTimeFrom)
+                        : "-",
+                      availableTimeTo: userData.availableTimeTo
+                        ? formatTimeTo12Hour(userData.availableTimeTo)
+                        : "-",
+                      availableTimeNote: userData.availableTimeNote || "-",
+                    }
+                  : {}),
               }}
               social={[]}
               action={{ onClick: handleEditingProfile, tooltip: "Edit Profile" }}
@@ -163,6 +181,7 @@ function Overview() {
       <EditProfileDialog
         isUserDialogOpen={isUserDialogOpen}
         setIsUserDialogOpen={setIsUserDialogOpen}
+        isDoctor={isDoctor}
         userData={userData}
         fetchUserData={fetchUserData}
       />
@@ -172,13 +191,35 @@ function Overview() {
   );
 }
 
-const EditProfileDialog = ({ isUserDialogOpen, setIsUserDialogOpen, userData, fetchUserData }) => {
-  const [dateOfBirth, setDateOfBirth] = useState(userData.dateOfBirth);
-  const [fullName, setFullName] = useState(userData.fullName);
-  const [gender, setGender] = useState(userData.gender);
-  const [phone, setPhone] = useState(userData.phone);
-  const [address, setAddress] = useState(userData.address);
-  const [profilePicture, setProfilePicture] = useState(userData.profilePicture);
+const EditProfileDialog = ({
+  isDoctor,
+  isUserDialogOpen,
+  setIsUserDialogOpen,
+  userData,
+  fetchUserData,
+}) => {
+  const [dateOfBirth, setDateOfBirth] = useState(userData.dateOfBirth || "");
+  const [fullName, setFullName] = useState(userData.fullName || "");
+  const [gender, setGender] = useState(userData.gender || "");
+  const [phone, setPhone] = useState(userData.phone || "");
+  const [address, setAddress] = useState(userData.address || "");
+  const [profilePicture, setProfilePicture] = useState(userData.profilePicture || "");
+
+  // New state variables
+  const [availableWeekDays, setAvailableWeekDays] = useState(userData.availableWeekDays || []);
+  const [availableTimeFrom, setAvailableTimeFrom] = useState(userData.availableTimeFrom || "");
+  const [availableTimeTo, setAvailableTimeTo] = useState(userData.availableTimeTo || "");
+  const [availableTimeNote, setAvailableTimeNote] = useState(userData.availableTimeNote || "");
+
+  const handleWeekDayChange = (day) => {
+    setAvailableWeekDays((prevDays) => {
+      if (prevDays.includes(day)) {
+        return prevDays.filter((d) => d !== day);
+      } else {
+        return [...prevDays, day];
+      }
+    });
+  };
 
   const handleProfilePictureChange = (event) => {
     const file = event.target.files[0];
@@ -186,7 +227,6 @@ const EditProfileDialog = ({ isUserDialogOpen, setIsUserDialogOpen, userData, fe
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       const base64String = reader.result;
-      // Set the base64String to your state variable or update the request body
       setProfilePicture(base64String);
     };
   };
@@ -199,6 +239,10 @@ const EditProfileDialog = ({ isUserDialogOpen, setIsUserDialogOpen, userData, fe
       phone,
       address,
       profilePicture,
+      availableWeekDays,
+      availableTimeFrom,
+      availableTimeTo,
+      availableTimeNote,
     });
 
     if (response) {
@@ -215,13 +259,23 @@ const EditProfileDialog = ({ isUserDialogOpen, setIsUserDialogOpen, userData, fe
     <Dialog open={isUserDialogOpen}>
       <DialogTitle>Edit Profile</DialogTitle>
       <DialogContent>
-        {/* No need for DialogContentText in this case */}
-        <SoftBox mt={2} mb={3} px={3}>
+        <SoftBox mt={2} mb={3} px={3} className="d-flex flex-column gap-3">
+          <SoftBox mb={2}>
+            <SoftTypography variant="body2">Profile Picture:</SoftTypography>
+            <div className="d-flex gap-3 align-items-center">
+              {profilePicture ? (
+                <img src={profilePicture} height="100" alt="" style={{ maxWidth: "150px" }} />
+              ) : (
+                ""
+              )}
+              <input type="file" onChange={(e) => handleProfilePictureChange(e)} />
+            </div>
+          </SoftBox>
+
           <SoftBox mb={2}>
             <SoftTypography variant="body2">Full Name:</SoftTypography>
             <SoftInput value={fullName} onChange={(e) => setFullName(e.target.value)} />
           </SoftBox>
-
           <SoftBox mb={2}>
             <SoftTypography variant="body2">Date of Birth:</SoftTypography>
             <SoftInput
@@ -230,7 +284,6 @@ const EditProfileDialog = ({ isUserDialogOpen, setIsUserDialogOpen, userData, fe
               onChange={(e) => setDateOfBirth(e.target.value)}
             />
           </SoftBox>
-
           <SoftBox mb={2}>
             <SoftTypography variant="body2">Gender:</SoftTypography>
             <select value={gender} onChange={(e) => setGender(e.target.value)}>
@@ -239,12 +292,10 @@ const EditProfileDialog = ({ isUserDialogOpen, setIsUserDialogOpen, userData, fe
               <option value="Female">Female</option>
             </select>
           </SoftBox>
-
           <SoftBox mb={2}>
             <SoftTypography variant="body2">Phone Number:</SoftTypography>
             <SoftInput value={phone} onChange={(e) => setPhone(e.target.value)} />
           </SoftBox>
-
           <SoftBox mb={2}>
             <SoftTypography variant="body2">Address:</SoftTypography>
             <SoftInput
@@ -255,24 +306,63 @@ const EditProfileDialog = ({ isUserDialogOpen, setIsUserDialogOpen, userData, fe
             />
           </SoftBox>
 
-          <SoftBox mb={2}>
-            <SoftTypography variant="body2">Profile Picture:</SoftTypography>
-            {profilePicture ? (
-              <img src={profilePicture} height="100" alt="" style={{ maxWidth: "150px" }} />
-            ) : (
-              ""
-            )}
-            <input type="file" onChange={(e) => handleProfilePictureChange(e)} />
-          </SoftBox>
+          {/* New fields */}
+          {isDoctor ? (
+            <>
+              <SoftBox mb={2}>
+                <SoftTypography variant="body2">
+                  Available Week Days:{" "}
+                  <SoftTypography variant="caption">
+                    ({availableWeekDays?.join(", ")})
+                  </SoftTypography>
+                </SoftTypography>
+
+                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
+                  (day) => (
+                    <Form.Check
+                      key={day}
+                      type="checkbox"
+                      label={day}
+                      checked={availableWeekDays.includes(day)}
+                      onChange={() => handleWeekDayChange(day)}
+                    />
+                  )
+                )}
+              </SoftBox>
+
+              <SoftBox mb={2}>
+                <SoftTypography variant="body2">Available Time From:</SoftTypography>
+                <SoftInput
+                  type="time"
+                  value={availableTimeFrom}
+                  onChange={(e) => setAvailableTimeFrom(e.target.value)}
+                />
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftTypography variant="body2">Available Time To:</SoftTypography>
+                <SoftInput
+                  type="time"
+                  value={availableTimeTo}
+                  onChange={(e) => setAvailableTimeTo(e.target.value)}
+                />
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftTypography variant="body2">Available Time Note:</SoftTypography>
+                <SoftInput
+                  multiline
+                  rows={4}
+                  value={availableTimeNote}
+                  onChange={(e) => setAvailableTimeNote(e.target.value)}
+                />
+              </SoftBox>
+            </>
+          ) : (
+            <></>
+          )}
 
           <SoftBox mt={4} display="flex" justifyContent="space-between">
             <SoftButton onClick={() => setIsUserDialogOpen(false)}>Cancel</SoftButton>
-            <SoftButton
-              variant="contained"
-              color="primary"
-              onClick={handleUpdatingProfile}
-              disabled={!fullName || !dateOfBirth || !gender || !phone || !address}
-            >
+            <SoftButton variant="contained" color="primary" onClick={handleUpdatingProfile}>
               Update Profile
             </SoftButton>
           </SoftBox>
