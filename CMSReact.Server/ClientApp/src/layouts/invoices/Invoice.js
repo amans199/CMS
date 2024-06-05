@@ -43,12 +43,12 @@ function Invoice({ invoice, noGutter = false }) {
         <SoftTypography variant="button" fontWeight="regular" color="text">
           {totalAmount} EGP
         </SoftTypography>
-        <SoftBox display="flex" alignItems="center" lineHeight={0} ml={3} sx={{ cursor: "poiner" }}>
+        {/* <SoftBox display="flex" alignItems="center" lineHeight={0} ml={3} sx={{ cursor: "poiner" }}>
           <Icon fontSize="small">picture_as_pdf</Icon>
           <SoftTypography variant="button" fontWeight="bold">
             &nbsp;PDF
           </SoftTypography>
-        </SoftBox>
+        </SoftBox> */}
       </SoftBox>
     </SoftBox>
   );

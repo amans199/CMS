@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getUserData } from "utils";
 import { useNavigate } from "react-router-dom";
 
@@ -30,11 +30,13 @@ import OrderOverview from "layouts/dashboard/components/OrderOverview";
 // Data
 import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import gradientLineChartData from "layouts/dashboard/data/gradientLineChartData";
+import axios from "utils/Axios";
 
 function Dashboard() {
   const { size } = typography;
   const { chart, items } = reportsBarChartData;
   const navigate = useNavigate();
+  const [dashboardData, setDashboardData] = useState();
 
   useEffect(() => {
     const user = getUserData();
@@ -43,86 +45,120 @@ function Dashboard() {
     }
   }, []);
 
+  useEffect(() => {
+    fetchDashboardData();
+  }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      const response = await axios.get("/api/dashboard");
+      console.log(
+        "🚀 ~ fetchDashboardData ~ response:",
+        response?.data?.value?.invoiceCharts.totalAmountChart
+      );
+      setDashboardData(response?.data?.value);
+    } catch (error) {
+      console.error("Fetching dashboard data failed:", error);
+    }
+  };
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <SoftBox py={3}>
-        <SoftBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "Monthly income" }}
-                count="$53,000"
-                percentage={{ color: "success", text: "+55%" }}
-                icon={{ color: "info", component: "paid" }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "monthly's users" }}
-                count="2,300"
-                percentage={{ color: "success", text: "+3%" }}
-                icon={{ color: "info", component: "public" }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "new patients" }}
-                count="+3,462"
-                percentage={{ color: "error", text: "-2%" }}
-                icon={{ color: "info", component: "emoji_events" }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6} xl={3}>
-              <MiniStatisticsCard
-                title={{ text: "New Appointments" }}
-                count="551"
-                percentage={{ color: "success", text: "+5%" }}
-                icon={{
-                  color: "info",
-                  component: "shopping_cart",
-                }}
-              />
-            </Grid>
-          </Grid>
-        </SoftBox>
-        <SoftBox mb={3}>
-          <Grid container spacing={3}>
-            <Grid item xs={12} lg={5}>
-              <ReportsBarChart
-                title="active users"
-                description={
-                  <>
-                    (<strong>+23%</strong>) than last week
-                  </>
-                }
-                chart={chart}
-                items={items}
-              />
-            </Grid>
-            <Grid item xs={12} lg={7}>
-              <GradientLineChart
-                title="Sales Overview"
-                description={
-                  <SoftBox display="flex" alignItems="center">
-                    <SoftBox fontSize={size.lg} color="success" mb={0.3} mr={0.5} lineHeight={0}>
-                      <Icon className="font-bold">arrow_upward</Icon>
-                    </SoftBox>
-                    <SoftTypography variant="button" color="text" fontWeight="medium">
-                      4% more{" "}
-                      <SoftTypography variant="button" color="text" fontWeight="regular">
-                        in 2021
-                      </SoftTypography>
-                    </SoftTypography>
-                  </SoftBox>
-                }
-                height="20.25rem"
-                chart={gradientLineChartData}
-              />
-            </Grid>
-          </Grid>
-        </SoftBox>
-      </SoftBox>
+
+      {!dashboardData?.userCounts ? (
+        <></>
+      ) : (
+        <>
+          <SoftBox py={3}>
+            <SoftBox mb={3}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6} xl={3}>
+                  <MiniStatisticsCard
+                    title={{ text: "Total Users" }}
+                    count={dashboardData?.userCounts?.TotalUsers}
+                    icon={{ color: "info", component: "people" }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} xl={3}>
+                  <MiniStatisticsCard
+                    title={{ text: "Approved Users" }}
+                    count={dashboardData?.userCounts?.Approved}
+                    icon={{ color: "info", component: "people" }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} xl={3}>
+                  <MiniStatisticsCard
+                    title={{ text: "Pending Users" }}
+                    count={dashboardData?.userCounts?.Pending}
+                    icon={{ color: "info", component: "people" }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} xl={3}>
+                  <MiniStatisticsCard
+                    title={{ text: "Rejected Users" }}
+                    count={dashboardData?.userCounts?.Rejected}
+                    icon={{ color: "info", component: "people" }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} xl={3}>
+                  <MiniStatisticsCard
+                    title={{ text: "Doctors" }}
+                    count={dashboardData?.userCounts?.Doctors}
+                    icon={{ color: "info", component: "people" }}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6} xl={3}>
+                  <MiniStatisticsCard
+                    title={{ text: "Patients" }}
+                    count={dashboardData?.userCounts?.Patients}
+                    icon={{ color: "info", component: "people" }}
+                  />
+                </Grid>
+              </Grid>
+            </SoftBox>
+            <SoftBox mb={3}>
+              <Grid container spacing={3}>
+                <Grid item xs={12} lg={7}>
+                  <ReportsBarChart
+                    title="Analytics"
+                    chart={dashboardData?.invoiceCharts.totalAmountChart.chart}
+                    items={[
+                      {
+                        icon: { color: "info", component: "touch_app" },
+                        label: "Appointments",
+                        progress: {
+                          content: dashboardData?.appointments.length,
+                        },
+                      },
+                      {
+                        icon: { color: "warning", component: "payment" },
+                        label: "Income",
+                        progress: {
+                          content: `${dashboardData?.totalAmountInInvoices} EGP`,
+                        },
+                      },
+                      {
+                        icon: { color: "error", component: "extension" },
+                        label: "Specialities",
+                        progress: { content: dashboardData?.specialities.length },
+                      },
+                    ]}
+                  />
+                </Grid>
+                <Grid item xs={12} lg={5}>
+                  <GradientLineChart
+                    title="Invoices / Month"
+                    description={<SoftBox display="flex" alignItems="center"></SoftBox>}
+                    height="20.25rem"
+                    chart={dashboardData?.invoiceCharts.invoiceCountChart}
+                  />
+                </Grid>
+              </Grid>
+            </SoftBox>
+          </SoftBox>
+        </>
+      )}
       <Footer />
     </DashboardLayout>
   );

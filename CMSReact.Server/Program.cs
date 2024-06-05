@@ -30,6 +30,7 @@ namespace CMSReact.Server
             builder.Services.AddScoped<SpecialityService>();
             builder.Services.AddScoped<InvoiceService>();
             builder.Services.AddScoped<PrescriptionService>();
+            builder.Services.AddScoped<DashboardService>();
             
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
 
