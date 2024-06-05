@@ -3,6 +3,7 @@ using System;
 using CMSReact.Server.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMSReact.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240604202058_invoice")]
+    partial class invoice
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -196,18 +199,6 @@ namespace CMSReact.Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("AvailableTimeFrom")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AvailableTimeNote")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AvailableTimeTo")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("AvailableWeekDays")
-                        .HasColumnType("TEXT");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
@@ -265,10 +256,6 @@ namespace CMSReact.Server.Migrations
                         {
                             Id = 1,
                             Address = "",
-                            AvailableTimeFrom = "",
-                            AvailableTimeNote = "",
-                            AvailableTimeTo = "",
-                            AvailableWeekDays = "[]",
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DateOfBirth = "",
                             Email = "admin@gmail.com",

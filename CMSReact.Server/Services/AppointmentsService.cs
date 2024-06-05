@@ -88,7 +88,8 @@ namespace CMSReact.Server.Services
             //{
                 var doctor = await _usersService.GetUserByIdAsync(appointmentDto.DoctorId);
                 var patient = await _usersService.GetUserByIdAsync(appointmentDto.PatientId);
-
+                var createdBy = await _usersService.GetUserByIdAsync(appointmentDto.CreatedBy);
+            
                 var appointment = new Appointment
                 {
                     Date = appointmentDto.Date,
@@ -103,6 +104,11 @@ namespace CMSReact.Server.Services
                 if(appointmentDto.OriginalAppointmentId != null)
                 {
                     appointment.OriginalAppointmentId = appointmentDto.OriginalAppointmentId;
+                appointment.Status = AppointmentStatus.Approved;
+            }
+
+            if (createdBy.IsAdmin)
+            {
                 appointment.Status = AppointmentStatus.Approved;
 
             }

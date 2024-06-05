@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "w72VLl4/M8RoH5YXMaccHz28rj1ppX2omB1kkxxCwFZ4Lwkq2EWXy3zIKajHjqVk8tGkg/4sJCHIIZJMhNPQng==",
+  "dgSpecHash": "19w9O7I+TcpX0Sv8xYnAksI0kS3IO6ogRozWykobnXAP38UxbBZ1pzS6nOY75Rp+QMp/mRxyNmZiIcGJRkbatg==",
   "success": true,
   "projectFilePath": "C:\\study-projects\\2024\\cairouniversity\\CMSReact\\CMSReact.Server\\CMSReact.Server.csproj",
   "expectedPackageFiles": [
@@ -12,7 +12,7 @@
     "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\microsoft.aspnetcore.http.features\\2.2.0\\microsoft.aspnetcore.http.features.2.2.0.nupkg.sha512",
     "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\8.0.4\\microsoft.aspnetcore.jsonpatch.8.0.4.nupkg.sha512",
     "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\8.0.4\\microsoft.aspnetcore.mvc.newtonsoftjson.8.0.4.nupkg.sha512",
-    "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\8.0.4\\microsoft.aspnetcore.spaproxy.8.0.4.nupkg.sha512",
+    "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\microsoft.aspnetcore.spaproxy\\8.0.6\\microsoft.aspnetcore.spaproxy.8.0.6.nupkg.sha512",
     "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
     "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
     "C:\\Users\\Ahmed Mansour\\.nuget\\packages\\microsoft.codeanalysis.common\\4.5.0\\microsoft.codeanalysis.common.4.5.0.nupkg.sha512",

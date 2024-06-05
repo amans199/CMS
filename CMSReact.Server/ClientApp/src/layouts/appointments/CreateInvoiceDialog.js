@@ -34,7 +34,13 @@ import { formatDate } from "utils";
 import { getUserData } from "utils";
 import { toDateInputValue } from "utils";
 
-export const CreateInvoiceDialog = ({ isDialogOpen, selectedAppointment, userData, onClose }) => {
+export const CreateInvoiceDialog = ({
+  isDialogOpen,
+  selectedAppointment,
+  userData,
+  onClose,
+  isEditable,
+}) => {
   const [selectedDate, setSelectedDate] = useState(toDateInputValue(new Date()));
   const [serviceDescription, setServiceDescription] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
@@ -147,16 +153,18 @@ export const CreateInvoiceDialog = ({ isDialogOpen, selectedAppointment, userDat
                 <SoftTypography rows={4}>{totalAmount}</SoftTypography>
               </SoftBox>
               <SoftBox mt={4} display="flex" justifyContent="space-between">
-                <SoftButton onClick={onClose}>Cancel</SoftButton>
-                <SoftButton
-                  variant="contained"
-                  color="primary"
-                  className="ml-3"
-                  style={{ marginLeft: "1rem" }}
-                  onClick={() => setFormMode("edit")}
-                >
-                  {"Edit"}
-                </SoftButton>
+                <SoftButton onClick={onClose}>Close</SoftButton>
+                {isEditable && (
+                  <SoftButton
+                    variant="contained"
+                    color="primary"
+                    className="ml-3"
+                    style={{ marginLeft: "1rem" }}
+                    onClick={() => setFormMode("edit")}
+                  >
+                    {"Edit"}
+                  </SoftButton>
+                )}
               </SoftBox>
             </SoftBox>
           </>

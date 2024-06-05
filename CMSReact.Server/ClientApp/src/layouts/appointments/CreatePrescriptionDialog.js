@@ -39,6 +39,7 @@ export const CreatePrescriptionDialog = ({
   selectedAppointment,
   userData,
   onClose,
+  isEditable,
 }) => {
   const [medication, setMedication] = useState("");
   const [instructions, setInstructions] = useState("");
@@ -130,16 +131,18 @@ export const CreatePrescriptionDialog = ({
               </SoftBox>
 
               <SoftBox mt={4} display="flex" justifyContent="space-between">
-                <SoftButton onClick={onClose}>Cancel</SoftButton>
-                <SoftButton
-                  variant="contained"
-                  color="primary"
-                  className="ml-3"
-                  style={{ marginLeft: "1rem" }}
-                  onClick={() => setFormMode("edit")}
-                >
-                  {"Edit"}
-                </SoftButton>
+                <SoftButton onClick={onClose}>Close</SoftButton>
+                {isEditable && (
+                  <SoftButton
+                    variant="contained"
+                    color="primary"
+                    className="ml-3"
+                    style={{ marginLeft: "1rem" }}
+                    onClick={() => setFormMode("edit")}
+                  >
+                    {"Edit"}
+                  </SoftButton>
+                )}
               </SoftBox>
             </SoftBox>
           </>

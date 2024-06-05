@@ -186,18 +186,6 @@ function Tables() {
       action: (
         <>
           <div className="d-flex flex-column gap-2">
-            {/* <ButtonWithConditions
-              conditions={[
-                getAppointmentStatus(appointment.status) === "Done" ||
-                  getAppointmentStatus(appointment.status) === "Rejected",
-                isAdmin,
-              ]}
-              color="success"
-              onClick={() => handleApproving(appointment.id)}
-            >
-              Approve
-            </ButtonWithConditions> */}
-
             <ButtonWithConditions
               conditions={[
                 appointment.prescriptionId !== null,
@@ -363,6 +351,7 @@ function Tables() {
       <CreateInvoiceDialog
         isDialogOpen={isCreateInvoiceDialogOpen}
         selectedAppointment={selectedAppointment}
+        isEditable={isAdmin}
         onClose={() => {
           setIsCreateInvoiceDialogOpen(false);
           setSelectedAppointment();
@@ -373,6 +362,7 @@ function Tables() {
       <CreatePrescriptionDialog
         isDialogOpen={isCreatePrescriptionDialogOpen}
         selectedAppointment={selectedAppointment}
+        isEditable={isAdmin || isDoctor}
         onClose={() => {
           setIsCreatePrescriptionDialogOpen(false);
           setSelectedAppointment();

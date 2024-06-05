@@ -1,6 +1,7 @@
 ﻿using CMSReact.Server.Context;
 using CMSReact.Server.DTOs;
 using CMSReact.Server.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -28,16 +29,16 @@ public class InvoiceService
         return await query.ToListAsync();
     }
 
-    public async Task<Invoice> GetInvoiceByIdAsync(int id)
+    public async Task<IActionResult> GetInvoiceByIdAsync(int id)
     {
         var invoice = await _dbContext.Invoices
           .Include(i => i.InvoiceItems).FirstOrDefaultAsync(i => i.Id == id);
 
         if (invoice == null)
         {
-            throw new BadHttpRequestException($"Invoice with ID {id} not found");
+            return new BadRequestObjectResult($"Invoice with ID {id} not found");
         }
-        return invoice;
+        return new OkObjectResult(invoice);
     }
 
     public async Task<IActionResult> CreateInvoiceAsync(Invoice newInvoice)
@@ -52,14 +53,19 @@ public class InvoiceService
             return new BadRequestObjectResult("Appointment ID is required");
         }
 
-        var appointment = await _dbContext.Appointments.FirstOrDefaultAsync(a => a.Id == newInvoice.AppointmentId);
-        appointment.InvoiceId = newInvoice.Id;
 
         _dbContext.Invoices.Add(newInvoice);
-        _dbContext.Appointments.Update(appointment);
         await _dbContext.SaveChangesAsync();
 
+        // Update Appointment with PrescriptionId
+        var appointment = await _dbContext.Appointments.FindAsync(newInvoice.AppointmentId);
+        if (appointment != null)
+        {
+            appointment.InvoiceId = newInvoice.Id;
+            _dbContext.Appointments.Update(appointment);
+        }
 
+        await _dbContext.SaveChangesAsync();
 
         return new OkObjectResult(newInvoice);
     }
