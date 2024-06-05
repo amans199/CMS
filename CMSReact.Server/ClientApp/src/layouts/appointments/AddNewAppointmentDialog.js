@@ -278,6 +278,10 @@ const SelectDoctor = ({ doctors, value, onChange, selectedDate, selectedTime }) 
             </p>
           )}
           <Typography className="mb-1" variant="caption">
+            <strong> Available Week Days: </strong>{" "}
+            {doctor.availableWeekDays?.length ? doctor.availableWeekDays.join(", ") : "-"}
+          </Typography>
+          <Typography className="mb-1" variant="caption">
             <strong> Available Time From: </strong>{" "}
             {doctor.availableTimeFrom ? formatTimeTo12Hour(doctor.availableTimeFrom) : "-"}
           </Typography>
@@ -287,10 +291,6 @@ const SelectDoctor = ({ doctors, value, onChange, selectedDate, selectedTime }) 
           </Typography>
           <Typography className="mb-1" variant="caption">
             <strong> Available Time Note: </strong> {doctor.availableTimeNote || "-"}
-          </Typography>
-          <Typography className="mb-1" variant="caption">
-            <strong> Available Week Days: </strong>{" "}
-            {doctor.availableWeekDays?.length ? doctor.availableWeekDays.join(", ") : "-"}
           </Typography>
           <Typography className="mb-1" variant="caption">
             <strong>Gender:</strong> {doctor.gender || "-"}
