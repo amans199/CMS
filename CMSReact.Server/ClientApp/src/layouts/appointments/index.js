@@ -201,7 +201,7 @@ function Tables() {
               conditions={[
                 appointment.prescriptionId === null,
                 getAppointmentStatus(appointment.status) === "Done",
-                isAdmin || isDoctor,
+                isDoctor,
               ]}
               color="primary"
               onClick={() => handleCreatingPrescription({ ...appointment, doctor, patient })}

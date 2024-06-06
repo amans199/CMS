@@ -29,9 +29,9 @@ export const AddNewAppointmentDialog = ({
   userData,
   onClose,
 }) => {
-  const [selectedDate, setSelectedDate] = useState("2024-04-18");
-  const [selectedTime, setSelectedTime] = useState("21:31");
-  const [reason, setReason] = useState("---");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [reason, setReason] = useState("");
   const [patientId, setPatientId] = useState(userData.id);
   const [doctorId, setDoctorId] = useState(0);
   const [specialtyId, setSpecialtyId] = useState(0);
